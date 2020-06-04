@@ -1,13 +1,11 @@
 {
-    "name": "swoolex/framework",
-    "description": "the new swoolex framework",
-    "type": "x-framework",
+    "name": "swoolex/swoolex",
+    "description": "the new swoolex",
     "keywords": [
-        "framework",
         "swoolex",
-        "ORM"
+        "sw-x"
     ],
-    "homepage": "http://sw-x.cn/",
+    "homepage": "https://www.sw-x.cn/",
     "license": "Swoole-4.5.0",
     "authors": [
         {
@@ -16,8 +14,6 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0"
-    },
-    "require-dev": {
+        "php": ">=7.1.0"
     }
 }

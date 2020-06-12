@@ -42,7 +42,7 @@ class RouteSocket
      * 启动项
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.26
+     * @version v1.0.2 + 2020.06.12
      * @deprecated 暂不启用
      * @global 无
      * @return App
@@ -52,7 +52,7 @@ class RouteSocket
         $request_uri = $data['action'];
 
         # 先匹配出路由
-        $route = \x\route\WebSocket::run()->get($request_uri);
+        $route = \x\doc\Table::run()->get($request_uri, 'websocket');
 
         # 匹配不到
         if ($route == false) {

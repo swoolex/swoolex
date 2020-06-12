@@ -46,7 +46,7 @@ class Route
      * 启动项
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.26
+     * @version v1.0.2 + 2020.06.12
      * @deprecated 暂不启用
      * @global 无
      * @return App
@@ -55,25 +55,7 @@ class Route
         $pattern = Config::run()->get('route.pattern');
         $request_uri = $this->format($this->request->server['request_uri']);
         # 先匹配出路由
-        switch ($pattern) {
-            case 3: // 兼容模式
-                $route = \x\route\Table::run()->get($request_uri);
-                // 因为现在也是使用路由表的get
-                // if ($route == false) {
-                //     $route = \x\route\Simple::get($request_uri);
-                // }
-            break;
-            case 2: // 路由表模式
-                $route = \x\route\Table::run()->get($request_uri);
-            break;
-            case 1: // path_info模式
-                $route = \x\route\Simple::get($request_uri);
-            break;
-            default:
-                throw new \Exception("Route：config route.pattern No [{$pattern}]~");
-            break;
-        }
-
+        $route = \x\doc\Table::run()->get($request_uri, 'http');
         # 匹配不到
         if ($route == false) {
             // 实例化基类控制器

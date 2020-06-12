@@ -84,6 +84,6 @@ class Http extends Service
         \x\StartEo::run($this->type . \x\Lang::run()->get('start -12'));
         
         // 返回父类，进行事件绑定
-        $this->event_binding($this->service, $config);
+        $this->event_binding($this->service, $config, 'http');
     }
 }

@@ -14,4 +14,4 @@ namespace x;
 // 加载基础文件
 require __DIR__ . '/swoolex/base.php';
 
-App::run()->service('http')->start();
+App::run()->service('server')->start();

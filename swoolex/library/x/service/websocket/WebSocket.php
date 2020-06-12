@@ -81,8 +81,8 @@ class WebSocket extends Service
 
         // 注入配置
         $this->service->set($set);
-        \x\StartEo::run($this->type . \x\Lang::run()->get('start -12'));
+        \x\StartEo::run($this->type . \x\Lang::run()->get('start -12'), 'websocket');
         // 返回父类，进行事件绑定
-        $this->event_binding($this->service, $config);
+        $this->event_binding($this->service, $config, 'websocket');
     }
 }

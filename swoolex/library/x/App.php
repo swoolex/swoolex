@@ -96,7 +96,7 @@ class App
         switch (self::$service) {
             case 'http': 
                 // 先初始化路由表
-                \x\route\Table::run()->start();
+                \x\doc\Table::run()->start();
                 $service = new \x\service\http\Http(); 
             break;
             case 'server': 
@@ -104,7 +104,7 @@ class App
             break;
             case 'websocket': 
                 // 先初始化socket路由表
-                \x\route\WebSocket::run()->start();
+                \x\doc\Table::run()->start();
                 $service = new \x\service\websocket\WebSocket();
             break;
         }

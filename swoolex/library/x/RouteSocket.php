@@ -102,13 +102,6 @@ class RouteSocket
             }
         }
 
-        # 注入Cookies
-        \x\Cookie::setRequest($this->request);
-        \x\Cookie::setResponse($this->response);
-        # 注入Session
-        \x\Session::setRequest($this->request);
-        \x\Session::setResponse($this->response);
-
         # 循环注入父容器
         if (isset($route['father'])) {
             foreach ($route['father'] as $key=>$val) {

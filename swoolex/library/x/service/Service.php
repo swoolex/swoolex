@@ -17,6 +17,10 @@ abstract class Service
      * 服务类型
     */
     private $type;
+    /**
+     * 配置
+    */
+    private $config;
   
     /**
      * 应用启动入口
@@ -63,6 +67,7 @@ abstract class Service
     protected function event_binding($service, $config, $type) {
         \x\StartEo::run(\x\Lang::run()->get('start -13'));
         $this->type = $type;
+        $this->config = $config;
 
         # 监听进程启动事件
         $service->on('Start', [$this->ioc('onStart'), 'run']);
@@ -111,12 +116,7 @@ abstract class Service
 
         # 监听客户端消息发送请求
         if ($type == 'websocket') {
-            if (isset($config['is_onMessage']) && $config['is_onMessage']==true) {
-                # 开启系统分包流程
-                $service->on('Message', [$this->ioc('onMessage'), 'run']);
-            } else {
-                $service->on('Message', [$this->ioc('onMessage'), 'run']);
-            }
+            $service->on('Message', [$this->ioc('onMessage'), 'run']);
         }
 
         # 监听外部调用请求
@@ -142,8 +142,12 @@ abstract class Service
     private function ioc($event, ...$argc) {
         $class = '\event\\'.$this->type.'\\'.$event;
         if ($event == 'onMessage') {
-            $class = '\app'.$class;
+            if (!isset($this->config['is_onMessage']) || $this->config['is_onMessage'] != true) {
+                # 关闭系统分包流程
+                $class = '\app'.$class;
+            }
         }
+        
         $reflection = new \ReflectionClass($class);
         return $reflection->newInstanceArgs($argc);
     }

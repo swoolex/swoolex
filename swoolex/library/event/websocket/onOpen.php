@@ -31,7 +31,6 @@ class onOpen
     */
     public function run($server, $request) {
         $this->server = $server;
-        
         // 调用二次转发，不做重载
         $on = new \app\event\websocket\onOpen;
         $on->run($server, $request);

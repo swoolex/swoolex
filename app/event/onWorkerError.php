@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | SW-X 助手函数
+// | Worker/Task 进程发生异常后
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -9,24 +9,32 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-if (!function_exists('dd')) {
+namespace app\event;
+
+class onWorkerError
+{
     /**
-     * 打印格式化
+	 * 启动实例
+	*/
+    public $server;
+
+    /**
+     * 统一回调入口
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.1 + 2020.07.08
+     * @version v1.0.1 + 2020.05.26
      * @deprecated 暂不启用
      * @global 无
-     * @param mixed $mixed 需要格式化的内容
-     * @return string
+     * @param Swoole\Server $server
+     * @param int $worker_id 异常 worker 进程的 id
+     * @param int $worker_pid 异常 worker 进程的 pid
+     * @param int $exit_code 退出的状态码，范围是 0～255
+     * @param int $signal 进程退出的信号
+     * @return void
     */
-    function dd($mixed) {
-        ob_start();
-        var_dump($mixed);
-        $output = ob_get_clean();
-        $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        $output = '<pre>' . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
+    public function run($server, $worker_id, $worker_pid, $exit_code, $signal) {
+        $this->server = $server;
         
-        return $output;
     }
 }
+

@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | SW-X 助手函数
+// | 监听客户端消息发送请求
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -9,24 +9,29 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-if (!function_exists('dd')) {
+namespace app\event;
+
+class onMessage
+{
     /**
-     * 打印格式化
+	 * 启动实例
+	*/
+    public $server;
+
+    /**
+     * 统一回调入口
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.1 + 2020.07.08
+     * @version v1.0.1 + 2020.05.26
      * @deprecated 暂不启用
      * @global 无
-     * @param mixed $mixed 需要格式化的内容
-     * @return string
+     * @param Swoole\WebSocket\Server $server
+     * @param Swoole\WebSocket\Frames $frame 状态信息
+     * @return void
     */
-    function dd($mixed) {
-        ob_start();
-        var_dump($mixed);
-        $output = ob_get_clean();
-        $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        $output = '<pre>' . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
-        
-        return $output;
+    public function run($server, $frame) {
+        $this->server = $server;
+
     }
 }
+

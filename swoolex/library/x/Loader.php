@@ -129,8 +129,6 @@ class Loader
         
         // 自动加载extend目录
         self::addAutoLoadDir($rootPath . 'extend');
-
-        \x\StartEo::run(\x\Lang::run()->get('start -1'));
     }
 
     /**
@@ -494,27 +492,6 @@ class Loader
         return strtolower(trim(preg_replace("/[A-Z]/", "_\\0", $name), "_"));
     }
 
-    /**
-     * 创建工厂对象实例
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
-     * @param  string $name         工厂类名
-     * @param  string $namespace    默认命名空间
-     * @return mixed
-    */
-    public static function factory($name, $namespace = '', ...$args)
-    {
-        $class = false !== strpos($name, '\\') ? $name : $namespace . ucwords($name);
-
-        if (class_exists($class)) {
-            return Container::getInstance()->invokeClass($class, $args);
-        } else {
-            throw new ClassNotFoundException('class not exists:' . $class, $class);
-        }
-    }
 }
 
 /**

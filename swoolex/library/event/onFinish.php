@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | SW-X 助手函数
+// | 异步任务完成时
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -9,24 +9,33 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-if (!function_exists('dd')) {
+namespace event;
+
+class onFinish
+{
     /**
-     * 打印格式化
+	 * 启动实例
+	*/
+    public $server;
+
+    /**
+     * 统一回调入口
      * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
-     * @param mixed $mixed 需要格式化的内容
-     * @return string
+     * @param Swoole $server
+     * @param int $task_id 执行任务的 task 进程 id
+     * @param mixed $data 任务处理的结果内容
+     * @return void
     */
-    function dd($mixed) {
-        ob_start();
-        var_dump($mixed);
-        $output = ob_get_clean();
-        $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        $output = '<pre>' . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
-        
-        return $output;
+    public function run($server, $task_id, $data) {
+        $this->server = $server;
+
+        // 调用二次转发，不做重载
+        $on = new \app\event\onFinish;
+        $on->run($server, $task_id, $data);
     }
 }
+

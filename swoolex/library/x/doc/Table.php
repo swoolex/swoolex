@@ -51,17 +51,11 @@ class Table
 
         // http路由
         $list = $this->every_file(ROOT_PATH.'/app/controller');
-        \x\StartEo::run(\x\Lang::run()->get('start -6'));
         $this->add_list($list, $cutting, 'http');
-        \x\StartEo::run(\x\Lang::run()->get('start -7'));
-        \x\StartEo::run('Route：total '.count($this->table['http']));
 
         // websocket路由
         $list = $this->every_file(ROOT_PATH.'/app/socket');
-        \x\StartEo::run(\x\Lang::run()->get('start -17'));
         $this->add_list($list, $cutting, 'websocket');
-        \x\StartEo::run(\x\Lang::run()->get('start -18'));
-        \x\StartEo::run('Route：total '.count($this->table['websocket']));
     }
 
     /**

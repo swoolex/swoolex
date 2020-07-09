@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | 路由基础类
+// | 路由类
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -14,13 +14,25 @@ namespace x;
 class Route
 {
     /**
-     * HTTP请求对象
+     * WEBSOCKET-server
+    */
+    private $server;
+    /**
+     * frame
+    */
+    private $frame;
+    /**
+     * WEBSOCKET-HTTP请求对象
     */
     private $request;
     /**
      * HTTP响应对象
     */
     private $response;
+    /**
+     * 服务类型
+    */
+    private $service_type;
     /**
      * SessionID名
     */
@@ -30,51 +42,77 @@ class Route
      * 接收HTTP请求参数
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.26
+     * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
      * @param Swoole\Http\Request $request HTTP请求对象
      * @param Swoole\Http\Response $response HTTP响应对象
+     * @param Swoole\WebSocket\Server $server
+     * @param Swoole\WebSocket\Frames $frame 状态信息
      * @return void
     */
-    public function __construct($request, $response) {
+    public function __construct($request, $response, $server=null, $frame=null) {
         $this->request = $request;
         $this->response = $response;
+        $this->server = $server;
+        $this->frame = $frame;
+
+        if ($server) {
+            $this->service_type = 'websocket';
+        } else {
+            $this->service_type = 'http';
+        }
     }
     
     /**
      * 启动项
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.2 + 2020.06.12
+     * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
      * @return App
     */
     public function start(){
-        $pattern = Config::run()->get('route.pattern');
-        $request_uri = $this->format($this->request->server['request_uri']);
-        # 先匹配出路由
-        $route = \x\doc\Table::run()->get($request_uri, 'http');
-        # 匹配不到
+        if ($this->service_type == 'http') {
+            $pattern = Config::run()->get('route.pattern');
+            $request_uri = $this->format($this->request->server['request_uri']);
+            // 先匹配出路由
+            $route = \x\doc\Table::run()->get($request_uri, 'http');
+        } else {
+            $data = \x\WebSocket::get_data($this->frame->data);
+            $request_uri = $data['action'];
+            // 先匹配出路由
+            $route = \x\doc\Table::run()->get($request_uri, 'websocket');
+        }
+        // 匹配不到
         if ($route == false) {
-            // 实例化基类控制器
-            $controller = new \x\Controller();
-            $controller->setRequest($this->request);
-            $controller->setResponse($this->response);
+            if ($this->service_type == 'http') {
+                // 实例化基类控制器
+                $controller = new \x\Controller();
+                $controller->setRequest($this->request);
+                $controller->setResponse($this->response);
 
-            $class = \x\Config::run()->get('route.error_class');
-
-            // 系统404
-            if (\x\Config::run()->get('route.404') == false || empty($class)) {
-                $controller->fetch(\x\Lang::run()->get('route path error'), '404');
+                $class = \x\Config::run()->get('route.error_class');
+                
+                // 系统404
+                if (\x\Config::run()->get('route.404') == false || empty($class)) {
+                    $controller->fetch(\x\Lang::run()->get('route path error'), '404');
+                } else {
+                // 自定义404
+                    new $class($controller);
+                }
             } else {
-            // 自定义404
-                new $class($controller);
+                $obj = new \x\WebSocket();
+                $obj->setServer($this->server);
+                $obj->setFrame($this->frame);
+                $obj->fetch('error', '500', $request_uri.' 路由不存在~~');
             }
         } else {
-            # 开始解析路由
-            $this->session();
+            // 开始解析路由
+            if ($this->service_type == 'http') {
+                $this->session();
+            }
             $this->ico_injection($route);
         }
     }
@@ -83,7 +121,7 @@ class Route
      * Session注入
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.29
+     * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
      * @return void
@@ -101,7 +139,7 @@ class Route
      * 容器注入
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
+     * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
      * @param array $route 被找到的路由
@@ -113,10 +151,17 @@ class Route
         $method = $reflection->getmethod($route['name']);
 
         # 先注入请求和响应
-        $obj = $reflection->getmethod('setRequest');
-        $obj->invokeArgs($instance, [$this->request]);
-        $obj = $reflection->getmethod('setResponse');
-        $obj->invokeArgs($instance, [$this->response]);
+        if ($this->service_type == 'http') {
+            $obj = $reflection->getmethod('setRequest');
+            $obj->invokeArgs($instance, [$this->request]);
+            $obj = $reflection->getmethod('setResponse');
+            $obj->invokeArgs($instance, [$this->response]);
+        } else {
+            $obj = $reflection->getmethod('setServer');
+            $obj->invokeArgs($instance, [$this->server]);
+            $obj = $reflection->getmethod('setFrame');
+            $obj->invokeArgs($instance, [$this->frame]);
+        }
 
         # 检测路由类型
         if (isset($route['method'])) {
@@ -133,12 +178,14 @@ class Route
             }
         }
 
-        # 注入Cookies
-        \x\Cookie::setRequest($this->request);
-        \x\Cookie::setResponse($this->response);
-        # 注入Session
-        \x\Session::setRequest($this->request);
-        \x\Session::setResponse($this->response);
+        if ($this->service_type == 'http') {
+            # 注入Cookies
+            \x\Cookie::setRequest($this->request);
+            \x\Cookie::setResponse($this->response);
+            # 注入Session
+            \x\Session::setRequest($this->request);
+            \x\Session::setResponse($this->response);
+        }
         
         # 循环注入父容器
         if (isset($route['father'])) {
@@ -394,7 +441,7 @@ class Route
      * 清除URL格式
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.26
+     * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
      * @param string $request_uri

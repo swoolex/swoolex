@@ -36,7 +36,7 @@ class Config
      * 初始化配置项
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.25
+     * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
      * @return void
@@ -55,7 +55,7 @@ class Config
      * 递归获取多级配置
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.25
+     * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
      * @param array $config 配置
@@ -80,7 +80,7 @@ class Config
      * 递归设置多级配置
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.25
+     * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
      * @param array $array 设置层级
@@ -107,7 +107,7 @@ class Config
      * 获取参数
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.25
+     * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
      * @param string $key 读取配置，递归使用.区分，空的时候读取全部
@@ -130,7 +130,7 @@ class Config
      * 设置参数
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.25
+     * @version v1.1.1 + 2020.07.08
      * @deprecated 暂不启用
      * @global 无
      * @param string $key 配置位置，递归使用.区分
@@ -139,7 +139,6 @@ class Config
     */
     public function set($key, $val) {
         $array = explode('.', $key);
-
         if (!isset($array[1])) {
             $keys = $array[0];
             self::$config[$keys] = $val;
@@ -149,7 +148,8 @@ class Config
         $list = self::loop_set($array, $val);
         if ($list) {
             foreach ($list as $key=>$val) {
-                self::$config[$key] = $val;
+                $config = array_merge(self::$config[$key], $val);
+                self::$config[$key] = $config;
                 return true;
             }
         }

@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | Server端的配置
+// | SWOOLE服务配置
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -8,7 +8,6 @@
 // +----------------------------------------------------------------------
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
-
 
 return [
     // host
@@ -44,7 +43,7 @@ return [
     // 数据包分发策略
     'dispatch_mode' => 2,
     // 是否开启守护进程模式
-    'daemonize' => 0,
+    'daemonize' => false,
     // 设置 Listen 队列长度
     'backlog' => false,
     // 指定 Swoole 错误日志文件，守护进程后建议指定文件
@@ -57,6 +56,41 @@ return [
     'heartbeat_check_interval' => false,
     // 最大允许的空闲时间(S)
     'heartbeat_idle_time' => 120,
+
+    // +-----------------------------
+    // | Swoole 各个进程的进程别名
+    // +-----------------------------
+
+    'master'  => 'swoolex service master process', 
+    'manager' => 'swoolex service manager process', 
+    'worker'  => 'swoolex service worker process', 
+    'tasker'  => 'swoolex service tasker process', 
+
+    // +-----------------------------
+    // | Swoole 服务的服务环境变量存储路径
+    // +-----------------------------
+
+    // 记录master和manager的进程id
+    'pid_file' => ROOT_PATH.'/env/sw-x.pid', 
+    // 记录worker的进程id
+    'worker_pid_file' => ROOT_PATH.'/env/worker.pid', 
+    // 记录tasker的进程id
+    'tasker_pid_file' => ROOT_PATH.'/env/tasker.pid', 
+
+    // +-----------------------------
+    // | WebSocket 服务的独立配置
+    // +-----------------------------
+
+    // 是否启动HandShake事件监听，如果开启，请自己实现握手协议
+    'is_onHandShake' => false,
+    // 是否启用系统自带的onMessage分包控制，如果关闭，请自己实现业务逻辑
+    'is_onMessage' => true,
+    // AES 加密类型
+    'aes_type' => 'AES-128-ECB',
+    // AES 加密KEY
+    'aes_key' => '',
+    // AES 加密向量
+    'aes_iv' => '',
     
     // +-----------------------------
     // | onRequst 跨域相关

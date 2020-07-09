@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | SW-X 助手函数
+// | 接收到数据时
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -9,24 +9,35 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-if (!function_exists('dd')) {
+namespace event;
+
+class onReceive
+{
     /**
-     * 打印格式化
+	 * 启动实例
+	*/
+    public $server;
+
+    /**
+     * 统一回调入口
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.1 + 2020.07.08
+     * @version v1.0.3 + 2020.07.06
      * @deprecated 暂不启用
      * @global 无
-     * @param mixed $mixed 需要格式化的内容
-     * @return string
+     * @param Swoole $server
+     * @param int $fd 连接的文件描述符
+     * @param int $reactorId 连接所在的 Reactor 线程 ID
+     * @param string $data 收到的数据内容，可能是文本或者二进制内容
+     * @return void
     */
-    function dd($mixed) {
-        ob_start();
-        var_dump($mixed);
-        $output = ob_get_clean();
-        $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
-        $output = '<pre>' . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
+    public function run($server, $fd, $reactorId, $data=null) {
+        $this->server = $server;
         
-        return $output;
+        // 调用二次转发，不做重载
+        $on = new \app\event\onReceive;
+        $on->run($server, $fd, $reactorId, $data);
     }
+
 }
+

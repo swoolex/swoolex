@@ -278,7 +278,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if (!$return) {
+                        if ($return !== true) {
                             throw new \Exception("Route：Father AopBefore Must have return value~");
                         }
                     break;
@@ -290,7 +290,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if (!$return) {
+                        if ($return !== true) {
                             throw new \Exception("Route：Father AopAround Must have return value~");
                         }
                     break;
@@ -321,7 +321,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if (!$return) {
+                        if ($return !== true) {
                             throw new \Exception("Route：Own AopBefore Must have return value~");
                         }
                     break;
@@ -333,7 +333,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if (!$return) {
+                        if ($return !== true) {
                             throw new \Exception("Route：Own AopAround Must have return value~");
                         }
                     break;
@@ -384,7 +384,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if (!$return) {
+                        if ($return !== true) {
                             throw new \Exception("Route：Father AopAround Must have return value~");
                         }
                     break;
@@ -396,7 +396,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if (!$return) {
+                        if ($return !== true) {
                             throw new \Exception("Route：Father AopBefore Must have return value~");
                         }
                     break;
@@ -416,7 +416,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if (!$return) {
+                        if ($return !== true) {
                             throw new \Exception("Route：Own AopAround Must have return value~");
                         }
                     break;
@@ -428,7 +428,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if (!$return) {
+                        if ($return !== true) {
                             throw new \Exception("Route：Father AopBefore Must have return value~");
                         }
                     break;

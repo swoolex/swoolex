@@ -86,8 +86,12 @@ class Controller
      * @return void
     */
     public final function fetch($string, $status=200) {
-        $this->setResponse->status($status);
-        return $this->setResponse->end($string);
+        try {
+            $this->setResponse->status($status);
+            return $this->setResponse->end($string);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -129,9 +133,13 @@ class Controller
         $this->view->setResponse = $this->setResponse;
         $ret = $this->view->display($view);
         if ($ret) {
-            $content = ob_get_clean();
-            $this->setResponse->status(200);
-            return $this->setResponse->end($content);
+            try {
+                $content = ob_get_clean();
+                $this->setResponse->status(200);
+                return $this->setResponse->end($content);
+            } catch (\Exception $e) {
+                return false;
+            }
         }
         return false;
     }

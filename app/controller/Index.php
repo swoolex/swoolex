@@ -25,9 +25,17 @@ class Index extends Controller
     }
 
     /**
-     * @RequestMapping(route="demo", method="get", title="测试而已")
+     * @RequestMapping(route="test", method="get", title="测试获取整个应用路由")
     */
     public function test() {
         return $this->fetch(dd(\x\Doc\Table::run()->route()));
+    }
+    
+    /**
+     * @RequestMapping(route="demo", method="get", title="测试Model")
+    */
+    public function demo() {
+        $model = new \app\model\UserModel();
+        return $this->fetch(dd($model->run()));
     }
 }

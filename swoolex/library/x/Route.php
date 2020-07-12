@@ -182,7 +182,7 @@ class Route
                 if (!$param) $param = $post_list[$name]??'';
 
                 // 参数预设
-                if (!empty($val['value']) && empty($param)) {
+                if (!empty($val['value']) && empty($param) && $param != '0') {
                     $param = $val['value'];
                     $this->request->get[$name] = $val['value'];
                     $this->request->post[$name] = $val['value'];

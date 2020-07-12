@@ -38,4 +38,13 @@ class Index extends Controller
         $model = new \app\model\UserModel();
         return $this->fetch(dd($model->run()));
     }
+
+    /**
+     * @RequestMapping(route="param", method="get", title="测试param注解")
+     * @Param(name="id", type="string", value="1", empty="true", min="10", max="20", chinese="false", regular="/<script[^>]*>/", callback="\lifecycle\annotate_param")
+     * @Param(name="pid", type="string|array", value="1", empty="true", min="10", max="20", chinese="false", tips="错误返回提示内容", callback="\lifecycle\annotate_param")
+    */
+    public function param() {
+        return $this->fetch(null);
+    }
 }

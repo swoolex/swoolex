@@ -117,8 +117,9 @@ class Loader
             'x' => __DIR__,
             'event' => dirname(__DIR__).'/event/',
             'app' => ROOT_PATH.'/app/',
+            'extend' => ROOT_PATH.'/extend/',
+            'lifecycle' => ROOT_PATH.'/lifecycle/',
         ]);
-
         // 加载类库映射文件
         if (is_file($rootPath . 'config' . DIRECTORY_SEPARATOR . 'classmap.php')) {
             self::addNamespace(__include_file($rootPath . 'config' . DIRECTORY_SEPARATOR . 'classmap.php'));
@@ -126,9 +127,10 @@ class Loader
         if (is_file($rootPath . 'config' . DIRECTORY_SEPARATOR . 'classone.php')) {
             self::addClassMap(__include_file($rootPath . 'config' . DIRECTORY_SEPARATOR . 'classone.php'));
         }
-        
+
         // 自动加载extend目录
         self::addAutoLoadDir($rootPath . 'extend');
+        self::addAutoLoadDir($rootPath . 'lifecycle');
     }
 
     /**

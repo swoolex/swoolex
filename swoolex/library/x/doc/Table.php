@@ -205,6 +205,7 @@ class Table
             
             # 使用注解
             $doc = \x\doc\Annotate::run($namespace);
+
             $this->add_doc_route($doc, $namespace, $cutting, $route_type);
         }
     }

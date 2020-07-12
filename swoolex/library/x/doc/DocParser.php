@@ -30,6 +30,7 @@ class DocParser
         'AopThrows', // 异常
         'Controller', // 控制器路由绑定
         'onRoute', // 不允许访问的路由
+        'Param', // 参数过滤
     ];
 
     private static $instance = null; // 创建静态对象变量,用于存储唯一的对象实例  
@@ -94,7 +95,7 @@ class DocParser
      * 注解解析行
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.25
+     * @version v1.1.4 + 2020.07.12
      * @deprecated 暂不启用
      * @global 无
      * @param string $line 每行的注解
@@ -113,7 +114,6 @@ class DocParser
             $array = explode('(', $string);
             $param = $array[0];
             if ($this->check($param) == false) return false;
-
             $string = str_replace($param.'(', '', $string);
             $value = substr($string, 0, strlen($string)-1);
             $value = preg_replace ( "/\s(?=\s)/","\\1", $value );
@@ -134,7 +134,7 @@ class DocParser
                 $return[$key] = $val;
             }
             # Ioc的需要特殊存储
-            if ($param == 'Ioc') {
+            if ($param == 'Ioc' || $param == 'Param') {
                 $index = 0;
                 if (isset($this->params[$param])) $index = count($this->params[$param]);
                 

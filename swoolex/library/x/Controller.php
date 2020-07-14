@@ -244,6 +244,117 @@ class Controller
     }
 
     /**
+     * 是否使用SSL
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.14
+     * @deprecated 暂不启用
+     * @global 无
+     * @return bool
+    */
+    public final function is_ssl() {
+        if (\x\Config::run()->get('server.ssl_cert_file') && \x\Config::run()->get('server.ssl_key_file')) return true;
+        return false;
+    }
+
+    /**
+     * 获取客户端真实IP
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.14
+     * @deprecated 暂不启用
+     * @global 无
+     * @return string|false
+    */
+    public final function ip() {
+        if (!empty($this->setRequest->header['x-real-ip'])) {
+            return $this->setRequest->header['x-real-ip'];
+        }
+        if (!empty($this->setRequest->server['remote_addr'])) {
+            return $this->setRequest->server['remote_addr'];
+        }
+        return false;
+    }
+
+    /**
+     * 获取当前域名
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.14
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public final function domain() {
+        $ret = 'http';
+        if ($this->is_ssl()) {
+            $ret = 'https';
+        }
+        return $ret.'://'.$this->setRequest->header['host'];
+    }
+
+    /**
+     * 获取当前请求路由
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.14
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public final function route() {
+        if (!empty($this->setRequest->server['path_info'])) {
+            return $this->setRequest->server['path_info'];
+        }
+        if (!empty($this->setRequest->server['request_uri'])) {
+            return $this->setRequest->server['request_uri'];
+        }
+        return false;
+    }
+
+    /**
+     * 获取完整URL
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.14
+     * @deprecated 暂不启用
+     * @global 无
+     * @param bool $status 是否带域名
+     * @return string|false
+    */
+    public final function url($status=false) {
+        $ret = '';
+        if ($status) {
+            $ret = $this->domain();
+        }
+        return $ret.$this->route();
+    }
+    
+    /**
+     * 获取完整URL，带get参数
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.14
+     * @deprecated 暂不启用
+     * @global 无
+     * @param bool $status 是否带域名
+     * @return string|false
+    */
+    public final function baseUrl($status=false) {
+        $ret = '';
+        if ($status) {
+            $ret = $this->domain();
+        }
+        $ret .= $this->route();
+        
+        if (!empty($this->setRequest->server['query_string'])) {
+            $ret .= '?'.$this->setRequest->server['query_string'];
+        }
+        
+        return $ret;
+    }
+
+    /**
      * 文件上传1-注入表单
      * @todo 无
      * @author 小黄牛

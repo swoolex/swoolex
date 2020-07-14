@@ -75,6 +75,10 @@ class App
         $this->_server_start['server'] = $argv[2] ?? null;
         $this->_server_start['option'] = $argv[3] ?? null;
         
+        // 删除全局变量
+        unset($argc);
+        unset($argv);
+        
         // 处理命令行执行
         switch ($command) {
             // 启动服务

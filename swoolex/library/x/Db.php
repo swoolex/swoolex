@@ -89,7 +89,7 @@ class Db
                 return \x\db\MysqlPool::run()->write_free($this->pool);
             break;
             case 'select':
-                return x\db\MysqlPool::run()->read_free($this->pool);
+                return \x\db\MysqlPool::run()->read_free($this->pool);
             break;
             case 'log':
                 return \x\db\MysqlPool::run()->log_free($this->pool);

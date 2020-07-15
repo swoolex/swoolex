@@ -65,6 +65,10 @@ class Sql extends AbstractSql {
      * Db实例
     */
     public $Db;
+    /**
+     * 统计的别名
+    */
+    public $ploy_alias = 'swoolex';
 
     /**
      * 调试SQL语句
@@ -292,17 +296,19 @@ class Sql extends AbstractSql {
      * 链表
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.28
+     * @version v1.1.7 + 2020.07.15
      * @deprecated 暂不启用
      * @global 无
      * @param string $table 链表表达式
      * @param string $on  链表条件
      * @param string $join 链表方式
+     * @param bool $status 是否自动使用表前缀
      * @return void
     */
-    public function join($table, $on, $join='LEFT') {
+    public function join($table, $on, $join='LEFT', $status=true) {
+        if ($status) $table = $this->prefix.$table;
         $this->join[] = [
-            'table' => $this->prefix.$table, 
+            'table' => $table, 
             'on' => $on,
             'join' => strtoupper($join)
         ];
@@ -344,7 +350,7 @@ class Sql extends AbstractSql {
         if ($status && $this->debug==false) {
             $res = $this->Db->query($sql);
             if ($res == false) return false;
-            return end($res);
+            return array_shift($res);
         }
         return $sql;
     }
@@ -512,6 +518,138 @@ class Sql extends AbstractSql {
             return $this->Db->query($sql);
         }
         return $sql;
+    }
+    /**
+     * 聚合操作(统计数量)
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.7 + 2020.07.16
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $field 字段名
+     * @return mixed
+    */
+    public function count($field=false) {
+        $field = $field ?? '*';
+        $this->field = 'COUNT('.$field.') AS '.$this->ploy_alias;
+        $sql = $this->select_sql(true);
+        $this->clean_up();
+
+        $res = $this->Db->query($sql);
+        if ($res == false) return false;
+        $info = array_shift($res);
+
+        return $info[$this->ploy_alias];
+    }
+    /**
+     * 聚合操作(获取最大值)
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.7 + 2020.07.16
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $field 字段名
+     * @return mixed
+    */
+    public function max($field=false) {
+        if ($field == false) return false;
+        $this->field = 'MAX('.$field.') AS '.$this->ploy_alias;
+        $sql = $this->select_sql(true);
+        $this->clean_up();
+
+        $res = $this->Db->query($sql);
+        if ($res == false) return false;
+        $info = array_shift($res);
+
+        return $info[$this->ploy_alias];
+    }
+    /**
+     * 聚合操作(获取最小值)
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.7 + 2020.07.16
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $field 字段名
+     * @return mixed
+    */
+    public function min($field=false) {
+        if ($field == false) return false;
+        $this->field = 'MIN('.$field.') AS '.$this->ploy_alias;
+        $sql = $this->select_sql(true);
+        $this->clean_up();
+
+        $res = $this->Db->query($sql);
+        if ($res == false) return false;
+        $info = array_shift($res);
+
+        return $info[$this->ploy_alias];
+    }
+    /**
+     * 聚合操作(获取平均值)
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.7 + 2020.07.16
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $field 字段名
+     * @return mixed
+    */
+    public function avg($field=false) {
+        if ($field == false) return false;
+        $this->field = 'AVG('.$field.') AS '.$this->ploy_alias;
+        $sql = $this->select_sql(true);
+        $this->clean_up();
+
+        $res = $this->Db->query($sql);
+        if ($res == false) return false;
+        $info = array_shift($res);
+
+        return $info[$this->ploy_alias];
+    }
+    /**
+     * 聚合操作(获取总分)
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.7 + 2020.07.16
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $field 字段名
+     * @return mixed
+    */
+    public function sum($field=false) {
+        if ($field == false) return false;
+        $this->field = 'SUM('.$field.') AS '.$this->ploy_alias;
+        $sql = $this->select_sql(true);
+        $this->clean_up();
+
+        $res = $this->Db->query($sql);
+        if ($res == false) return false;
+        $info = array_shift($res);
+
+        return $info[$this->ploy_alias];
+    }
+    /**
+     * 获取某个字段的值
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.7 + 2020.07.16
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $field 字段名
+     * @return void
+    */
+    public function value($field) {
+        if ($field == false) return false;
+        $this->field = $field;
+        $sql = $this->select_sql(true);
+        $this->clean_up();
+
+        $res = $this->Db->query($sql);
+        if ($res == false) return false;
+        $info = array_shift($res);
+
+        return $info[$field];
     }
     /**
      * 执行原生SQL

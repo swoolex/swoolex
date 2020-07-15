@@ -12,7 +12,7 @@
 namespace x;
 
 // 框架当前版本
-define('VERSION', 'v1.1.6');
+define('VERSION', 'v1.1.7');
 // 项目根地址
 define('ROOT_PATH', dirname(__DIR__));
 // 缓存 && 日志根地址

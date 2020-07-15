@@ -32,6 +32,9 @@ class onMessage
     public function run($server, $frame) {
         $this->server = $server;
         
+        // 注册错误和异常处理机制
+        \x\Error::register('websocket', $server, $frame);
+
         # 开始转发路由
         $obj = new \x\Route(null, null, $server, $frame);
         $obj->start();

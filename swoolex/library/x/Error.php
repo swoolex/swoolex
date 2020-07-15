@@ -14,11 +14,19 @@ namespace x;
 class Error {
     /**
      * 注册错误异常监听
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.15
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $service_type SW的服务类型 http||websocket
+     * @param $request 请求对象
+     * @param $request 请求对象
      * @return void
     */
-    public static function register() {
+    public static function register($service_type=null, $request=null, $response=null) {
         # 致命错误捕捉
-        register_shutdown_function('\x\Error::deadlyError');
+        register_shutdown_function('\x\Error::deadlyError', $service_type, $request, $response);
         # 异常捕捉
     	set_error_handler('\x\Error::appError'); 
     }
@@ -59,7 +67,7 @@ class Error {
      * 致命异常错误捕捉
      * @return void
     */
-    public static function deadlyError() {
+    public static function deadlyError($service_type=null, $request=null, $response=null) {
         if ($e = error_get_last()) {
             $error = [];
             switch($e['type']){
@@ -72,7 +80,7 @@ class Error {
                 $error['message'] = $e['message'];
                 $error['file'] = $e['file'];
                 $error['line'] = $e['line'];
-                self::halt($error);
+                self::halt($error, $service_type, $request, $response);
                 break;
             }
         }
@@ -94,7 +102,7 @@ class Error {
                 'first'  => $first,
                 'source' => array_slice($contents, $first - 1, 19),
             ];
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $source = [];
         }
         return $source;
@@ -105,14 +113,13 @@ class Error {
      * @param mixed $error 错误
      * @return void
     */
-    public static function halt($error) {
+    public static function halt($error, $service_type=null, $request=null, $response=null) {
         $e = [];
         # 获得错误信息
         $e['file']    = $error['file'];
         $e['line']    = $error['line'];
         $data         = explode('in '.$error['file'], $error['message']);
         $e['message'] = $data[0];
-        #$e['trace']     = debug_backtrace();
         # 获得错误上下文内容
         $source         = self::getSourceCode($e['file'], $e['line']);
 
@@ -125,6 +132,13 @@ class Error {
             if (stripos($source['source'][1], '# 开启调试模式则记录错误日志') === false) {
                 \x\Log::run($txt); 
             }
+        }
+
+        # 错误处理的生命周期回调
+        if ($service_type && $request && $response) {
+            $e['trace']     = debug_backtrace();
+            $obj = new \lifecycle\controller_error();
+            return $obj->run($request, $response, $service_type, $e, $txt, $source);
         }
 
         throw new \Exception($txt."\n");

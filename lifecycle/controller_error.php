@@ -1,0 +1,61 @@
+<?php
+// +----------------------------------------------------------------------
+// | 当应用层捕捉到错误时，系统回调处理的生命周期
+// +----------------------------------------------------------------------
+// | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: 小黄牛 <1731223728@qq.com>
+// +----------------------------------------------------------------------
+
+namespace lifecycle;
+
+class controller_error
+{
+    /**
+     * 接受回调处理
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.15
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $request 请求对象
+     * @param string $response 请求实例
+     * @param string $service_type SW的服务类型 http||websocket
+     * @param array $e 错误内容
+     * @param string $error 系统自定义错误描述
+     * @param array $source 错误上下文内容
+     * @return bool
+    */
+    public function run($request, $response, $service_type, $e, $error, $source) {
+        // HTTP请求
+        if ($service_type == 'http') {
+            // 开启调试模式则记录错误日志
+            if (\x\Config::run()->get('app.de_bug') == true) {
+                # 引入详细报错页面
+                $exceptionFile = ROOT_PATH.'/swoolex/tpl/error_test.php';
+            } else {
+                # 引入简单报错页面
+                $exceptionFile = ROOT_PATH.'/swoolex/tpl/error_formal.php';
+            }
+
+            // 引入文件
+            ob_start();
+            include_once $exceptionFile;
+            $html = ob_get_clean();
+
+            $obj = new \x\Controller();
+            $obj->setRequest($request);
+            $obj->setResponse($response);
+            $obj->fetch($html);
+        // websocket请求
+        } else {
+            $obj = new \x\WebSocket();
+            $obj->setServer($request);
+            $obj->setFrame($response);
+            $obj->fetch('route_error', 'error', $error);
+        }
+        return true;
+    }
+}

@@ -140,13 +140,22 @@ class Route
      * 容器注入
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.1 + 2020.07.08
+     * @version v1.1.5 + 2020.07.15
      * @deprecated 暂不启用
      * @global 无
      * @param array $route 被找到的路由
      * @return void
     */
     private function ico_injection($route) {
+        // 判断注入的请求对象类型
+        if ($this->service_type == 'http') {
+            $request = $this->request;
+            $response = $this->response;
+        } else {
+            $request = $this->server;
+            $response = $this->frame;
+        }
+
         $reflection = new \ReflectionClass($route['n']);
         $instance = $reflection->newInstance();
         $method = $reflection->getmethod($route['name']);
@@ -337,13 +346,10 @@ class Route
                         $ref = new \ReflectionClass($val['class']);
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
-                        if ($this->service_type == 'http') {
-                            $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        } else {
-                            $return = $in_method->invokeArgs($obj, [$this->server, $this->frame]);
-                        }
+
+                        $return = $in_method->invokeArgs($obj, [$request, $response]);
                         if ($return !== true) {
-                            throw new \Exception("Route：Father AopBefore Must have return value~");
+                            return $this->route_error('Father AopBefore');
                         }
                     break;
                     case 'AopAround': // 环绕操作
@@ -353,13 +359,10 @@ class Route
                         $ref = new \ReflectionClass($val['class']);
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
-                        if ($this->service_type == 'http') {
-                            $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        } else {
-                            $return = $in_method->invokeArgs($obj, [$this->server, $this->frame]);
-                        }
+                        
+                        $return = $in_method->invokeArgs($obj, [$request, $response]);
                         if ($return !== true) {
-                            throw new \Exception("Route：Father AopAround Must have return value~");
+                            return $this->route_error('Father AopAround');
                         }
                     break;
                     case 'AopThrows': // 异常操作
@@ -388,13 +391,10 @@ class Route
                         $ref = new \ReflectionClass($val['class']);
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
-                        if ($this->service_type == 'http') {
-                            $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        } else {
-                            $return = $in_method->invokeArgs($obj, [$this->server, $this->frame]);
-                        }
+                        
+                        $return = $in_method->invokeArgs($obj, [$request, $response]);
                         if ($return !== true) {
-                            throw new \Exception("Route：Own AopBefore Must have return value~");
+                            return $this->route_error('Own AopBefore');
                         }
                     break;
                     case 'AopAround': // 环绕操作
@@ -404,13 +404,10 @@ class Route
                         $ref = new \ReflectionClass($val['class']);
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
-                        if ($this->service_type == 'http') {
-                            $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        } else {
-                            $return = $in_method->invokeArgs($obj, [$this->server, $this->frame]);
-                        }
+                        
+                        $return = $in_method->invokeArgs($obj, [$request, $response]);
                         if ($return !== true) {
-                            throw new \Exception("Route：Own AopAround Must have return value~");
+                            return $this->route_error('Own AopAround');
                         }
                     break;
                     case 'AopThrows': // 异常操作
@@ -447,9 +444,9 @@ class Route
                     $status = true;
                 }
             }
+            
             if ($status == false) {
-                $fetch = $reflection->getmethod('fetch');
-                return $fetch->invokeArgs($instance, [\x\Lang::run()->get('route method error'), '500']);
+                return $this->route_error('Route Method');
             }
         }
         
@@ -463,25 +460,19 @@ class Route
                     $ref = new \ReflectionClass($father_AopThrows['class']);
                     $aop = $ref->newInstance(); 
                     $in_method = $ref->getmethod($father_AopThrows['function']); 
-                    if ($this->service_type == 'http') {
-                        $in_method->invokeArgs($aop, [$this->request, $this->response, $e]);
-                    } else {
-                        $in_method->invokeArgs($aop, [$this->server, $this->frame, $e]);
-                    }
+                    
+                    $in_method->invokeArgs($aop, [$request, $response, $e]);
                 }
                 if ($own_AopThrows) {
                     $ref = new \ReflectionClass($own_AopThrows['class']);
                     $aop = $ref->newInstance(); 
                     $in_method = $ref->getmethod($own_AopThrows['function']); 
-                    if ($this->service_type == 'http') {
-                        $in_method->invokeArgs($aop, [$this->request, $this->response, $e]);
-                    } else {
-                        $in_method->invokeArgs($aop, [$this->server, $this->frame, $e]);
-                    }
+
+                    $in_method->invokeArgs($aop, [$request, $response, $e]);
                 }
             }
         } else {
-            $method->invokeArgs($instance, []);
+            $method->invokeArgs($instance, []); 
         }
 
         # 循环注入父AOP事件
@@ -495,13 +486,10 @@ class Route
                         $ref = new \ReflectionClass($val['class']);
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
-                        if ($this->service_type == 'http') {
-                            $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        } else {
-                            $return  = $in_method->invokeArgs($obj, [$this->server, $this->frame]);
-                        }
+
+                        $return  = $in_method->invokeArgs($obj, [$request, $response]);
                         if ($return !== true) {
-                            throw new \Exception("Route：Father AopAround Must have return value~");
+                            return $this->route_error('Father AopAround');
                         }
                     break;
                     case 'AopAfter': // 后置操作
@@ -511,13 +499,10 @@ class Route
                         $ref = new \ReflectionClass($val['class']);
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
-                        if ($this->service_type == 'http') {
-                            $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        } else {
-                            $return  = $in_method->invokeArgs($obj, [$this->server, $this->frame]);
-                        }
+                        
+                        $return  = $in_method->invokeArgs($obj, [$request, $response]);
                         if ($return !== true) {
-                            throw new \Exception("Route：Father AopBefore Must have return value~");
+                            return $this->route_error('Father AopBefore');
                         }
                     break;
                 }
@@ -535,13 +520,10 @@ class Route
                         $ref = new \ReflectionClass($val['class']);
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
-                        if ($this->service_type == 'http') {
-                            $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        } else {
-                            $return  = $in_method->invokeArgs($obj, [$this->server, $this->frame]);
-                        }
+                        
+                        $return  = $in_method->invokeArgs($obj, [$request, $response]);
                         if ($return !== true) {
-                            throw new \Exception("Route：Own AopAround Must have return value~");
+                            return $this->route_error('Own AopAround');
                         }
                     break;
                     case 'AopAfter': // 后置操作
@@ -551,13 +533,10 @@ class Route
                         $ref = new \ReflectionClass($val['class']);
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
-                        if ($this->service_type == 'http') {
-                            $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        } else {
-                            $return  = $in_method->invokeArgs($obj, [$this->server, $this->frame]);
-                        }
+                        
+                        $return  = $in_method->invokeArgs($obj, [$request, $response]);
                         if ($return !== true) {
-                            throw new \Exception("Route：Father AopBefore Must have return value~");
+                            return $this->route_error('Own AopBefore');
                         }
                     break;
                 }
@@ -623,5 +602,29 @@ class Route
         } else {
             return $callback($request, $response, $this->service_type, $tips, $name, $status, $attach);
         }
+    }
+
+    /**
+     * 当其余注解检测失败时，回调的处理函数
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.15
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $status 错误事件状态码
+     * @return void
+    */
+    private function route_error($status) {
+        $obj = new \lifecycle\route_error();
+
+        // 判断注入的请求对象类型
+        if ($this->service_type == 'http') {
+            $request = $this->request;
+            $response = $this->response;
+        } else {
+            $request = $this->server;
+            $response = $this->frame;
+        }
+        return $obj->run($request, $response, $this->service_type, $status);
     }
 }

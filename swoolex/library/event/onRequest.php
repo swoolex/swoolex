@@ -42,7 +42,7 @@ class onRequest
      * 统一回调入口
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.1 + 2020.07.08
+     * @version v1.1.5 + 2020.07.15
      * @deprecated 暂不启用
      * @global 无
      * @param Swoole\Http\Request $request HTTP请求对象
@@ -50,6 +50,9 @@ class onRequest
      * @return void
     */
     public function run($request, $response) {
+        // 注册错误和异常处理机制
+        \x\Error::register('http', $request, $response);
+
         // 跨域配置设置
         if ($this->config['origin']) $response->header('Access-Control-Allow-Origin', $this->config['origin']); 
         if ($this->config['type']) $response->header('Content-Type', $this->config['type']); 

@@ -76,9 +76,14 @@ class Server
                 $this->service = new \Swoole\WebSocket\Server($config['host'], $config['port'], SWOOLE_PROCESS, $wss);
             break;
             case 'server':
+                // 注册错误和异常处理机制
+                \x\Error::register();
                 $this->service = new \Swoole\Server($config['host'], $config['port'], SWOOLE_PROCESS, $wss);
             break;
         }
+        // 启动类型写入配置项
+        \x\Config::run()->set('server.sw_service_type', $server);
+
         $this->config = $config;
         // 注入配置
         $this->service->set($set);

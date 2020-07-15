@@ -41,7 +41,7 @@ class Table
      * 初始化路由表
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.2 + 2020.06.12
+     * @version v1.1.6 + 2020.07.15
      * @deprecated 暂不启用
      * @global 无
      * @return void
@@ -56,6 +56,10 @@ class Table
         // websocket路由
         $list = $this->every_file(ROOT_PATH.'/app/socket');
         $this->add_list($list, $cutting, 'websocket');
+
+        // 新增生命周期回调事件
+        $obj = new \lifecycle\route_start();
+        $obj->run($this->route());
     }
 
     /**

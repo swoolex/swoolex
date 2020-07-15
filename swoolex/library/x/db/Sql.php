@@ -342,7 +342,9 @@ class Sql extends AbstractSql {
         $this->clean_up();
 
         if ($status && $this->debug==false) {
-            return $this->Db->query($sql);
+            $res = $this->Db->query($sql);
+            if ($res == false) return false;
+            return end($res);
         }
         return $sql;
     }

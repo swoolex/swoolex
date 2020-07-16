@@ -85,7 +85,7 @@ class Route
             // 先匹配出路由
             $route = \x\doc\Table::run()->get($request_uri, 'websocket');
         }
-        
+
         // 匹配不到
         if ($route == false) {
             if ($this->service_type == 'http') {
@@ -140,7 +140,7 @@ class Route
      * 容器注入
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.5 + 2020.07.15
+     * @version v1.1.8 + 2020.07.6
      * @deprecated 暂不启用
      * @global 无
      * @param array $route 被找到的路由
@@ -154,6 +154,25 @@ class Route
         } else {
             $request = $this->server;
             $response = $this->frame;
+        }
+
+        # 检测路由类型
+        $is_get = false;
+        $is_post = false;
+        if (isset($route['method'])) {
+            $http_type = explode('|', strtoupper($route['method']));
+            $status = false;
+            foreach ($http_type as $v) {
+                if ($v == $this->request->server['request_method']) {
+                    $status = true;
+                }
+                if ($v == 'GET') $is_get = true;
+                if ($v == 'POST') $is_post = true;
+            }
+            
+            if ($status == false) {
+                return $this->route_error('Route Method');
+            }
         }
 
         $reflection = new \ReflectionClass($route['n']);
@@ -171,8 +190,8 @@ class Route
 
         # 注解参数检测
         if (isset($route['own']['Param'])) {
-            $get_list = $this->request->get;
-            $post_list = $this->request->post;
+            if ($is_get) $get_list = $this->request->get;
+            if ($is_post) $post_list = $this->request->post;
 
             foreach ($route['own']['Param'] as $val) {
                 if (empty($val['name'])) continue;
@@ -187,9 +206,12 @@ class Route
                 $tips = $val['tips']??'';
 
                 // 先获取参数
-                $param = $get_list[$name]??'';
-                if (!$param) $param = $post_list[$name]??'';
-
+                $param = '';
+                if ($is_get) $param = $get_list[$name]??'';
+                if (empty($param)) {
+                    if ($is_post) $param = $post_list[$name]??'';
+                }
+                
                 // 参数预设
                 if (!empty($val['value']) && empty($param) && $param != '0') {
                     $param = $val['value'];
@@ -433,21 +455,6 @@ class Route
             $obj->invokeArgs($instance, [$this->server]);
             $obj = $reflection->getmethod('setFrame');
             $obj->invokeArgs($instance, [$this->frame]);
-        }
-        
-        # 检测路由类型
-        if (isset($route['method'])) {
-            $http_type = explode('|', strtoupper($route['method']));
-            $status = false;
-            foreach ($http_type as $v) {
-                if ($v == $this->request->server['request_method']) {
-                    $status = true;
-                }
-            }
-            
-            if ($status == false) {
-                return $this->route_error('Route Method');
-            }
         }
         
         # 载入控制器

@@ -12,11 +12,28 @@
 namespace x;
 
 class Error {
+    private static $instance = null; // 创建静态对象变量,用于存储唯一的对象实例  
+    private function __construct(){} // 私有化构造函数，防止外部调用
+    private function __clone(){}     // 私有化克隆函数，防止外部克隆对象
+
+    // swoole请求实例
+    private $data;
+
     /**
-     * 注册错误异常监听
+     * 实例化对象方法，供外部获得唯一的对象
+    */
+    public static function run(){
+        if (empty(self::$instance)) {
+            self::$instance = new Error();
+        }
+        return self::$instance;
+    }
+
+    /**
+     * 参数注入
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.5 + 2020.07.15
+     * @version v1.1.9 + 2020.07.17
      * @deprecated 暂不启用
      * @global 无
      * @param string $service_type SW的服务类型 http||websocket
@@ -24,11 +41,28 @@ class Error {
      * @param $request 请求对象
      * @return void
     */
-    public static function register($service_type=null, $request=null, $response=null) {
+    public function set($service_type=null, $request=null, $response=null) {
+        $this->data = [
+            'service_type' => $service_type, 
+            'request' => $request, 
+            'response' => $response
+        ];
+    }
+
+    /**
+     * 注册错误异常监听
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.15
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function register() {
         # 致命错误捕捉
-        register_shutdown_function('\x\Error::deadlyError', $service_type, $request, $response);
+        register_shutdown_function([\x\Error::run(), 'deadlyError']);
         # 异常捕捉
-    	set_error_handler('\x\Error::appError'); 
+    	set_error_handler([\x\Error::run(), 'appError']); 
     }
 
     /**
@@ -41,7 +75,7 @@ class Error {
      * @param int $errcontext 错误上下文
      * @return void
     */
-    public static function appError($errno, $errstr, $errfile, $errline, $errcontext) {
+    public function appError($errno, $errstr, $errfile, $errline, $errcontext) {
         $error = [];
         switch ($errno) {
             case E_ERROR:
@@ -60,14 +94,14 @@ class Error {
                 $error['line'] = $errline;
                 break;
         }
-        self::halt($error);
+        $this->halt($error);
     }
 
     /**
      * 致命异常错误捕捉
      * @return void
     */
-    public static function deadlyError($service_type=null, $request=null, $response=null) {
+    public function deadlyError() {
         if ($e = error_get_last()) {
             $error = [];
             switch($e['type']){
@@ -75,12 +109,12 @@ class Error {
               case E_PARSE:
               case E_CORE_ERROR:
               case E_COMPILE_ERROR:
-              case E_USER_ERROR:  
+              case E_USER_ERROR:
                 //ob_end_clean();
                 $error['message'] = $e['message'];
                 $error['file'] = $e['file'];
                 $error['line'] = $e['line'];
-                self::halt($error, $service_type, $request, $response);
+                $this->halt($error);
                 break;
             }
         }
@@ -93,7 +127,7 @@ class Error {
      * @param int $line 错误行数
      * @return array 错误文件内容
     */
-    protected static function getSourceCode($file, $line) {
+    protected function getSourceCode($file, $line) {
         $first = ($line - 9 > 0) ? $line - 9 : 1;
 
         try {
@@ -113,7 +147,7 @@ class Error {
      * @param mixed $error 错误
      * @return void
     */
-    public static function halt($error, $service_type=null, $request=null, $response=null) {
+    public function halt($error) {
         $e = [];
         # 获得错误信息
         $e['file']    = $error['file'];
@@ -121,7 +155,7 @@ class Error {
         $data         = explode('in '.$error['file'], $error['message']);
         $e['message'] = $data[0];
         # 获得错误上下文内容
-        $source         = self::getSourceCode($e['file'], $e['line']);
+        $source         = $this->getSourceCode($e['file'], $e['line']);
 
         $txt  = 'ThrowableError in：'.$e['file'].'，Line：'. $e['line'];
         $txt .= '行， 原因：'.nl2br(htmlentities($e['message']));
@@ -135,12 +169,14 @@ class Error {
         }
 
         # 错误处理的生命周期回调
-        if ($service_type && $request && $response) {
+        if (is_array($this->data)) {
             $e['trace']     = debug_backtrace();
             $obj = new \lifecycle\controller_error();
-            return $obj->run($request, $response, $service_type, $e, $txt, $source);
+            $obj->run($this->data['request'], $this->data['response'], $this->data['service_type'], $e, $txt, $source);
+            unset($obj);
+            return true;
         }
 
-        throw new \Exception($txt."\n");
+        return false;
     }
 }

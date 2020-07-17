@@ -12,7 +12,7 @@
 namespace x;
 
 // 框架当前版本
-define('VERSION', 'v1.1.8');
+define('VERSION', 'v1.1.9');
 // 项目根地址
 define('ROOT_PATH', dirname(__DIR__));
 // 缓存 && 日志根地址
@@ -23,6 +23,9 @@ require_once __DIR__.'/library/x/Loader.php';
 
 // 注册自动加载
 Loader::register();
+
+// 注册错误和异常处理机制
+\x\Error::run()->register();
 
 // 配置文件加载
 Config::run();

@@ -117,8 +117,7 @@ class Config
         if (is_null($key)) {
             return self::$config;
         } else if (strpos($key, '.') !== false) {
-            $array = explode('.', $key);
-            return self::loop_get(self::$config, $array);
+            return self::loop_get(self::$config, explode('.', $key));
         } else if (isset(self::$config[$key])) {
             return self::$config[$key];
         }
@@ -142,6 +141,8 @@ class Config
         if (!isset($array[1])) {
             $keys = $array[0];
             self::$config[$keys] = $val;
+            unset($keys);
+            unset($array);
             return true;
         }
 
@@ -150,6 +151,9 @@ class Config
             foreach ($list as $key=>$val) {
                 $config = array_merge(self::$config[$key], $val);
                 self::$config[$key] = $config;
+                unset($keys);
+                unset($array);
+                unset($config);
                 return true;
             }
         }

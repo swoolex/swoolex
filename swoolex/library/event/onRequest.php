@@ -50,8 +50,8 @@ class onRequest
      * @return void
     */
     public function run($request, $response) {
-        // 注册错误和异常处理机制
-        \x\Error::register('http', $request, $response);
+        // 错误和异常处理注入参数
+        \x\Error::run()->set('http', $request, $response);
 
         // 跨域配置设置
         if ($this->config['origin']) $response->header('Access-Control-Allow-Origin', $this->config['origin']); 

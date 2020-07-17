@@ -38,10 +38,10 @@ class annotate_param
         }
         // HTTP请求
         if ($service_type == 'http') {
-            $obj = new \x\Controller();
+            $obj = new \app\controller\SuperClass\DriverApi();
             $obj->setRequest($request);
             $obj->setResponse($response);
-            $obj->fetch($tips);
+            $obj->returnJson('-1', $tips);
         // websocket请求
         } else {
             $obj = new \x\WebSocket();

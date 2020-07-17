@@ -56,6 +56,7 @@ class controller_error
             $obj->setFrame($response);
             $obj->fetch('route_error', 'error', $error);
         }
+        unset($obj);
         return true;
     }
 }

@@ -41,6 +41,7 @@ class route_error
             $obj->setFrame($response);
             $obj->fetch('route_error', 'error', $tips);
         }
+        unset($obj);
         return true;
     }
 }

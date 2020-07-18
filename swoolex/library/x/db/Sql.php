@@ -470,6 +470,48 @@ class Sql extends AbstractSql {
         return rtrim($sql, ',').';';
     }
     /**
+     * 终结方法-新增
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.10 + 2020.07.17
+     * @deprecated 暂不启用
+     * @global 无
+     * @return bool|int
+    */
+    public function insertGetId($data) {
+
+        $sql = 'INSERT INTO';
+        $sql .= ' '.$this->table;
+
+        $field = ' (';
+        foreach ($data as $key=>$val) {
+            $field .= $key.',';
+        }
+        $sql .= rtrim($field, ',').')';
+
+        $sql .= ' VALUES ';
+        $field = '(';
+        foreach ($data as $val) {
+            $field .= $this->int_string($val).',';
+        }
+        $sql .= rtrim($field, ',').');';
+        
+        $this->clean_up();
+
+        if ($this->debug != false) {
+            return rtrim($sql, ',').';';
+        }
+
+        $res = $this->Db->query($sql);
+        if (!$res) return false;
+
+        $res = $this->Db->query('SELECT LAST_INSERT_ID() as num;');
+        if (!$res) return true;
+        
+        return $res[0]['num'];
+    }
+
+    /**
      * 自增
      * @todo 无
      * @author 小黄牛

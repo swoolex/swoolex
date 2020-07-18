@@ -213,19 +213,23 @@ class Route
                 }
                 
                 // 参数预设
-                if (!empty($val['value']) && empty($param) && $param != '0') {
+                if (isset($val['value']) && empty($param) && $param != '0') {
                     $param = $val['value'];
-                    $this->request->get[$name] = $val['value'];
-                    $this->request->post[$name] = $val['value'];
+                    if ($is_get) $this->request->get[$name] = $val['value'];
+                    if ($is_post) $this->request->post[$name] = $val['value'];
                 }
 
                 // 判断是否允许为空
                 $null = false;
-                if (!empty($val['empty']) && $val['empty'] == 'true') {
-                    $null = true;
+                if ($val['empty'] == 'true') {
+                    if (!isset($param)) {
+                        $null = true;
+                    } else if (trim($param) == '') {
+                        $null = true;
+                    }
                 }
                 // 不允许为空
-                if ($null && empty($param)) {
+                if ($null) {
                     // 中断
                     return $this->param_error_callback($callback, $tips, $name, 'NULL');
                 }
@@ -277,7 +281,7 @@ class Route
                 }
             }
         }
-        
+
         # 循环注入父容器
         if (isset($route['father'])) {
             foreach ($route['father'] as $key=>$val) {
@@ -369,7 +373,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
 
-                        $return = $in_method->invokeArgs($obj, [$request, $response]);
+                        $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
                         if ($return !== true) {
                             return $this->route_error('Father AopBefore');
                         }
@@ -382,7 +386,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         
-                        $return = $in_method->invokeArgs($obj, [$request, $response]);
+                        $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
                         if ($return !== true) {
                             return $this->route_error('Father AopAround');
                         }
@@ -414,7 +418,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         
-                        $return = $in_method->invokeArgs($obj, [$request, $response]);
+                        $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
                         if ($return !== true) {
                             return $this->route_error('Own AopBefore');
                         }
@@ -427,7 +431,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         
-                        $return = $in_method->invokeArgs($obj, [$request, $response]);
+                        $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
                         if ($return !== true) {
                             return $this->route_error('Own AopAround');
                         }
@@ -468,14 +472,14 @@ class Route
                     $aop = $ref->newInstance(); 
                     $in_method = $ref->getmethod($father_AopThrows['function']); 
                     
-                    $in_method->invokeArgs($aop, [$request, $response, $e]);
+                    $in_method->invokeArgs($aop, [$this->request, $this->response, $e]);
                 }
                 if ($own_AopThrows) {
                     $ref = new \ReflectionClass($own_AopThrows['class']);
                     $aop = $ref->newInstance(); 
                     $in_method = $ref->getmethod($own_AopThrows['function']); 
 
-                    $in_method->invokeArgs($aop, [$request, $response, $e]);
+                    $in_method->invokeArgs($aop, [$this->request, $this->response, $e]);
                 }
             }
         } else {
@@ -494,7 +498,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
 
-                        $return  = $in_method->invokeArgs($obj, [$request, $response]);
+                        $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
                         if ($return !== true) {
                             return $this->route_error('Father AopAround');
                         }
@@ -507,7 +511,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         
-                        $return  = $in_method->invokeArgs($obj, [$request, $response]);
+                        $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
                         if ($return !== true) {
                             return $this->route_error('Father AopBefore');
                         }
@@ -528,7 +532,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         
-                        $return  = $in_method->invokeArgs($obj, [$request, $response]);
+                        $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
                         if ($return !== true) {
                             return $this->route_error('Own AopAround');
                         }
@@ -541,7 +545,7 @@ class Route
                         $obj = $ref->newInstance(); 
                         $in_method = $ref->getmethod($val['function']); 
                         
-                        $return  = $in_method->invokeArgs($obj, [$request, $response]);
+                        $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
                         if ($return !== true) {
                             return $this->route_error('Own AopBefore');
                         }

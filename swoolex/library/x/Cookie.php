@@ -14,43 +14,6 @@ namespace x;
 class Cookie
 {
     /**
-     * 请求 
-    */
-    private static $setRequest;
-    /**
-     * 响应 
-    */
-    private static $setResponse;
-
-    /**
-     * 注入请求
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @param obj $setRequest
-     * @return void
-    */
-    public static function setRequest($setRequest) {
-        self::$setRequest = $setRequest;
-    }
-
-    /**
-     * 注入响应
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @param obj $setResponse
-     * @return void
-    */
-    public static function setResponse($setResponse) {
-        self::$setResponse = $setResponse;
-    }
-
-    /**
      * 是否存在
      * @todo 无
      * @author 小黄牛
@@ -61,8 +24,9 @@ class Cookie
      * @return bool
     */
     public static function has($key) {
+        $Request = \x\Container::getInstance()->get('request');
         $key = \x\Config::run()->get('app.cookies_prefix').$key;
-        if (isset(self::$setRequest->cookie[$key])) return true;
+        if (isset($Request->cookie[$key])) return true;
         
         return false;
     }
@@ -78,9 +42,10 @@ class Cookie
      * @return mixed
     */
     public static function get($key) {
+        $Request = \x\Container::getInstance()->get('request');
         $key = \x\Config::run()->get('app.cookies_prefix').$key;
-        if (isset(self::$setRequest->cookie[$key]) == false) return false;
-        return self::$setRequest->cookie[$key];
+        if (isset($Request->cookie[$key]) == false) return false;
+        return $Request->cookie[$key];
     }
 
     /**
@@ -102,7 +67,8 @@ class Cookie
             $time = $config['cookies_outtime'];
         }
         $time += time();
-        return self::$setResponse->cookie($key, $val, $time, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
+        $Response = \x\Container::getInstance()->get('response');
+        return $Response->cookie($key, $val, $time, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
     }
 
     /**
@@ -118,9 +84,12 @@ class Cookie
     public static function delete($key) {
         $config = \x\Config::run()->get('app');
         $key = $config['cookies_prefix'].$key;
-        if (isset(self::$setRequest->cookie[$key]) == false) return false;
+              
+        $Request = \x\Container::getInstance()->get('request');
+        $Response = \x\Container::getInstance()->get('response');
+        if (isset($Request->cookie[$key]) == false) return false;
         
-        return self::$setResponse->cookie($key, null, -1, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
+        return $Response->cookie($key, null, -1, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
     }
 
     /**
@@ -134,10 +103,13 @@ class Cookie
     */
     public static function clear() {
         $config = \x\Config::run()->get('app');
-        if (isset(self::$setRequest->cookie) == false) return false;
+        $Request = \x\Container::getInstance()->get('request');
+        $Response = \x\Container::getInstance()->get('response');
 
-        foreach (self::$setRequest->cookie as $key=>$val) {
-            self::$setResponse->cookie($key, null, -1, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
+        if (isset($Request->cookie) == false) return false;
+
+        foreach ($Request->cookie as $key=>$val) {
+            $Response->cookie($key, null, -1, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
         }
         
         return true;

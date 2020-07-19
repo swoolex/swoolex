@@ -17,19 +17,19 @@ class Demo
     //aop 都需要接收以下参数格式
 
     // 前置
-    public function before($request, $response) {
+    public function before() {
         return true;
     }
     // 后置
-    public function after($request, $response) {
+    public function after() {
         return true;
     }
     // 环绕
-    public function around($request, $response) {
+    public function around() {
         return true;
     }
     // 异常通知
-    public function throws($request, $response, $error) {
+    public function throws($error) {
 
     }
 

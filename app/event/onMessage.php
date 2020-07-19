@@ -29,7 +29,11 @@ class onMessage
      * @param Swoole\WebSocket\Frames $frame 状态信息
      * @return void
     */
-    public function run($server, $frame) {
+    public function run() {
+
+        $server = \x\Container::getInstance()->get('websocket_server');
+        $frame = \x\Container::getInstance()->get('websocket_frame');
+
         $this->server = $server;
 
     }

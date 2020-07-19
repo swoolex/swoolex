@@ -13,43 +13,6 @@ namespace x;
 
 class WebSocket
 {
-    /**
-     * server 
-    */
-    private $setServer;
-    /**
-     * frame 
-    */
-    private $setFrame;
-
-    /**
-     * 注入WS对象
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @param obj $setServer
-     * @return void
-    */
-    public function setServer($setServer) {
-        $this->setServer = $setServer;
-    }
-
-    /**
-     * 注入WS状态
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @param obj $setFrame
-     * @return void
-    */
-    public function setFrame($setFrame) {
-        $this->setFrame = $setFrame;
-    }
-    
     /** 
      * AES加密方法，对数据进行加密，返回加密后的数据 
      * @param string $data 要加密的数据 
@@ -104,7 +67,7 @@ class WebSocket
      * @return void
     */
     public function fetch($action, $msg='success', $data=[], $fd=null) {
-        if (!$fd) $fd = $this->setFrame->fd;
+        if (!$fd) $fd = $websocket_frame->fd;
         $config = \x\Config::run()->get('websocket');
         $array = [
             'action' => $action,
@@ -119,7 +82,7 @@ class WebSocket
         }
 
         try {
-            $ret = $this->setServer->push($fd, $content);
+            $ret = $websocket_server->push($fd, $content);
             return $ret;
         } catch (\Exception $e) {
             return false;

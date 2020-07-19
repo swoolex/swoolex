@@ -16,9 +16,6 @@ class Error {
     private function __construct(){} // 私有化构造函数，防止外部调用
     private function __clone(){}     // 私有化克隆函数，防止外部克隆对象
 
-    // swoole请求实例
-    private $data;
-
     /**
      * 实例化对象方法，供外部获得唯一的对象
     */
@@ -27,26 +24,6 @@ class Error {
             self::$instance = new Error();
         }
         return self::$instance;
-    }
-
-    /**
-     * 参数注入
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.9 + 2020.07.17
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $service_type SW的服务类型 http||websocket
-     * @param $request 请求对象
-     * @param $request 请求对象
-     * @return void
-    */
-    public function set($service_type=null, $request=null, $response=null) {
-        $this->data = [
-            'service_type' => $service_type, 
-            'request' => $request, 
-            'response' => $response
-        ];
     }
 
     /**
@@ -154,8 +131,9 @@ class Error {
         $e['line']    = $error['line'];
         $data         = explode('in '.$error['file'], $error['message']);
         $e['message'] = $data[0];
+        $e['trace']   = debug_backtrace();
         # 获得错误上下文内容
-        $source         = $this->getSourceCode($e['file'], $e['line']);
+        $source       = $this->getSourceCode($e['file'], $e['line']);
 
         $txt  = 'ThrowableError in：'.$e['file'].'，Line：'. $e['line'];
         $txt .= '行， 原因：'.nl2br(htmlentities($e['message']));
@@ -169,13 +147,9 @@ class Error {
         }
 
         # 错误处理的生命周期回调
-        if (is_array($this->data)) {
-            $e['trace']     = debug_backtrace();
-            $obj = new \lifecycle\controller_error();
-            $obj->run($this->data['request'], $this->data['response'], $this->data['service_type'], $e, $txt, $source);
-            unset($obj);
-            return true;
-        }
+        $obj = new \lifecycle\controller_error();
+        $obj->run($e, $txt, $source);
+        unset($obj);
 
         return false;
     }

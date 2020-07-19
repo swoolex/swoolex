@@ -32,7 +32,7 @@ class onClose
     */
     public function run($server, $fd, $reactorId) {
         $this->server = $server;
-        
+
         // 调用二次转发，不做重载
         $on = new \app\event\onClose;
         $on->run($server, $fd, $reactorId);

@@ -20,17 +20,14 @@ class controller_error
      * @version v1.1.5 + 2020.07.15
      * @deprecated 暂不启用
      * @global 无
-     * @param string $request 请求对象
-     * @param string $response 请求实例
-     * @param string $service_type SW的服务类型 http||websocket
      * @param array $e 错误内容
      * @param string $error 系统自定义错误描述
      * @param array $source 错误上下文内容
      * @return bool
     */
-    public function run($request, $response, $service_type, $e, $error, $source) {
+    public function run($e, $error, $source) {
         // HTTP请求
-        if ($service_type == 'http') {
+        if (\x\Container::getInstance()->get('request')) {
             // 开启调试模式则记录错误日志
             if (\x\Config::run()->get('app.de_bug') == true) {
                 # 引入详细报错页面
@@ -46,14 +43,10 @@ class controller_error
             $html = ob_get_clean();
 
             $obj = new \x\Controller();
-            $obj->setRequest($request);
-            $obj->setResponse($response);
             $obj->fetch($html);
         // websocket请求
         } else {
             $obj = new \x\WebSocket();
-            $obj->setServer($request);
-            $obj->setFrame($response);
             $obj->fetch('route_error', 'error', $error);
         }
         unset($obj);

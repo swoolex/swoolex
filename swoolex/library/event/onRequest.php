@@ -50,8 +50,7 @@ class onRequest
      * @return void
     */
     public function run($request, $response) {
-        // 错误和异常处理注入参数
-        \x\Error::run()->set('http', $request, $response);
+        // echo 'memory:' . (memory_get_usage() / 1024) .'KB'. PHP_EOL;  
 
         // 跨域配置设置
         if ($this->config['origin']) $response->header('Access-Control-Allow-Origin', $this->config['origin']); 
@@ -67,13 +66,20 @@ class onRequest
             return $response->end();
         }
 
+        // 请求注入容器
+        \x\Container::getInstance()->set('request', $request);
+        \x\Container::getInstance()->set('response', $response);
+
         # 开始转发路由
-        $obj = new \x\Route($request, $response);
+        $obj = new \x\Route();
         $obj->start();
 
         // 调用二次转发，不做重载
         $on = new \app\event\onRequest($this->server, $this->config);
-        $on->run($request, $response);
+        $on->run();
+        
+        // 销毁整个请求级容器
+        \x\Container::getInstance()->clear();
     }
 }
 

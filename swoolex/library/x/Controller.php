@@ -14,14 +14,6 @@ namespace x;
 class Controller
 {
     /**
-     * 请求 
-    */
-    private $setRequest;
-    /**
-     * 响应 
-    */
-    private $setResponse;
-    /**
      * 表单
     */
     private $file;
@@ -47,34 +39,6 @@ class Controller
     private $view;
 
     /**
-     * 注入请求
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @param obj $setRequest
-     * @return void
-    */
-    public final function setRequest($setRequest) {
-        $this->setRequest = $setRequest;
-    }
-
-    /**
-     * 注入响应
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @param obj $setRequest
-     * @return void
-    */
-    public final function setResponse($setResponse) {
-        $this->setResponse = $setResponse;
-    }
-
-    /**
      * 输出内容到页面
      * @todo 无
      * @author 小黄牛
@@ -87,8 +51,9 @@ class Controller
     */
     public final function fetch($string, $status=200) {
         try {
-            $this->setResponse->status($status);
-            return $this->setResponse->end($string);
+            $Response = \x\Container::getInstance()->get('response');
+            $Response->status($status);
+            return $Response->end($string);
         } catch (\Exception $e) {
             return false;
         }
@@ -122,107 +87,25 @@ class Controller
     */
     public final function view($view=null) {
         if (!$view) {
-            $array = explode(\x\Config::run()->get('route.suffix'), $this->setRequest->server['request_uri']);
+            $Request = \x\Container::getInstance()->get('request');
+            $array = explode(\x\Config::run()->get('route.suffix'), $Request->server['request_uri']);
             $view = ltrim($array[0], '/');
         }
 
         $this->is_view();
         # 调用视图类
         ob_start();
-        $this->view->setRequest = $this->setRequest;
-        $this->view->setResponse = $this->setResponse;
         $ret = $this->view->display($view);
         if ($ret) {
             try {
+                $Response = \x\Container::getInstance()->get('response');
                 $content = ob_get_clean();
-                $this->setResponse->status(200);
-                return $this->setResponse->end($content);
+                $Response->status(200);
+                return $Response->end($content);
             } catch (\Exception $e) {
                 return false;
             }
         }
-        return false;
-    }
-
-    /**
-     * 获取请求信息
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return array
-    */
-    public final function request() {
-        return $this->setRequest;
-    }
-
-    /**
-     * 获取请求头
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return array
-    */
-    public final function header() {
-        return $this->setRequest->header;
-    }
-
-    /**
-     * 获取get参数
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
-    */
-    public final function get() {
-        return $this->setRequest->get;
-    }
-
-    /**
-     * 获取post参数
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
-    */
-    public final function post() {
-        return $this->setRequest->post;
-    }
-
-    /**
-     * 判断是否GET请求
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
-    */
-    public final function is_get() {
-        $request = $this->request();
-        if ($request->server['request_method'] == 'GET') return true;
-        return false;
-    }
-
-    /**
-     * 判断是否POST请求
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
-    */
-    public final function is_post() {
-        $request = $this->request();
-        if ($request->server['request_method'] == 'POST') return true;
         return false;
     }
 
@@ -241,117 +124,6 @@ class Controller
     public final function redirect($url, $status=301, $data=[]) {
         $url = $this->get_url($url, $data);
         return $this->setResponse->redirect($url, $status);
-    }
-
-    /**
-     * 是否使用SSL
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
-     * @return bool
-    */
-    public final function is_ssl() {
-        if (\x\Config::run()->get('server.ssl_cert_file') && \x\Config::run()->get('server.ssl_key_file')) return true;
-        return false;
-    }
-
-    /**
-     * 获取客户端真实IP
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
-     * @return string|false
-    */
-    public final function ip() {
-        if (!empty($this->setRequest->header['x-real-ip'])) {
-            return $this->setRequest->header['x-real-ip'];
-        }
-        if (!empty($this->setRequest->server['remote_addr'])) {
-            return $this->setRequest->server['remote_addr'];
-        }
-        return false;
-    }
-
-    /**
-     * 获取当前域名
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
-    */
-    public final function domain() {
-        $ret = 'http';
-        if ($this->is_ssl()) {
-            $ret = 'https';
-        }
-        return $ret.'://'.$this->setRequest->header['host'];
-    }
-
-    /**
-     * 获取当前请求路由
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
-    */
-    public final function route() {
-        if (!empty($this->setRequest->server['path_info'])) {
-            return $this->setRequest->server['path_info'];
-        }
-        if (!empty($this->setRequest->server['request_uri'])) {
-            return $this->setRequest->server['request_uri'];
-        }
-        return false;
-    }
-
-    /**
-     * 获取完整URL
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
-     * @param bool $status 是否带域名
-     * @return string|false
-    */
-    public final function url($status=false) {
-        $ret = '';
-        if ($status) {
-            $ret = $this->domain();
-        }
-        return $ret.$this->route();
-    }
-    
-    /**
-     * 获取完整URL，带get参数
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
-     * @param bool $status 是否带域名
-     * @return string|false
-    */
-    public final function baseUrl($status=false) {
-        $ret = '';
-        if ($status) {
-            $ret = $this->domain();
-        }
-        $ret .= $this->route();
-        
-        if (!empty($this->setRequest->server['query_string'])) {
-            $ret .= '?'.$this->setRequest->server['query_string'];
-        }
-        
-        return $ret;
     }
 
     /**
@@ -405,11 +177,12 @@ class Controller
 
         $file_data = $this->file;
         if (is_array($this->file) == false) {
-            if (isset($this->setRequest->files[$this->file]) == false) {
+            $Request = \x\Container::getInstance()->get('request');
+            if (isset($Request->files[$this->file]) == false) {
                 $this->file_error = 'Form does not exist';
                 return false;
             }
-            $file_data = $this->setRequest->files[$this->file];
+            $file_data = $Request->files[$this->file];
         }
 
         if ($file_data['size'] > $config['size']) {
@@ -537,11 +310,11 @@ class Controller
 	 * @param int $num 验证码使用模式 默认为英数混合 1英数混合 2数字运算
 	 * @param string $session 验证码的seesion名
 	 * @param array $type 验证码属性
-	 * @param swool\response
 	 * @return bool
 	*/
 	public final function verify($num=1, $session=null, $type=null) {
-        \x\Verify::entry($num, $session, $type, $this->setResponse);
+        $Response = \x\Container::getInstance()->get('response');
+        \x\Verify::entry($num, $session, $type, $Response);
     }
 
     /**
@@ -572,7 +345,7 @@ class Controller
     */
     private final function get_url($url, $data) {
         if (strpos($url, '//') === false) {
-            $header = $this->header();
+            $header = \x\Request::header();
             $url = '//'.$header['host'].'/'.ltrim($url, '/').\x\Config::run()->get('route.suffix');
         }
         if (count($data)) {

@@ -22,45 +22,9 @@ class Session
     */
     private static $session_outtime;
     /**
-     * 请求 
-    */
-    private static $setRequest;
-    /**
-     * 响应 
-    */
-    private static $setResponse;
-    /**
      * SessionID
     */
     private static $session_id;
-
-    /**
-     * 注入请求
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @param obj $setRequest
-     * @return void
-    */
-    public static function setRequest($setRequest) {
-        self::$setRequest = $setRequest;
-    }
-
-    /**
-     * 注入响应
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @param obj $setResponse
-     * @return void
-    */
-    public static function setResponse($setResponse) {
-        self::$setResponse = $setResponse;
-    }
 
     /**
      * 是否存在
@@ -195,7 +159,8 @@ class Session
      * @return void
     */
     private static function config() {
-        self::$session_id = self::$setRequest->cookie['PHPSESSID'];
+        $Request = \x\Container::getInstance()->get('request');
+        self::$session_id = $Request->cookie['PHPSESSID'];
         self::$session_prefix = \x\Config::run()->get('app.session_prefix');
         self::$session_outtime = \x\Config::run()->get('app.session_outtime');
     }

@@ -14,73 +14,29 @@ namespace x;
 class Route
 {
     /**
-     * WEBSOCKET-server
-    */
-    private $server;
-    /**
-     * frame
-    */
-    private $frame;
-    /**
-     * WEBSOCKET-HTTP请求对象
-    */
-    private $request;
-    /**
-     * HTTP响应对象
-    */
-    private $response;
-    /**
-     * 服务类型
-    */
-    private $service_type;
-    /**
      * SessionID名
     */
     private $session_name = 'PHPSESSID';
-
-    /**
-     * 接收HTTP请求参数
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
-     * @param Swoole\Http\Request $request HTTP请求对象
-     * @param Swoole\Http\Response $response HTTP响应对象
-     * @param Swoole\WebSocket\Server $server
-     * @param Swoole\WebSocket\Frames $frame 状态信息
-     * @return void
-    */
-    public function __construct($request, $response, $server=null, $frame=null) {
-        $this->request = $request;
-        $this->response = $response;
-        $this->server = $server;
-        $this->frame = $frame;
-
-        if ($server) {
-            $this->service_type = 'websocket';
-        } else {
-            $this->service_type = 'http';
-        }
-    }
     
     /**
      * 启动项
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.1 + 2020.07.08
+     * @version v1.2.1 + 2020.07.18
      * @deprecated 暂不启用
      * @global 无
      * @return App
     */
     public function start(){
-        if ($this->service_type == 'http') {
+        // 获取容器
+        $request = \x\Container::getInstance()->get('request');
+        if ($request) {
             $pattern = Config::run()->get('route.pattern');
-            $request_uri = $this->format($this->request->server['request_uri']);
+            $request_uri = $this->format($request->server['request_uri']);
             // 先匹配出路由
             $route = \x\doc\Table::run()->get($request_uri, 'http');
         } else {
-            $data = \x\WebSocket::get_data($this->frame->data);
+            $data = \x\WebSocket::get_data();
             $request_uri = $data['action'];
             // 先匹配出路由
             $route = \x\doc\Table::run()->get($request_uri, 'websocket');
@@ -88,14 +44,10 @@ class Route
 
         // 匹配不到
         if ($route == false) {
-            if ($this->service_type == 'http') {
+            if ($request) {
                 // 实例化基类控制器
                 $controller = new \x\Controller();
-                $controller->setRequest($this->request);
-                $controller->setResponse($this->response);
-
                 $class = \x\Config::run()->get('route.error_class');
-                
                 // 系统404
                 if (\x\Config::run()->get('route.404') == false || empty($class)) {
                     $controller->fetch(\x\Lang::run()->get('route path error'), '404');
@@ -105,13 +57,11 @@ class Route
                 }
             } else {
                 $obj = new \x\WebSocket();
-                $obj->setServer($this->server);
-                $obj->setFrame($this->frame);
                 $obj->fetch('error', '500', $request_uri.' 路由不存在~~');
             }
         } else {
             // 开始解析路由
-            if ($this->service_type == 'http') {
+            if ($request) {
                 $this->session();
             }
             $this->ico_injection($route);
@@ -128,12 +78,20 @@ class Route
      * @return void
     */
     private function session() {
-        if (!isset($this->request->cookie[$this->session_name])) {
+        // 获取容器
+        $request = \x\Container::getInstance()->get('request');
+        $response = \x\Container::getInstance()->get('response');
+
+        if (!isset($request->cookie[$this->session_name])) {
             $config = \x\Config::run()->get('app');
             $session_id = session_create_id();
-            $this->request->cookie[$this->session_name] = $session_id;
-            $this->response->cookie($this->session_name, $session_id, 0, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
+            $request->cookie[$this->session_name] = $session_id;
+            $response->cookie($this->session_name, $session_id, 0, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
         }
+
+        // 更新容器
+        \x\Container::getInstance()->set('request', $request);
+        \x\Container::getInstance()->set('response', $response);
     }
 
     /**
@@ -147,412 +105,35 @@ class Route
      * @return void
     */
     private function ico_injection($route) {
-        // 判断注入的请求对象类型
-        if ($this->service_type == 'http') {
-            $request = $this->request;
-            $response = $this->response;
-        } else {
-            $request = $this->server;
-            $response = $this->frame;
-        }
-
-        # 检测路由类型
-        $is_get = false;
-        $is_post = false;
-        if (isset($route['method'])) {
-            $http_type = explode('|', strtoupper($route['method']));
-            $status = false;
-            foreach ($http_type as $v) {
-                if ($v == $this->request->server['request_method']) {
-                    $status = true;
-                }
-                if ($v == 'GET') $is_get = true;
-                if ($v == 'POST') $is_post = true;
-            }
-            
-            if ($status == false) {
-                return $this->route_error('Route Method');
-            }
-        }
-
+        // 实例化控制器
         $reflection = new \ReflectionClass($route['n']);
-        $instance = $reflection->newInstance();
-        $method = $reflection->getmethod($route['name']);
+        \x\Container::getInstance()->set('controller_instance', $reflection->newInstance());
+        \x\Container::getInstance()->set('controller_method', $reflection->getmethod($route['name']));
+        // 注册注解类
 
-        if ($this->service_type == 'http') {
-            # 注入Cookies
-            \x\Cookie::setRequest($this->request);
-            \x\Cookie::setResponse($this->response);
-            # 注入Session
-            \x\Session::setRequest($this->request);
-            \x\Session::setResponse($this->response);
-        }
+        // 参数过滤
+        $ret = (new \x\doc\lable\Param())->run($route);
+        if ($ret !== true) return $ret;
+        // 容器
+        $ret = (new \x\doc\lable\Ioc())->run($route);
+        if ($ret !== true) return $ret;
+        // 前置操作
+        $ret = (new \x\doc\lable\AopBefore())->run($route);
+        if ($ret !== true) return $ret;
+        // 环绕操作
+        $ret = (new \x\doc\lable\AopAround())->run($route);
+        if ($ret !== true) return $ret;
+        // 异常操作 - 在这里触发控制器
+        $ret = (new \x\doc\lable\AopThrows())->run($route);
+        if ($ret !== true) return $ret;
+        // 环绕操作
+        $ret = (new \x\doc\lable\AopAround())->run($route, 2);
+        if ($ret !== true) return $ret;
+        // 后置操作
+        $ret = (new \x\doc\lable\AopAfter())->run($route);
+        if ($ret !== true) return $ret;
 
-        # 注解参数检测
-        if (isset($route['own']['Param'])) {
-            if ($is_get) $get_list = $this->request->get;
-            if ($is_post) $post_list = $this->request->post;
-
-            foreach ($route['own']['Param'] as $val) {
-                if (empty($val['name'])) continue;
-                $name = $val['name'];
-                // 获取回调事件名称
-                $callback = '';
-                if (!empty($val['callback'])) {
-                    $callback = $val['callback'];
-                }
-
-                // 提示内容
-                $tips = $val['tips']??'';
-
-                // 先获取参数
-                $param = '';
-                if ($is_get) $param = $get_list[$name]??'';
-                if (empty($param)) {
-                    if ($is_post) $param = $post_list[$name]??'';
-                }
-                
-                // 参数预设
-                if (isset($val['value']) && empty($param) && $param != '0') {
-                    $param = $val['value'];
-                    if ($is_get) $this->request->get[$name] = $val['value'];
-                    if ($is_post) $this->request->post[$name] = $val['value'];
-                }
-
-                // 判断是否允许为空
-                $null = false;
-                if ($val['empty'] == 'true') {
-                    if (!isset($param)) {
-                        $null = true;
-                    } else if (trim($param) == '') {
-                        $null = true;
-                    }
-                }
-                // 不允许为空
-                if ($null) {
-                    // 中断
-                    return $this->param_error_callback($callback, $tips, $name, 'NULL');
-                }
-
-                // 类型判断
-                if (!empty($val['type']) && !empty($param)) {
-                    $param_type = explode('|', $val['type']);
-                    $param_status = false;
-                    $attach = '';
-                    foreach ($param_type as $v) {
-                        $is = 'is_'.$v;
-                        if ($is($param)) {
-                            $param_status = true;
-                        } else {
-                            $attach .= $is.'、';
-                        }
-                    }
-                    // 全都没通过
-                    if ($param_status === false) {
-                        // 中断
-                        return $this->param_error_callback($callback, $tips, $name, 'TYPE', rtrim($attach, '、'));
-                    }
-                }
-
-                // 长度判断
-                $chinese = false;
-                if (!empty($val['chinese']) && $val['chinese'] == 'true') {
-                    $chinese = true;
-                }
-                if ($chinese) {
-                    $length = mb_strlen($param, 'UTF8'); 
-                } else {
-                    $length = strlen($param); 
-                }
-                // 最小长度判断
-                if (!empty($val['min']) && $val['min'] > $length) {
-                    // 中断
-                    return $this->param_error_callback($callback, $tips, $name, 'MIN');
-                }
-                // 最大长度判断
-                if (!empty($val['max']) && $val['max'] < $length) {
-                    // 中断
-                    return $this->param_error_callback($callback, $tips, $name, 'MAX');
-                }
-                // 正则判断regular
-                if (!empty($val['regular']) && !preg_match($val['regular'], $param)) {
-                    // 中断
-                    return $this->param_error_callback($callback, $tips, $name, 'REGULAR', $val['regular']);
-                }
-            }
-        }
-
-        # 循环注入父容器
-        if (isset($route['father'])) {
-            foreach ($route['father'] as $key=>$val) {
-                if ($key == 'Ioc') {
-                    unset($route['father'][$key]);
-
-                    foreach ($val as $v) {
-                        $args = [];
-                        if (!empty($v['args'])) {
-                            $args = $v['args'];
-                        }
-
-                        $name = $v['name'];
-                        $in_reflection = new \ReflectionClass($v['class']);
-                        $obj = $in_reflection->newInstance(); 
-
-                        # 动态属性注入
-                        if (!$method->isStatic()) {
-                            if (!empty($v['function'])) {
-                                $in_method = $in_reflection->getmethod($v['function']);
-                                $instance->$name = $in_method->invokeArgs($obj, $args);
-                            } else {
-                                $instance->$name = $obj;
-                            }
-                        # 静态属性注入
-                        } else {
-                            if (!empty($v['function'])) {
-                                $in_method = $in_reflection->getmethod($value['function']);
-                                $reflection->setStaticPropertyValue($name, $in_method->invokeArgs($obj, $args));
-                            } else {
-                                $reflection->setStaticPropertyValue($name, $obj);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        # 循环注入子注解
-        if (isset($route['own'])) {
-            foreach ($route['own'] as $key=>$val) {
-                if ($key == 'Ioc') {
-                    unset($route['own'][$key]);
-
-                    foreach ($val as $v) {
-                        $args = [];
-                        if (!empty($v['args'])) {
-                            $args = $v['args'];
-                        }
-
-                        $name = $v['name'];
-                        $in_reflection = new \ReflectionClass($v['class']);
-                        $obj = $in_reflection->newInstance(); 
-
-                        # 动态属性注入
-                        if (!$method->isStatic()) {
-                            if (!empty($v['function'])) {
-                                $in_method = $in_reflection->getmethod($v['function']);
-                                $instance->$name = $in_method->invokeArgs($obj, $args);
-                            } else {
-                                $instance->$name = $obj;
-                            }
-                        # 静态属性注入
-                        } else {
-                            if (!empty($v['function'])) {
-                                $in_method = $in_reflection->getmethod($value['function']);
-                                $reflection->setStaticPropertyValue($name, $in_method->invokeArgs($obj, $args));
-                            } else {
-                                $reflection->setStaticPropertyValue($name, $obj);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        # 循环注入父AOP事件
-        $father_AopThrows = '';
-        if (isset($route['father'])) {
-            foreach ($route['father'] as $key=>$val) {
-                switch ($key) {
-                    case 'AopBefore': // 前置操作
-                        unset($route['father'][$key]);
-                        
-                        if (empty($val['class'])) break;
-                        if (empty($val['function'])) $val['function'] = 'run';
-
-                        $ref = new \ReflectionClass($val['class']);
-                        $obj = $ref->newInstance(); 
-                        $in_method = $ref->getmethod($val['function']); 
-
-                        $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if ($return !== true) {
-                            return $this->route_error('Father AopBefore');
-                        }
-                    break;
-                    case 'AopAround': // 环绕操作
-                        if (empty($val['class'])) break;
-                        if (empty($val['function'])) $val['function'] = 'run';
-
-                        $ref = new \ReflectionClass($val['class']);
-                        $obj = $ref->newInstance(); 
-                        $in_method = $ref->getmethod($val['function']); 
-                        
-                        $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if ($return !== true) {
-                            return $this->route_error('Father AopAround');
-                        }
-                    break;
-                    case 'AopThrows': // 异常操作
-                        unset($route['father'][$key]);
-
-                        if (empty($val['class'])) break;
-                        if (empty($val['function'])) $val['function'] = 'run';
-
-                        $father_AopThrows = $val;
-                    break;
-                }
-            }
-        }
-        
-        # 循环注入子AOP事件
-        $own_AopThrows = '';
-        if (isset($route['own'])) {
-            foreach ($route['own'] as $key=>$val) {
-                switch ($key) {
-                    case 'AopBefore': // 前置操作
-                        unset($route['own'][$key]);
-
-                        if (empty($val['class'])) break;
-                        if (empty($val['function'])) $val['function'] = 'run';
-
-                        $ref = new \ReflectionClass($val['class']);
-                        $obj = $ref->newInstance(); 
-                        $in_method = $ref->getmethod($val['function']); 
-                        
-                        $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if ($return !== true) {
-                            return $this->route_error('Own AopBefore');
-                        }
-                    break;
-                    case 'AopAround': // 环绕操作
-                        if (empty($val['class'])) break;
-                        if (empty($val['function'])) $val['function'] = 'run';
-
-                        $ref = new \ReflectionClass($val['class']);
-                        $obj = $ref->newInstance(); 
-                        $in_method = $ref->getmethod($val['function']); 
-                        
-                        $return = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if ($return !== true) {
-                            return $this->route_error('Own AopAround');
-                        }
-                    break;
-                    case 'AopThrows': // 异常操作
-                        unset($route['own'][$key]);
-
-                        if (empty($val['class'])) break;
-                        if (empty($val['function'])) $val['function'] = 'run';
-
-                        $own_AopThrows = $val;
-                    break;
-                }
-            }
-        }
-
-        # 先注入请求和响应
-        if ($this->service_type == 'http') {
-            $obj = $reflection->getmethod('setRequest');
-            $obj->invokeArgs($instance, [$this->request]);
-            $obj = $reflection->getmethod('setResponse');
-            $obj->invokeArgs($instance, [$this->response]);
-        } else {
-            $obj = $reflection->getmethod('setServer');
-            $obj->invokeArgs($instance, [$this->server]);
-            $obj = $reflection->getmethod('setFrame');
-            $obj->invokeArgs($instance, [$this->frame]);
-        }
-        
-        # 载入控制器
-        if ($father_AopThrows || $own_AopThrows) {
-            try{
-                $method->invokeArgs($instance, []);
-            } catch(\Exception $e) {
-                // 开始异常通知
-                if ($father_AopThrows) {
-                    $ref = new \ReflectionClass($father_AopThrows['class']);
-                    $aop = $ref->newInstance(); 
-                    $in_method = $ref->getmethod($father_AopThrows['function']); 
-                    
-                    $in_method->invokeArgs($aop, [$this->request, $this->response, $e]);
-                }
-                if ($own_AopThrows) {
-                    $ref = new \ReflectionClass($own_AopThrows['class']);
-                    $aop = $ref->newInstance(); 
-                    $in_method = $ref->getmethod($own_AopThrows['function']); 
-
-                    $in_method->invokeArgs($aop, [$this->request, $this->response, $e]);
-                }
-            }
-        } else {
-            $method->invokeArgs($instance, []); 
-        }
-
-        # 循环注入父AOP事件
-        if (isset($route['father'])) {
-            foreach ($route['father'] as $key=>$val) {
-                switch ($key) {
-                    case 'AopAround': // 环绕操作
-                        if (empty($val['class'])) break;
-                        if (empty($val['function'])) $val['function'] = 'run';
-
-                        $ref = new \ReflectionClass($val['class']);
-                        $obj = $ref->newInstance(); 
-                        $in_method = $ref->getmethod($val['function']); 
-
-                        $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if ($return !== true) {
-                            return $this->route_error('Father AopAround');
-                        }
-                    break;
-                    case 'AopAfter': // 后置操作
-                        if (empty($val['class'])) break;
-                        if (empty($val['function'])) $val['function'] = 'run';
-
-                        $ref = new \ReflectionClass($val['class']);
-                        $obj = $ref->newInstance(); 
-                        $in_method = $ref->getmethod($val['function']); 
-                        
-                        $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if ($return !== true) {
-                            return $this->route_error('Father AopBefore');
-                        }
-                    break;
-                }
-            }
-        }
-
-        # 循环注入子AOP事件
-        if (isset($route['own'])) {
-            foreach ($route['own'] as $key=>$val) {
-                switch ($key) {
-                    case 'AopAround': // 环绕操作
-                        if (empty($val['class'])) break;
-                        if (empty($val['function'])) $val['function'] = 'run';
-
-                        $ref = new \ReflectionClass($val['class']);
-                        $obj = $ref->newInstance(); 
-                        $in_method = $ref->getmethod($val['function']); 
-                        
-                        $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if ($return !== true) {
-                            return $this->route_error('Own AopAround');
-                        }
-                    break;
-                    case 'AopAfter': // 后置操作
-                        if (empty($val['class'])) break;
-                        if (empty($val['function'])) $val['function'] = 'run';
-
-                        $ref = new \ReflectionClass($val['class']);
-                        $obj = $ref->newInstance(); 
-                        $in_method = $ref->getmethod($val['function']); 
-                        
-                        $return  = $in_method->invokeArgs($obj, [$this->request, $this->response]);
-                        if ($return !== true) {
-                            return $this->route_error('Own AopBefore');
-                        }
-                    break;
-                }
-            }
-        }
+        return false;
     }
 
     /**
@@ -577,65 +158,5 @@ class Route
             $url = '/';
         }
         return $url;
-    }
-
-    /**
-     * 当注解Param检测失败时，回调的处理函数
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.4 + 2020.07.12
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $callback 回调事件
-     * @param string $tips 自定义提示内容
-     * @param string $name 参数名称
-     * @param string $status 错误事件状态码
-     * @param string $attach 错误检测返回附加说明
-     * @return void
-    */
-    private function param_error_callback($callback, $tips, $name, $status, $attach=null) {
-        // 如果不定义回调事件，则启用系统的生命周期回调处理
-        if (empty($callback)) {
-            $callback = '\lifecycle\\annotate_param';
-        }
-        // 判断注入的请求对象类型
-        if ($this->service_type == 'http') {
-            $request = $this->request;
-            $response = $this->response;
-        } else {
-            $request = $this->server;
-            $response = $this->frame;
-        }
-        // 判断回调事件是类，还是函数
-        if (stripos($callback, '\\') !== false) {
-            $obj = new $callback;
-            return $obj->run($request, $response, $this->service_type, $tips, $name, $status, $attach);
-        } else {
-            return $callback($request, $response, $this->service_type, $tips, $name, $status, $attach);
-        }
-    }
-
-    /**
-     * 当其余注解检测失败时，回调的处理函数
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.5 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $status 错误事件状态码
-     * @return void
-    */
-    private function route_error($status) {
-        $obj = new \lifecycle\route_error();
-
-        // 判断注入的请求对象类型
-        if ($this->service_type == 'http') {
-            $request = $this->request;
-            $response = $this->response;
-        } else {
-            $request = $this->server;
-            $response = $this->frame;
-        }
-        return $obj->run($request, $response, $this->service_type, $status);
     }
 }

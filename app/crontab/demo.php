@@ -25,7 +25,7 @@ class demo {
     */
     public function run($server) {
         \Swoole\Timer::tick(1000, function ($timer_id) use ($server) {
-            echo "SW-X：Hello Word!\n";
+            //echo "SW-X：Hello Word!\n";
         });
     }
 }

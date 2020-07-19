@@ -267,6 +267,35 @@ class App
                 echo "Daemonize：-- 未知，参考status指令 查看进程是否存活".PHP_EOL;
             }
         }
+        echo "Memory_get_usage：".$this->memory().PHP_EOL;
+        echo "Container_count：".\x\Container::getInstance()->sum().PHP_EOL;
         echo PHP_EOL;
+    }
+
+    /**
+     * 获取当前内存占用大小
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.1 + 2020.07.17
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function memory(){ 
+        $size = memory_get_usage();
+        $unit = '';
+        if ($size >= 1073741824) {
+            $size = ($size / 1073741824);
+            $unit = 'G';
+        } elseif ($size >= 1048576) {
+            $size = ($size / 1048576);
+            $unit = 'M';
+        } elseif ($size >= 1024) {
+            $size = ($size / 1024);
+            $unit = 'K';
+        } else {
+            $size = $size;
+        }
+        return round($size, 2).' '.$unit.'B';
     }
 }

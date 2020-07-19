@@ -49,8 +49,10 @@ class onRequest
      * @param Swoole\Http\Response $response HTTP响应对象
      * @return void
     */
-    public function run($request, $response) {
-        
+    public function run() {
+        // 请求注入容器
+        $request = \x\Container::getInstance()->get('request');
+        $response = \x\Container::getInstance()->get('response');
     }
 }
 

@@ -32,16 +32,20 @@ class onMessage
     public function run($server, $frame) {
         $this->server = $server;
         
-        // 错误和异常处理注入参数
-        \x\Error::run()->set('websocket', $server, $frame);
+        // 请求注入容器
+        \x\Container::getInstance()->set('websocket_server', $server);
+        \x\Container::getInstance()->set('websocket_frame', $frame);
 
         # 开始转发路由
-        $obj = new \x\Route(null, null, $server, $frame);
+        $obj = new \x\Route();
         $obj->start();
 
         // 调用二次转发，不做重载
         $on = new \app\event\onMessage;
-        $on->run($server, $frame);
+        $on->run();
+
+        // 销毁整个请求级容器
+        \x\Container::getInstance()->clear();
     }
 }
 

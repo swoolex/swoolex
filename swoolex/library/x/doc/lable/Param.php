@@ -56,8 +56,10 @@ class Param extends Basics
             if ($is_post) $post_list = $this->request->post;
             if ($is_websocket) {
                 $obj = new \x\WebSocket();
-                $websocket_list = $obj->param();
+                $websocket_list = $obj->get_data();
             }
+
+
             foreach ($route['own']['Param'] as $val) {
                 if (empty($val['name'])) continue;
                 $name = $val['name'];
@@ -75,7 +77,7 @@ class Param extends Basics
                 if ($is_get) $param = $get_list[$name]??'';
                 if (empty($param)) {
                     if ($is_post) $param = $post_list[$name]??'';
-                    if ($is_websocket) $param = $websocket_list[$name]??'';
+                    if ($is_websocket) $param = $websocket_list['data'][$name]??'';
                 }
                 
                 // 参数预设
@@ -83,7 +85,9 @@ class Param extends Basics
                     $param = $val['value'];
                     if ($is_get) $this->request->get[$name] = $val['value'];
                     if ($is_post) $this->request->post[$name] = $val['value'];
-                    if ($is_websocket) $this->websocket_frame->data[$name] = $val['value'];
+                    if ($is_websocket) {
+                        $websocket_list['data'][$name] = $val['value'];
+                    }
                 }
 
                 // 判断是否允许为空
@@ -145,6 +149,16 @@ class Param extends Basics
                 if (!empty($val['regular']) && !preg_match($val['regular'], $param)) {
                     // 中断
                     return $this->param_error_callback($callback, $tips, $name, 'REGULAR', $val['regular']);
+                }
+            }
+
+            // WebSocket的参数赋值比较特殊
+            if ($is_websocket) {
+                // 启用加密方式
+                if (\x\Config::run()->get('websocket.aes_key')) {
+                    $this->websocket_frame->data = \x\WebSocket::encrypt($websocket_list);
+                } else {
+                    $this->websocket_frame->data = $websocket_list;
                 }
             }
         }

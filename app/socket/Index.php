@@ -18,6 +18,8 @@ class Index extends WebSocket
 {
     /**
      * @RequestMapping(route="/index", title="action为test/index访问这里")
+     * @Param(name="id", type="string", value="1", empty="true", min="10")
+     * @Param(name="pid", value="2")
     */
     public function index() {
         return $this->fetch(200, '描述', []);

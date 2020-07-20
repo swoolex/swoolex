@@ -36,7 +36,8 @@ class Route
             // 先匹配出路由
             $route = \x\doc\Table::run()->get($request_uri, 'http');
         } else {
-            $data = \x\WebSocket::get_data();
+            $obj = new \x\WebSocket();
+            $data = $obj->get_data();
             $request_uri = $data['action'];
             // 先匹配出路由
             $route = \x\doc\Table::run()->get($request_uri, 'websocket');

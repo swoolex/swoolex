@@ -43,6 +43,20 @@ class WebSocket
      * @return void
     */
     public final function param() {
+        $data = $this->get_data();
+        return $data['data'];
+    }
+
+    /**
+     * 获取参数
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.0.1 + 2020.1.13
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public final function get_data() {
         $websocket_frame = \x\Container::getInstance()->get('websocket_frame');
         $data = $websocket_frame->data;
         $config = \x\Config::run()->get('websocket');

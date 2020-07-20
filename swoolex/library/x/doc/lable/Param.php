@@ -28,7 +28,13 @@ class Param extends Basics
         # 检测路由类型
         $is_get = false;
         $is_post = false;
-        if (isset($route['method'])) {
+        $is_websocket = false;
+        # 检测是否websocket
+        if ($this->websocket_frame) {
+            $is_websocket = true;
+        }
+        # 只有http服务才进行类型校验
+        if (isset($route['method']) && $is_websocket == false) {
             $http_type = explode('|', strtoupper($route['method']));
             $status = false;
             foreach ($http_type as $v) {
@@ -48,7 +54,10 @@ class Param extends Basics
         if (isset($route['own']['Param'])) {
             if ($is_get) $get_list = $this->request->get;
             if ($is_post) $post_list = $this->request->post;
-
+            if ($is_websocket) {
+                $obj = new \x\WebSocket();
+                $websocket_list = $obj->param();
+            }
             foreach ($route['own']['Param'] as $val) {
                 if (empty($val['name'])) continue;
                 $name = $val['name'];
@@ -66,6 +75,7 @@ class Param extends Basics
                 if ($is_get) $param = $get_list[$name]??'';
                 if (empty($param)) {
                     if ($is_post) $param = $post_list[$name]??'';
+                    if ($is_websocket) $param = $websocket_list[$name]??'';
                 }
                 
                 // 参数预设
@@ -73,6 +83,7 @@ class Param extends Basics
                     $param = $val['value'];
                     if ($is_get) $this->request->get[$name] = $val['value'];
                     if ($is_post) $this->request->post[$name] = $val['value'];
+                    if ($is_websocket) $this->websocket_frame->data[$name] = $val['value'];
                 }
 
                 // 判断是否允许为空

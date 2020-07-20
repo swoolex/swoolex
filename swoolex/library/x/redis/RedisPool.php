@@ -185,14 +185,14 @@ class RedisPool{
      * @global 无
      * @return void
     */
-    public function timing_recovery($time) {
+    public function timing_recovery($time, $workerId) {
         // 大约10分钟检测一次连接
         \Swoole\Timer::tick($time * 1000, function () {
             # 先检测读 - 连接
             $list = [];
             # 一半最大进程为界限
             if ($this->connections->length() < intval($this->max * 0.5)) {
-                echo "请求连接数还比较多，暂不回收空闲连接\n";
+                echo "REDIS 请求连接数还比较多，暂不回收空闲连接\n";
             }
             # 堵塞循环
             while (true) {
@@ -214,6 +214,21 @@ class RedisPool{
                 $this->connections->push($item);
             }
             unset($list);
+        });
+        
+        // 5秒更新一次当前Redis连接数
+        \Swoole\Timer::tick(5000, function () use($workerId) {
+            $path = ROOT_PATH.'/env/redis_pool_num.count';
+            $json = \Swoole\Coroutine\System::readFile($path);
+            $array = [];
+            if ($json) {
+                $array = json_decode($json, true);
+            }
+            $array[$workerId] = $this->count;
+            \Swoole\Coroutine\System::writeFile($path, json_encode($array));
+            unset($json);
+            unset($array);
+            unset($path);
         });
     }
     

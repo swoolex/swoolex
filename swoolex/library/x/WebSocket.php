@@ -40,10 +40,11 @@ class WebSocket
      * @version v1.0.1 + 2020.1.13
      * @deprecated 暂不启用
      * @global 无
-     * @param void $data
      * @return void
     */
-    public static function get_data($data) {
+    public final function param() {
+        $websocket_frame = \x\Container::getInstance()->get('websocket_frame');
+        $data = $websocket_frame->data;
         $config = \x\Config::run()->get('websocket');
         // 启用加密方式
         if ($config['aes_key']) {
@@ -66,7 +67,10 @@ class WebSocket
      * @param string $fd 推送标记
      * @return void
     */
-    public function fetch($action, $msg='success', $data=[], $fd=null) {
+    public final function fetch($action, $msg='success', $data=[], $fd=null) {
+        $websocket_frame = \x\Container::getInstance()->get('websocket_frame');
+        $websocket_server = \x\Container::getInstance()->get('websocket_server');
+
         if (!$fd) $fd = $websocket_frame->fd;
         $config = \x\Config::run()->get('websocket');
         $array = [

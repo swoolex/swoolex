@@ -51,14 +51,11 @@ class onStart
         // 自动载入所有定时任务
         if ($this->status) {
             $this->status = false;
-            $path = ROOT_PATH.'/app/crontab/';
-            $filename = scandir($path);
-            foreach($filename as $k=>$v){
-                if ($v=="." || $v=="..") continue;
+            $crontab_list = \x\Config::run()->get('crontab');
+            foreach($crontab_list as $app=>$fun){
                 // 载入定时器
-                $class = '\app\crontab\\'.substr($v,0,strpos($v,"."));
-                $obj = new $class();
-                $obj->run($server);
+                $obj = new $app();
+                $obj->$fun($server);
             }
         }
         

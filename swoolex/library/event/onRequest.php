@@ -50,8 +50,6 @@ class onRequest
      * @return void
     */
     public function run($request, $response) {
-        // echo 'memory:' . (memory_get_usage() / 1024) .'KB'. PHP_EOL;  
-
         // 跨域配置设置
         if ($this->config['origin']) $response->header('Access-Control-Allow-Origin', $this->config['origin']); 
         if ($this->config['type']) $response->header('Content-Type', $this->config['type']); 

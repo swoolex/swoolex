@@ -58,9 +58,9 @@ class onWorkerStart
         }
 
         // 启动数据库连接池
-        $this->start_mysql();
+        $this->start_mysql($workerId);
         // 启动Redis连接池
-        $this->start_redis();
+        $this->start_redis($workerId);
         
         // 调用二次转发，不做重载
         $on = new \app\event\onWorkerStart;
@@ -76,11 +76,11 @@ class onWorkerStart
      * @global 无
      * @return void
     */
-    private function start_mysql() {
+    private function start_mysql($workerId) {
         // 启动数据库连接池
         \x\db\MysqlPool::run()->init();
         // 启动连接池检测定时器
-        \x\db\MysqlPool::run()->timing_recovery(\x\Config::run()->get('mysql.mysql_timing_recovery'));
+        \x\db\MysqlPool::run()->timing_recovery(\x\Config::run()->get('mysql.mysql_timing_recovery'), $workerId);
     }
 
     
@@ -93,12 +93,12 @@ class onWorkerStart
      * @global 无
      * @return void
     */
-    private function start_redis() {
+    private function start_redis($workerId) {
         if (\x\Config::run()->get('redis.status')) {
             // 启动数据库连接池
             \x\redis\RedisPool::run()->init();
             // 启动连接池检测定时器
-            \x\redis\RedisPool::run()->timing_recovery(\x\Config::run()->get('redis.redis_timing_recovery'));
+            \x\redis\RedisPool::run()->timing_recovery(\x\Config::run()->get('redis.redis_timing_recovery'), $workerId);
         }
     }
 }

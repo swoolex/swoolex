@@ -373,13 +373,16 @@ class Sql extends AbstractSql {
      * 终结方法-删除
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.28
+     * @version v1.2.2 + 2020.07.20
      * @deprecated 暂不启用
      * @global 无
      * @param bool $status 是否不执行
      * @return void
     */
     public function delete($status=true) {
+        // 无where条件不允许执行
+        if (empty($this->where)) return false;
+
         $sql = 'DELETE';
         $sql .= ' FROM';
         $sql .= ' '.$this->table;
@@ -402,12 +405,15 @@ class Sql extends AbstractSql {
      * 终结方法-修改
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.28
+     * @version v1.2.2 + 2020.07.20
      * @deprecated 暂不启用
      * @global 无
      * @return void
     */
     public function update($data) {
+        // 无where条件不允许执行
+        if (empty($this->where)) return false;
+
         $sql = 'UPDATE';
         $sql .= ' '.$this->table;
         $sql .= ' SET ';

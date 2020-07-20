@@ -236,7 +236,7 @@ class App
      * 打印启动服务信息
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.1 + 2020.07.08
+     * @version v1.2.2 + 2020.07.20
      * @deprecated 暂不启用
      * @global 无
      * @return void
@@ -248,6 +248,8 @@ class App
         $this->echo_swoolex_command();
 
         echo "\033[1A\n\033[K-----------------------\033[47;30m SwooleX Server \033[0m--------------------------\n\033[0m";
+        echo "Swoole-Version：".swoole_version().PHP_EOL;
+        echo "CPU_nums：".swoole_cpu_num().PHP_EOL;
         echo "SwooleX-Version：".VERSION." Beta".PHP_EOL;
         echo "PHP Version：".PHP_VERSION.PHP_EOL;
         echo "Server Type：".$this->_server_start['server'].PHP_EOL;
@@ -269,6 +271,33 @@ class App
         }
         echo "Memory_get_usage：".$this->memory().PHP_EOL;
         echo "Container_count：".\x\Container::getInstance()->sum().PHP_EOL;
+
+        // MYSQL连接数
+        $path = ROOT_PATH.'/env/mysql_pool_num.count';
+        $json = file_get_contents($path);
+        $array = [];
+        if ($json) {
+            $array = json_decode($json, true);
+        }
+        $mysql_pool_num = 0;
+        foreach ($array as $v) {
+            $mysql_pool_num += $v;
+        }
+        echo "Mysql_connect_count（5S）：".$mysql_pool_num.PHP_EOL;
+
+        //Redis连接数
+        $path = ROOT_PATH.'/env/redis_pool_num.count';
+        $json = file_get_contents($path);
+        $array = [];
+        if ($json) {
+            $array = json_decode($json, true);
+        }
+        $redis_pool_num = 0;
+        foreach ($array as $v) {
+            $redis_pool_num += $v;
+        }
+        echo "Redis_connect_count（5S）：".$redis_pool_num.PHP_EOL;
+
         echo PHP_EOL;
     }
 

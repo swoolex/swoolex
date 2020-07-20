@@ -193,14 +193,14 @@ class MysqlPool extends AbstractPool {
      * @global 无
      * @return void
     */
-    public function timing_recovery($time) {
+    public function timing_recovery($time, $workerId) {
         // 大约10分钟检测一次连接
         \Swoole\Timer::tick($time * 1000, function () {
             # 先检测读 - 连接
             $list = [];
             # 一半最大进程为界限
             if ($this->read_connections->length() < intval($this->read_max * 0.5)) {
-                echo "连接池小于峰值的一半，暂不需要回收空闲连接\n";
+                echo "READ 连接池小于峰值的一半，暂不需要回收空闲连接\n";
             }
             # 堵塞循环
             while (true) {
@@ -227,7 +227,7 @@ class MysqlPool extends AbstractPool {
             $list = [];
             # 一半最大进程为界限
             if ($this->write_connections->length() < intval($this->write_max * 0.5)) {
-                echo "连接池小于峰值的一半，暂不需要回收空闲连接\n";
+                echo "WRITE 连接池小于峰值的一半，暂不需要回收空闲连接\n";
             }
             # 堵塞循环
             while (true) {
@@ -255,7 +255,7 @@ class MysqlPool extends AbstractPool {
             $list = [];
             # 一半最大进程为界限
             if ($this->log_connections->length() < intval($this->log_max * 0.5)) {
-                echo "连接池小于峰值的一半，暂不需要回收空闲连接\n";
+                echo "LOG 连接池小于峰值的一半，暂不需要回收空闲连接\n";
             }
             # 堵塞循环
             while (true) {
@@ -277,6 +277,21 @@ class MysqlPool extends AbstractPool {
                 $this->log_connections->push($item);
             }
             unset($list);
+        });
+        
+        // 5秒更新一次当前数据库连接数
+        \Swoole\Timer::tick(5000, function () use($workerId) {
+            $path = ROOT_PATH.'/env/mysql_pool_num.count';
+            $json = \Swoole\Coroutine\System::readFile($path);
+            $array = [];
+            if ($json) {
+                $array = json_decode($json, true);
+            }
+            $array[$workerId] = $this->read_count+$this->write_count+$this->log_count;
+            \Swoole\Coroutine\System::writeFile($path, json_encode($array));
+            unset($json);
+            unset($array);
+            unset($path);
         });
     }
     

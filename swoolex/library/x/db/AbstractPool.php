@@ -221,7 +221,6 @@ abstract class AbstractPool {
         return $obj;
     }
 
-    
     /**
      * 写 - 统一标准创建出消息队列的内部结构
      * @todo 无

@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | 测试的定时器
+// | 定时任务加载
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -9,23 +9,8 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-namespace app\crontab;
-
-class demo {
-
-    /**
-     * 统一入口
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.9 + 2020.04.16
-     * @deprecated 暂不启用
-     * @global 无
-     * @param Swoole\Server $server
-     * @return void
-    */
-    public function run($server) {
-        \Swoole\Timer::tick(1000, function ($timer_id) use ($server) {
-            echo "SW-X：Hello Word!\n";
-        });
-    }
-}
+return [
+    // 注意Swoole中，假设你设定定时任务为1S，但期内的业务执行时间超过1S，则会进入死循环，所以请务必小心使用
+    // 命名空间 => 触发的方法名
+    '\app\crontab\demo' => 'run', 
+];

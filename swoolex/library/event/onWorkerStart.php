@@ -81,6 +81,7 @@ class onWorkerStart
         \x\db\MysqlPool::run()->init();
         // 启动连接池检测定时器
         \x\db\MysqlPool::run()->timing_recovery(\x\Config::run()->get('mysql.mysql_timing_recovery'), $workerId);
+
     }
 
     

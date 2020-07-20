@@ -93,6 +93,9 @@ class App
                 if ($this->_server_start['option'] && $this->_server_start['option'] != '-d') {
                     $this->echo_swoolex_error('sw-x start daemonize error，support only：-d');
                 }
+                // 初始化连接池日志文件
+                $this->create_mysql_pool_log();
+                $this->create_redis_pool_log();
                 // 打印服务器字幕
                 $this->echo_start_command();
                 // 先初始化路由表
@@ -272,31 +275,8 @@ class App
         echo "Memory_get_usage：".$this->memory().PHP_EOL;
         echo "Container_count：".\x\Container::getInstance()->sum().PHP_EOL;
 
-        // MYSQL连接数
-        $path = ROOT_PATH.'/env/mysql_pool_num.count';
-        $json = file_get_contents($path);
-        $array = [];
-        if ($json) {
-            $array = json_decode($json, true);
-        }
-        $mysql_pool_num = 0;
-        foreach ($array as $v) {
-            $mysql_pool_num += $v;
-        }
-        echo "Mysql_connect_count（5S）：".$mysql_pool_num.PHP_EOL;
-
-        //Redis连接数
-        $path = ROOT_PATH.'/env/redis_pool_num.count';
-        $json = file_get_contents($path);
-        $array = [];
-        if ($json) {
-            $array = json_decode($json, true);
-        }
-        $redis_pool_num = 0;
-        foreach ($array as $v) {
-            $redis_pool_num += $v;
-        }
-        echo "Redis_connect_count（5S）：".$redis_pool_num.PHP_EOL;
+        echo "Mysql_connect_count（5S）：".$this->create_mysql_pool_log(false).PHP_EOL;
+        echo "Redis_connect_count（5S）：".$this->create_redis_pool_log(false).PHP_EOL;
 
         echo PHP_EOL;
     }
@@ -326,5 +306,63 @@ class App
             $size = $size;
         }
         return round($size, 2).' '.$unit.'B';
+    }
+
+    /**
+     * 读取Mysql连接数日志
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.1 + 2020.07.17
+     * @deprecated 暂不启用
+     * @global 无
+     * @param bool $status 是否用于初始化
+     * @return void
+    */
+    private function create_mysql_pool_log($status=true) {
+        // MYSQL连接数
+        $path = ROOT_PATH.'/env/mysql_pool_num.count';
+        // 清空并创建
+        if ($status) {
+            return file_put_contents($path, '{}');
+        }
+        $json = file_get_contents($path);
+        $array = [];
+        if ($json) {
+            $array = json_decode($json, true);
+        }
+        $mysql_pool_num = 0;
+        foreach ($array as $v) {
+            $mysql_pool_num += $v;
+        }
+        return $mysql_pool_num;
+    }
+    
+    /**
+     * 读取Redis连接数日志
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.1 + 2020.07.17
+     * @deprecated 暂不启用
+     * @global 无
+     * @param bool $status 是否用于初始化
+     * @return void
+    */
+    private function create_redis_pool_log($status=true) {
+        //Redis连接数
+        $path = ROOT_PATH.'/env/redis_pool_num.count';
+        // 清空并创建
+        if ($status) {
+            return file_put_contents($path, '{}');
+        }
+        $json = file_get_contents($path);
+        $array = [];
+        if ($json) {
+            $array = json_decode($json, true);
+        }
+        $redis_pool_num = 0;
+        foreach ($array as $v) {
+            $redis_pool_num += $v;
+        }
+        return $redis_pool_num;
     }
 }

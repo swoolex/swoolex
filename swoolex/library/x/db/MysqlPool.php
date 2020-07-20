@@ -18,7 +18,7 @@ class MysqlPool extends AbstractPool {
      * 初始换最小数量连接池
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.12 + 2020.04.29
+     * @version v1.2.4 + 2020.07.20
      * @deprecated 暂不启用
      * @global 无
      * @param string $
@@ -35,7 +35,7 @@ class MysqlPool extends AbstractPool {
             $this->read_connections->push($obj);
         }
         # 写
-        for ($i=0; $i<$this->read_min; $i++) {
+        for ($i=0; $i<$this->write_min; $i++) {
             # 创建 - 这是基类的方法
             $obj = $this->createWrite($i);
             $this->write_count++;

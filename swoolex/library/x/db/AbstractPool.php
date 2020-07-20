@@ -208,7 +208,6 @@ abstract class AbstractPool {
         $num = $i+$count;
         # 计算出使用的配置key-循环使用
         $key = $num % $count;
-
         $obj = null;
         # 创建数据库连接i实例
         $db = $this->createDb($this->write_database_list[$key]);

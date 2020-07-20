@@ -48,7 +48,6 @@ class Model
         $this->table = strtolower(ltrim($class, '_'));
         // 自动创建Db实例
         $this->Db = new \x\Db($type);
-        $this->Db->name($this->table);
     }
 
     /**
@@ -68,7 +67,7 @@ class Model
      * 驱动函数注入
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.3 + 2020.07.11
+     * @version v1.2.4 + 2020.07.20
      * @deprecated 暂不启用
      * @global 无
      * @return void
@@ -77,6 +76,6 @@ class Model
         if (!$this->Db) return false;
         if (empty($name)) return false;
         
-        return $this->Db->$name(...$arguments);
+        return $this->Db->name($this->table)->$name(...$arguments);
     }
 }

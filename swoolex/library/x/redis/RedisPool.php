@@ -217,19 +217,21 @@ class RedisPool{
         });
         
         // 5秒更新一次当前Redis连接数
-        \Swoole\Timer::tick(5000, function () use($workerId) {
-            $path = ROOT_PATH.'/env/redis_pool_num.count';
-            $json = \Swoole\Coroutine\System::readFile($path);
-            $array = [];
-            if ($json) {
-                $array = json_decode($json, true);
-            }
-            $array[$workerId] = $this->count;
-            \Swoole\Coroutine\System::writeFile($path, json_encode($array));
-            unset($json);
-            unset($array);
-            unset($path);
-        });
+        if (\x\Config::run()->get('redis.is_monitor')) {
+            \Swoole\Timer::tick(5000, function () use($workerId) {
+                $path = ROOT_PATH.'/env/redis_pool_num.count';
+                $json = \Swoole\Coroutine\System::readFile($path);
+                $array = [];
+                if ($json) {
+                    $array = json_decode($json, true);
+                }
+                $array[$workerId] = $this->count;
+                \Swoole\Coroutine\System::writeFile($path, json_encode($array));
+                unset($json);
+                unset($array);
+                unset($path);
+            });
+        }
     }
     
     /**

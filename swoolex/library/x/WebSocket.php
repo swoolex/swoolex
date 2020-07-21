@@ -103,7 +103,27 @@ class WebSocket
             $ret = $websocket_server->push($fd, $content);
             return $ret;
         } catch (\Exception $e) {
-            return false;
+            // 生命周期回调
+            return $this->callback($websocket_server, $content, $fd);
         }
     } 
+
+    /**
+     * 推送失败的生命周期回调
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.5 + 2020.07.21
+     * @deprecated 暂不启用
+     * @global 无
+     * @param Server $server
+     * @param json $content
+     * @param int $fd
+     * @return void
+    */
+    private function callback($server, $content, $fd) {
+        $obj = new \lifecycle\websocket_push_error();
+        $obj->run($server, $content, $fd);
+
+        return false;
+    }
 }

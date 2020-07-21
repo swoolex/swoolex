@@ -280,19 +280,21 @@ class MysqlPool extends AbstractPool {
         });
         
         // 5秒更新一次当前数据库连接数
-        \Swoole\Timer::tick(5000, function () use($workerId) {
-            $path = ROOT_PATH.'/env/mysql_pool_num.count';
-            $json = \Swoole\Coroutine\System::readFile($path);
-            $array = [];
-            if ($json) {
-                $array = json_decode($json, true);
-            }
-            $array[$workerId] = $this->read_count+$this->write_count+$this->log_count;
-            \Swoole\Coroutine\System::writeFile($path, json_encode($array));
-            unset($json);
-            unset($array);
-            unset($path);
-        });
+        if (\x\Config::run()->get('mysql.is_monitor')) {
+            \Swoole\Timer::tick(5000, function () use($workerId) {
+                $path = ROOT_PATH.'/env/mysql_pool_num.count';
+                $json = \Swoole\Coroutine\System::readFile($path);
+                $array = [];
+                if ($json) {
+                    $array = json_decode($json, true);
+                }
+                $array[$workerId] = $this->read_count+$this->write_count+$this->log_count;
+                \Swoole\Coroutine\System::writeFile($path, json_encode($array));
+                unset($json);
+                unset($array);
+                unset($path);
+            });
+        }
     }
     
     /**

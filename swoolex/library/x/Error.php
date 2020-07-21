@@ -91,6 +91,7 @@ class Error {
                 $error['message'] = $e['message'];
                 $error['file'] = $e['file'];
                 $error['line'] = $e['line'];
+                $error['deadlyError'] = true;
                 $this->halt($error);
                 break;
             }
@@ -141,16 +142,15 @@ class Error {
 		# 开启调试模式则记录错误日志
         if (\x\Config::run()->get('app.de_bug') == true) {
             # 第一次异常才写入日志
-            if (stripos($source['source'][1], '# 开启调试模式则记录错误日志') === false) {
-                \x\Log::run($txt); 
-            }
+            \x\Log::run($txt); 
+        }
+        # 错误处理的生命周期回调 - 普通异常才回调，错误异常已经跳出协程底层了
+        if (!isset($error['deadlyError'])) {
+            $obj = new \lifecycle\controller_error();
+            $obj->run($e, $txt, $source);
+            unset($obj);
         }
 
-        # 错误处理的生命周期回调
-        $obj = new \lifecycle\controller_error();
-        $obj->run($e, $txt, $source);
-        unset($obj);
-
-        return false;
+        return true;
     }
 }

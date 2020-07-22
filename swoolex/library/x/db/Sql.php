@@ -326,9 +326,8 @@ class Sql extends AbstractSql {
     */
     public function select($status=true) {
         $sql = $this->select_sql(false);
-        $this->clean_up();
-
         if ($status && $this->debug==false) {
+            $this->clean_up();
             return $this->Db->query($sql);
         }
         return $sql;
@@ -345,9 +344,9 @@ class Sql extends AbstractSql {
     */
     public function find($status=true) {
         $sql = $this->select_sql(true);
-        $this->clean_up();
 
         if ($status && $this->debug==false) {
+            $this->clean_up();
             $res = $this->Db->query($sql);
             if ($res == false) return false;
             return array_shift($res);
@@ -394,9 +393,9 @@ class Sql extends AbstractSql {
             $sql .= ' LIMIT '.$this->limit['left'];
         }
         $sql .= ';';
-        $this->clean_up();
-        
+
         if ($status && $this->debug==false) {
+            $this->clean_up();
             return $this->Db->query($sql);
         }
         return $sql;
@@ -423,10 +422,9 @@ class Sql extends AbstractSql {
         }
         $sql = rtrim($sql, ',');
         $sql = $this->where_sql($sql).';';
-        
-        $this->clean_up();
 
         if ($this->debug==false) {
+            $this->clean_up();
             return $this->Db->query($sql);
         }
         return $sql;
@@ -467,13 +465,14 @@ class Sql extends AbstractSql {
             }
             $sql .= rtrim($field, ',').'),';
         }
-        
-        $this->clean_up();
 
+        $sql = rtrim($sql, ',').';';
+        
         if ($this->debug==false) {
+            $this->clean_up();
             return $this->Db->query($sql);
         }
-        return rtrim($sql, ',').';';
+        return $sql;
     }
     /**
      * 终结方法-新增
@@ -502,19 +501,17 @@ class Sql extends AbstractSql {
         }
         $sql .= rtrim($field, ',').');';
         
-        $this->clean_up();
+        if ($this->debug == false) {
+            $this->clean_up();
+            $res = $this->Db->query($sql);
+            if (!$res) return false;
 
-        if ($this->debug != false) {
-            return rtrim($sql, ',').';';
+            $res = $this->Db->query('SELECT LAST_INSERT_ID() as num;');
+            if (!$res) return true;
+            
+            return $res[0]['num'];
         }
-
-        $res = $this->Db->query($sql);
-        if (!$res) return false;
-
-        $res = $this->Db->query('SELECT LAST_INSERT_ID() as num;');
-        if (!$res) return true;
-        
-        return $res[0]['num'];
+        return $sql;
     }
 
     /**
@@ -534,10 +531,9 @@ class Sql extends AbstractSql {
         $sql .= ' SET';
         $sql .= ' '.$field.'='.$field.'+'.$num;
         $sql = $this->where_sql($sql).';';
-        
-        $this->clean_up();
 
         if ($this->debug==false) {
+            $this->clean_up();
             return $this->Db->query($sql);
         }
         return $sql;
@@ -560,9 +556,8 @@ class Sql extends AbstractSql {
         $sql .= ' '.$field.'='.$field.'-'.$num;
         $sql = $this->where_sql($sql).';';
         
-        $this->clean_up();
-        
         if ($this->debug==false) {
+            $this->clean_up();
             return $this->Db->query($sql);
         }
         return $sql;
@@ -581,13 +576,17 @@ class Sql extends AbstractSql {
         $field = $field ?? '*';
         $this->field = 'COUNT('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
-        $this->clean_up();
 
-        $res = $this->Db->query($sql);
-        if ($res == false) return false;
-        $info = array_shift($res);
+        if ($this->debug==false) {
+            $this->clean_up();
+            $res = $this->Db->query($sql);
+            if ($res == false) return false;
+            $info = array_shift($res);
 
-        return $info[$this->ploy_alias];
+            return $info[$this->ploy_alias];
+        }
+
+        return $sql;
     }
     /**
      * 聚合操作(获取最大值)
@@ -603,13 +602,17 @@ class Sql extends AbstractSql {
         if ($field == false) return false;
         $this->field = 'MAX('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
-        $this->clean_up();
+        
+        if ($this->debug==false) {
+            $this->clean_up();
+            $res = $this->Db->query($sql);
+            if ($res == false) return false;
+            $info = array_shift($res);
 
-        $res = $this->Db->query($sql);
-        if ($res == false) return false;
-        $info = array_shift($res);
+            return $info[$this->ploy_alias];
+        }
 
-        return $info[$this->ploy_alias];
+        return $sql;
     }
     /**
      * 聚合操作(获取最小值)
@@ -625,13 +628,17 @@ class Sql extends AbstractSql {
         if ($field == false) return false;
         $this->field = 'MIN('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
-        $this->clean_up();
+        
+        if ($this->debug==false) {
+            $this->clean_up();
+            $res = $this->Db->query($sql);
+            if ($res == false) return false;
+            $info = array_shift($res);
 
-        $res = $this->Db->query($sql);
-        if ($res == false) return false;
-        $info = array_shift($res);
+            return $info[$this->ploy_alias];
+        }
 
-        return $info[$this->ploy_alias];
+        return $sql;
     }
     /**
      * 聚合操作(获取平均值)
@@ -647,13 +654,17 @@ class Sql extends AbstractSql {
         if ($field == false) return false;
         $this->field = 'AVG('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
-        $this->clean_up();
+        
+        if ($this->debug==false) {
+            $this->clean_up();
+            $res = $this->Db->query($sql);
+            if ($res == false) return false;
+            $info = array_shift($res);
 
-        $res = $this->Db->query($sql);
-        if ($res == false) return false;
-        $info = array_shift($res);
+            return $info[$this->ploy_alias];
+        }
 
-        return $info[$this->ploy_alias];
+        return $sql;
     }
     /**
      * 聚合操作(获取总分)
@@ -669,13 +680,17 @@ class Sql extends AbstractSql {
         if ($field == false) return false;
         $this->field = 'SUM('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
-        $this->clean_up();
 
-        $res = $this->Db->query($sql);
-        if ($res == false) return false;
-        $info = array_shift($res);
+        if ($this->debug==false) {
+            $this->clean_up();
+            $res = $this->Db->query($sql);
+            if ($res == false) return false;
+            $info = array_shift($res);
 
-        return $info[$this->ploy_alias];
+            return $info[$this->ploy_alias];
+        }
+
+        return $sql;
     }
     /**
      * 获取某个字段的值
@@ -691,13 +706,17 @@ class Sql extends AbstractSql {
         if ($field == false) return false;
         $this->field = $field;
         $sql = $this->select_sql(true);
-        $this->clean_up();
 
-        $res = $this->Db->query($sql);
-        if ($res == false) return false;
-        $info = array_shift($res);
+        if ($this->debug==false) {
+            $this->clean_up();
+            $res = $this->Db->query($sql);
+            if ($res == false) return false;
+            $info = array_shift($res);
 
-        return $info[$field];
+            return $info[$field];
+        }
+
+        return $sql;
     }
     /**
      * 执行原生SQL
@@ -801,7 +820,6 @@ class Sql extends AbstractSql {
         }
         $sql .= ';';
 
-        $this->clean_up();
         return $sql;
     }
 

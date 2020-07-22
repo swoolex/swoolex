@@ -39,7 +39,7 @@ class Error {
         # 致命错误捕捉
         register_shutdown_function([\x\Error::run(), 'deadlyError']);
         # 异常捕捉
-    	set_error_handler([\x\Error::run(), 'appError']); 
+        set_error_handler([\x\Error::run(), 'appError']); 
     }
 
     /**

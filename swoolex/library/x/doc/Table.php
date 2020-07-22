@@ -134,6 +134,9 @@ class Table
 
             if (isset($val['RequestMapping']['route'])) {
                 $url = $prefix.$val['RequestMapping']['route'];
+                if ($url != '/') {
+                    $url = ltrim($url, $cutting);
+                }
                 if (isset($val['RequestMapping']['method'])) {
                     $array['method'] = $val['RequestMapping']['method'];
                     unset($val['RequestMapping']['method']);

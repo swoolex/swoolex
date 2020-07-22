@@ -60,53 +60,92 @@ class Controller
     }
 
     /**
-     * 注入视图变量
+     * 模板变量赋值
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.29
+     * @version v1.2.6 + 2020.07.22
      * @deprecated 暂不启用
      * @global 无
-     * @param string $key 变量名
-     * @param mixed $val 变量内容
-     * @return void
+     * @param  mixed $name  要显示的模板变量
+     * @param  mixed $value 变量的值
+     * @return $this
     */
-    public function assign($key, $val=null){
+    public final function assign($name, $value = '')
+    {
         $this->is_view();
-        $this->view->assign($key, $val);
+        $this->view->assign($name, $value);
+        return $this;
     }
 
     /**
-     * 输出视图
+     * 加载模板输出
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.27
+     * @version v1.2.6 + 2020.07.22
      * @deprecated 暂不启用
      * @global 无
-     * @param string $view 视图路径
+     * @param  string $template 模板文件名
+     * @param  array  $vars     模板输出变量
+     * @param  array  $config   模板参数
+     * @return mixed
+    */
+    public final function view($template = '', $vars = [], $config = [])
+    {
+        $this->is_view();
+        return $this->view->fetch($template, $vars, $config);
+    }
+
+    /**
+     * 渲染内容输出
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.6 + 2020.07.22
+     * @deprecated 暂不启用
+     * @global 无
+     * @param  string $content 模板内容
+     * @param  array  $vars    模板输出变量
+     * @param  array  $config  模板参数
+     * @return mixed
+    */
+    public final function display($content = '', $vars = [], $config = [])
+    {
+        $this->is_view();
+        $content = $this->view->display($content, $vars, $config);
+        $Response = \x\Container::getInstance()->get('response');
+        return $Response->end($content);
+    }
+
+    /**
+     * 视图过滤
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.6 + 2020.07.22
+     * @deprecated 暂不启用
+     * @global 无
+     * @param  Callable $filter 过滤方法或闭包
+     * @return $this
+    */
+    public final function filter($filter)
+    {
+        $this->is_view();
+        $this->view->filter($filter);
+        return $this;
+    }
+
+    /**
+     * 模板布局开关
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.6 + 2020.07.22
+     * @deprecated 暂不启用
+     * @global 无
+     * @param mixed $mixed
      * @return void
     */
-    public final function view($view=null) {
-        if (!$view) {
-            $Request = \x\Container::getInstance()->get('request');
-            $array = explode(\x\Config::run()->get('route.suffix'), $Request->server['request_uri']);
-            $view = ltrim($array[0], '/');
-        }
-
+    public final function layout($mixed) {
         $this->is_view();
-        # 调用视图类
-        ob_start();
-        $ret = $this->view->display($view);
-        if ($ret) {
-            try {
-                $Response = \x\Container::getInstance()->get('response');
-                $content = ob_get_clean();
-                $Response->status(200);
-                return $Response->end($content);
-            } catch (\Exception $e) {
-                return false;
-            }
-        }
-        return false;
+        $this->view->engine->layout($mixed);
+        return $this;
     }
 
     /**
@@ -359,7 +398,7 @@ class Controller
     */
     private function is_view(){
         if (empty($this->view)) {
-            $this->view = new \x\View();
+            $this->view = new \x\View(\x\Config::run()->get('view'));
         }
     }
 }

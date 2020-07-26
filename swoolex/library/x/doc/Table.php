@@ -153,6 +153,7 @@ class Table
             $array['father'] = $class;
             $array['own'] = $val;
 
+            $url = strtolower($url);
             $this->table[$route_type][$url] = $array;
         }
     }

@@ -51,9 +51,16 @@ class Controller
     */
     public final function fetch($string, $status=200) {
         try {
+            // 防止二次推送
+            if (\x\Container::getInstance()->has('response_status')) {
+                return false;
+            }
             $Response = \x\Container::getInstance()->get('response');
             $Response->status($status);
-            return $Response->end($string);
+            $status = $Response->end($string);
+
+            \x\Container::getInstance()->set('response_status', $status);
+            return $status;
         } catch (\Exception $e) {
             return false;
         }

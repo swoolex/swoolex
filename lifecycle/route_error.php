@@ -26,11 +26,11 @@ class route_error
     public function run($status) {
         $tips = 'Annotate：SW-X Status：'.$status.' ERROR ！';
         // HTTP请求
-        if (\x\Container::getInstance()->get('request')) {
+        if (\x\Container::getInstance()->has('request')) {
             $obj = new \x\Controller();
             $obj->fetch($tips);
         // websocket请求
-        } else {
+        } else if(\x\Container::getInstance()->has('server')) {
             $obj = new \x\WebSocket();
             $obj->fetch('route_error', 'error', $tips);
         }

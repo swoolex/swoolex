@@ -97,9 +97,9 @@ class onWorkerStart
     private function start_redis($workerId) {
         if (\x\Config::run()->get('redis.status')) {
             // 启动数据库连接池
-            \x\redis\RedisPool::run()->init();
+            \x\redis\Redis2Pool::run()->init();
             // 启动连接池检测定时器
-            \x\redis\RedisPool::run()->timing_recovery(\x\Config::run()->get('redis.redis_timing_recovery'), $workerId);
+            \x\redis\Redis2Pool::run()->timing_recovery(\x\Config::run()->get('redis.redis_timing_recovery'), $workerId);
         }
     }
 }

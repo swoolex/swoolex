@@ -33,12 +33,13 @@ class annotate_param
                 $tips .= '， Attach：'.$attach;
             }
         }
+        
         // HTTP请求
-        if (\x\Container::getInstance()->get('request')) {
+        if (\x\Container::getInstance()->has('request')) {
             $obj = new \x\controller();
             $obj->fetch($tips);
         // websocket请求
-        } else {
+        } else if(\x\Container::getInstance()->has('server')) {
             $obj = new \x\WebSocket();
             $obj->fetch('annotate_param_error', 'error', $tips);
         }

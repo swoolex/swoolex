@@ -167,9 +167,10 @@ class Controller
      * @param array $data 跳转时需要带上的get参数
      * @return void
     */
-    public final function redirect($url, $status=301, $data=[]) {
+    public final function redirect($url, $status=302, $data=[]) {
         $url = $this->get_url($url, $data);
-        return $this->setResponse->redirect($url, $status);
+        $Response = \x\Container::getInstance()->get('response');
+        return $Response->redirect($url, $status);
     }
 
     /**
@@ -391,8 +392,11 @@ class Controller
     */
     private final function get_url($url, $data) {
         if (strpos($url, '//') === false) {
-            $header = \x\Request::header();
-            $url = '//'.$header['host'].'/'.ltrim($url, '/').\x\Config::run()->get('route.suffix');
+            $url = '/'.ltrim($url, '/');
+            if ($url != '/') {
+                $url .= \x\Config::run()->get('route.suffix');
+            }
+            $url = \x\Request::domain().$url;
         }
         if (count($data)) {
             $url .= '?'.http_build_query($data);

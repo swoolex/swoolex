@@ -30,7 +30,7 @@ class Model
      * 初始化连接池
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.3 + 2020.07.11
+     * @version v1.2.8 + 2020.07.28
      * @deprecated 暂不启用
      * @global 无
      * @param string $type 连接池类型select或者log，为空则为写入
@@ -39,7 +39,9 @@ class Model
     public function __construct($type=null) {
         // 获取子类名
         $array = explode('\\', static::class);
-        $class = rtrim(end($array), 'Model');
+        $class = end($array);
+        $lenth = strrpos($class, 'Model');
+        $class = substr($class, 0, $lenth);
 
         // 为表名大写字母转_符号拼接
         foreach ($this->_word as $v) {

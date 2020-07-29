@@ -33,7 +33,7 @@ class Redis
      * @return void
     */
     public function __construct() {
-        $this->pool = \x\redis\RedisPool::run()->pop();
+        $this->pool = \x\redis\Redis2Pool::run()->pop();
     }
 
     /**
@@ -46,7 +46,7 @@ class Redis
      * @return void
     */
     public function return() {
-        return \x\redis\RedisPool::run()->free($this->pool);
+        return \x\redis\Redis2Pool::run()->free($this->pool);
     }
 
     /**
@@ -62,8 +62,8 @@ class Redis
         if (!$this->pool) return false;
         if (empty($name)) return false;
 
-        $ref = new \ReflectionClass($this->pool['redis']);
-        $ins = $this->pool['redis'];
+        $ref = new \ReflectionClass($this->pool);
+        $ins = $this->pool;
         if (!$ref->hasMethod($name)) return false;
 
         $obj = $ref->getmethod($name);

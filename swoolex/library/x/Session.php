@@ -121,7 +121,7 @@ class Session
         $redis = new \x\Redis();
         $key = self::$session_id.'_'.self::$session_prefix.$key;
 
-        if ($redis->delete($key)) {
+        if ($redis->del($key)) {
             $redis->return();
             return true;
         }
@@ -144,7 +144,7 @@ class Session
         $redis = new \x\Redis();
         $key = self::$session_id.'_'.self::$session_prefix.'*';
         $list = $redis->keys($key);
-        $ret = $redis->delete($list);
+        $ret = $redis->del($list);
         $redis->return();
         return $ret;
     }

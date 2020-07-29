@@ -38,7 +38,7 @@ class Db
      * 选择连接池
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.29
+     * @version v1.2.8 + 2020.07.29
      * @deprecated 暂不启用
      * @global 无
      * @param string $type 连接池类型select或者log，为空则为写入
@@ -62,7 +62,7 @@ class Db
                 return false;
             break;
         }
-        if (empty($pool['db'])) {
+        if (!$pool) {
             return false;
         }
 
@@ -111,7 +111,7 @@ class Db
      * @return void
     */
     public function begin() {
-        return $this->pool['db']->begin();
+        return $this->pool->beginTransaction();
     }
 
     /**
@@ -124,7 +124,7 @@ class Db
      * @return void
     */
     public function commit() {
-        return $this->pool['db']->commit();
+        return $this->pool->commit();
     }
 
     /**
@@ -137,7 +137,7 @@ class Db
      * @return void
     */
     public function rollback() {
-        return $this->pool['db']->rollback();
+        return $this->pool->rollback();
     }
 
     /**
@@ -154,7 +154,24 @@ class Db
         if ($this->debug) {
             \x\Log::run()->sql($sql);
         }
-        return $this->pool['db']->query($sql);
+        return $this->pool->query($sql);
+    }
+
+    /**
+     * 执行新增的SQL操作
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.0.1 + 2020.05.29
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function exec($sql) {
+        // 开启调试模式，则记录SQL语句
+        if ($this->debug) {
+            \x\Log::run()->sql($sql);
+        }
+        return $this->pool->exec($sql);
     }
 
     /**

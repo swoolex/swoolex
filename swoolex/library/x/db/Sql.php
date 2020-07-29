@@ -95,11 +95,10 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function name($table) {
+        $this->clean_up();
         # 获取数据表前缀
         $this->prefix = \x\Config::run()->get('mysql.prefix');
-
         $this->table = $this->prefix.$table;
-
         return $this;
     }
     
@@ -114,6 +113,7 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function table($table) {
+        $this->clean_up();
         $this->table = $table;
         return $this;
     }
@@ -136,7 +136,7 @@ class Sql extends AbstractSql {
      * 条件
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.28
+     * @version v1.2.8 + 2020.07.28
      * @deprecated 暂不启用
      * @global 无
      * @param string $field 可以为批量表达式，也可以是字段
@@ -145,14 +145,26 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function where($field, $operator=null, $value=false) {
+        if (!$field) return $this;
+
         if (is_array($field)) {
             foreach ($field as $v) {
-                $this->where[] = $v[0].' '.$v[1].' '.$this->int_string($v[2]);
+                if (stripos($v[0], '|') !== false) {
+                    $where = '(';
+                    $array = explode('|', $v[0]);
+                    foreach ($array as $val) {
+                        $where .= '('.$val.' '.$v[1].' '.$this->int_string($v[2]).') OR ';
+                    }
+                    $where = rtrim($where, 'OR ').')';
+                    $this->where[] = $where;
+                } else {
+                    $this->where[] = $v[0].' '.$v[1].' '.$this->int_string($v[2]);
+                }
             }
         } else {
             if ($value !== false) {
                 $this->where[] = $field.' '.$operator.' '.$this->int_string($value);
-            } else if ($operator) {
+            } else if ($operator !== null) {
                 $this->where[] = $field.'='.$this->int_string($operator);
             } else {
                 $this->where[] = $field;
@@ -328,7 +340,10 @@ class Sql extends AbstractSql {
         $sql = $this->select_sql(false);
         if ($status && $this->debug==false) {
             $this->clean_up();
-            return $this->Db->query($sql);
+            $res = $this->Db->query($sql);
+            $list = $res->fetchAll(\PDO::FETCH_NAMED);
+            if (empty($list)) return false;
+            return $list;
         }
         return $sql;
     }
@@ -348,8 +363,9 @@ class Sql extends AbstractSql {
         if ($status && $this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
-            if ($res == false) return false;
-            return array_shift($res);
+            $info = $res->fetch(\PDO::FETCH_NAMED);
+            if (empty($info)) return false;
+            return $info;
         }
         return $sql;
     }
@@ -396,7 +412,7 @@ class Sql extends AbstractSql {
 
         if ($status && $this->debug==false) {
             $this->clean_up();
-            return $this->Db->query($sql);
+            return $this->Db->exec($sql);
         }
         return $sql;
     }
@@ -425,7 +441,7 @@ class Sql extends AbstractSql {
 
         if ($this->debug==false) {
             $this->clean_up();
-            return $this->Db->query($sql);
+            return $this->Db->exec($sql);
         }
         return $sql;
     }
@@ -470,7 +486,7 @@ class Sql extends AbstractSql {
         
         if ($this->debug==false) {
             $this->clean_up();
-            return $this->Db->query($sql);
+            return $this->Db->exec($sql);
         }
         return $sql;
     }
@@ -503,13 +519,13 @@ class Sql extends AbstractSql {
         
         if ($this->debug == false) {
             $this->clean_up();
-            $res = $this->Db->query($sql);
+            $res = $this->Db->exec($sql);
             if (!$res) return false;
 
             $res = $this->Db->query('SELECT LAST_INSERT_ID() as num;');
-            if (!$res) return true;
-            
-            return $res[0]['num'];
+            $list = $res->fetchAll(\PDO::FETCH_NAMED);
+            if (empty($list)) return false;
+            return $list[0]['num'];
         }
         return $sql;
     }
@@ -534,7 +550,7 @@ class Sql extends AbstractSql {
 
         if ($this->debug==false) {
             $this->clean_up();
-            return $this->Db->query($sql);
+            return $this->Db->exec($sql);
         }
         return $sql;
     }
@@ -558,7 +574,7 @@ class Sql extends AbstractSql {
         
         if ($this->debug==false) {
             $this->clean_up();
-            return $this->Db->query($sql);
+            return $this->Db->exec($sql);
         }
         return $sql;
     }
@@ -573,16 +589,16 @@ class Sql extends AbstractSql {
      * @return mixed
     */
     public function count($field=false) {
-        $field = $field ?? '*';
+        $field = $field ?: '*';
         $this->field = 'COUNT('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
 
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
-            if ($res == false) return false;
-            $info = array_shift($res);
-
+            $info = $res->fetch(\PDO::FETCH_NAMED);
+            if (empty($info)) return false;
+            
             return $info[$this->ploy_alias];
         }
 
@@ -606,8 +622,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
-            if ($res == false) return false;
-            $info = array_shift($res);
+            $info = $res->fetch(\PDO::FETCH_NAMED);
+            if (empty($info)) return false;
 
             return $info[$this->ploy_alias];
         }
@@ -632,8 +648,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
-            if ($res == false) return false;
-            $info = array_shift($res);
+            $info = $res->fetch(\PDO::FETCH_NAMED);
+            if (empty($info)) return false;
 
             return $info[$this->ploy_alias];
         }
@@ -658,8 +674,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
-            if ($res == false) return false;
-            $info = array_shift($res);
+            $info = $res->fetch(\PDO::FETCH_NAMED);
+            if (empty($info)) return false;
 
             return $info[$this->ploy_alias];
         }
@@ -684,8 +700,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
-            if ($res == false) return false;
-            $info = array_shift($res);
+            $info = $res->fetch(\PDO::FETCH_NAMED);
+            if (empty($info)) return false;
 
             return $info[$this->ploy_alias];
         }
@@ -710,8 +726,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
-            if ($res == false) return false;
-            $info = array_shift($res);
+            $info = $res->fetch(\PDO::FETCH_NAMED);
+            if (empty($info)) return false;
 
             return $info[$field];
         }
@@ -729,7 +745,24 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function query($sql) {
-        return $this->Db->query($sql);
+        $res = $this->Db->query($sql);
+        $info = $res->fetchAll(\PDO::FETCH_NAMED);
+        if (empty($info)) return false;
+
+        return $info;
+    }
+    /**
+     * 执行原生SQL
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.0.1 + 2020.05.28
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $sql 原生SQL
+     * @return void
+    */
+    public function exec($sql) {
+        return $this->Db->exec($sql);
     }
     /**
      * 查询相关通用语句组装

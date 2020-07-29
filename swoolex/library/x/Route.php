@@ -65,6 +65,7 @@ class Route
             if ($request) {
                 $this->session();
             }
+
             $this->ico_injection($route);
         }
     }

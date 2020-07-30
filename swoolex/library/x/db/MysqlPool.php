@@ -30,10 +30,13 @@ class MysqlPool extends AbstractPool {
     public function init() {
         # 读 - 连接
         $this->read_connections = $this->createDb($this->read_database, $this->read);
+        $this->read_count = $this->read;
         # 写 - 连接
         $this->write_connections = $this->createDb($this->write_database, $this->write);
+        $this->write_count = $this->write;
         # 日志 - 连接
         $this->log_connections = $this->createDb($this->log_database, $this->log);
+        $this->log_count = $this->log;
         return $this;
     }
 
@@ -133,6 +136,84 @@ class MysqlPool extends AbstractPool {
      * @return void
     */
     public function timing_recovery($time, $workerId) {
+        // 30分钟检测一次连接是否存活
+        $outtime = 1800*1000;
+        \Swoole\Timer::tick($outtime, function () use($workerId) {
+            # 堵塞循环
+            $list = [];
+            $num = 0;
+            for ($i=0; $i<$this->read_count; $i++) {
+                $obj = $this->read_connections->get();
+                if ($obj) {
+                    try {
+                        $obj->getAttribute(\PDO::ATTR_SERVER_INFO);
+                    } catch (\Exception $e) {
+                        if ($e->getCode() == 'HY000') {
+                            $num++;
+                            continue;
+                        }
+                    }
+                    array_push($list, $obj);
+                } else {
+                    break;
+                }
+            }
+            foreach ($list as $item) {
+                $this->read_connections->put($item);
+            }
+            $this->read_count = $this->read_count-$num;
+            unset($list);
+
+            # 堵塞循环
+            $list = [];
+            $num = 0;
+            for ($i=0; $i<$this->write_count; $i++) {
+                $obj = $this->write_connections->get();
+                if ($obj) {
+                    try {
+                        $obj->getAttribute(\PDO::ATTR_SERVER_INFO);
+                    } catch (\Exception $e) {
+                        if ($e->getCode() == 'HY000') {
+                            $num++;
+                            continue;
+                        }
+                    }
+                    array_push($list, $obj);
+                } else {
+                    break;
+                }
+            }
+            foreach ($list as $item) {
+                $this->write_connections->put($item);
+            }
+            $this->write_count = $this->write_count-$num;
+            unset($list);
+            
+            # 堵塞循环
+            $list = [];
+            $num = 0;
+            for ($i=0; $i<$this->log_count; $i++) {
+                $obj = $this->log_connections->get();
+                if ($obj) {
+                    try {
+                        $obj->getAttribute(\PDO::ATTR_SERVER_INFO);
+                    } catch (\Exception $e) {
+                        if ($e->getCode() == 'HY000') {
+                            $num++;
+                            continue;
+                        }
+                    }
+                    array_push($list, $obj);
+                } else {
+                    break;
+                }
+            }
+            foreach ($list as $item) {
+                $this->log_connections->put($item);
+            }
+            $this->log_count = $this->log_count-$num;
+            unset($list);
+        });
         // 5秒更新一次当前数据库连接数
         if (\x\Config::run()->get('mysql.is_monitor')) {
             \Swoole\Timer::tick(5000, function () use($workerId) {

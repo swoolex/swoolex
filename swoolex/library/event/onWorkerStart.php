@@ -80,7 +80,7 @@ class onWorkerStart
         // 启动数据库连接池
         \x\db\MysqlPool::run()->init();
         // 启动连接池检测定时器
-        \x\db\MysqlPool::run()->timing_recovery(\x\Config::run()->get('mysql.mysql_timing_recovery'), $workerId);
+        \x\db\MysqlPool::run()->timing_recovery($workerId);
 
     }
 
@@ -99,7 +99,7 @@ class onWorkerStart
             // 启动数据库连接池
             \x\redis\Redis2Pool::run()->init();
             // 启动连接池检测定时器
-            \x\redis\Redis2Pool::run()->timing_recovery(\x\Config::run()->get('redis.redis_timing_recovery'), $workerId);
+            \x\redis\Redis2Pool::run()->timing_recovery($workerId);
         }
     }
 }

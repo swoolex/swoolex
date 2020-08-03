@@ -132,7 +132,7 @@ class Redis2Pool{
      * @global 无
      * @return void
     */
-    public function timing_recovery($time, $workerId) {
+    public function timing_recovery($workerId) {
         // 5秒更新一次当前Redis连接数
         if (\x\Config::run()->get('redis.is_monitor')) {
             \Swoole\Timer::tick(5000, function () use($workerId) {

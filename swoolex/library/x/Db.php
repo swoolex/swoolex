@@ -33,6 +33,10 @@ class Db
      * 调试模式
     */
     private $debug;
+    /**
+     * 是否使用的连接池
+    */
+    private $is_pool;
     
     /**
      * 选择连接池
@@ -41,32 +45,46 @@ class Db
      * @version v1.2.8 + 2020.07.29
      * @deprecated 暂不启用
      * @global 无
-     * @param string $type 连接池类型select或者log，为空则为写入
+     * @param string $data 连接池类型select或者log，为空则为写入
      * @return void
     */
-    public function __construct($type=null) {
-        if (empty($type)) $type = 'create';
-        $this->type = $type;
-
-        switch ($type) {
-            case 'create':
-                $pool = \x\db\MysqlPool::run()->write_pop();
-            break;
-            case 'select':
-                $pool = \x\db\MysqlPool::run()->read_pop();
-            break;
-            case 'log':
-                $pool = \x\db\MysqlPool::run()->log_pop();
-            break;
-            default:
+    public function __construct($data=null) {
+        // 这里实现不使用连接池
+        if (is_array($data)) {
+            try {
+                $pool = new \PDO('mysql:dbname='.$data['database'].';host='.$data['host'].';port='.$data['port'], $data['user'], $data['password']);
+                $pool->exec('SET NAMES '.$data['charset'].';');
+            } catch (\PDOException $e) {
                 return false;
-            break;
+            }
+            $this->is_pool = false;
+        } else {
+            if (empty($data)) $data = 'create';
+            $this->type = $data;
+    
+            switch ($this->type) {
+                case 'create':
+                    $pool = \x\db\MysqlPool::run()->write_pop();
+                break;
+                case 'select':
+                    $pool = \x\db\MysqlPool::run()->read_pop();
+                break;
+                case 'log':
+                    $pool = \x\db\MysqlPool::run()->log_pop();
+                break;
+                default:
+                    return false;
+                break;
+            }
+            $this->is_pool = true;
         }
+        
         if (!$pool) {
             return false;
         }
 
         $this->debug = \x\Config::run()->get('app.de_bug');
+
         $this->pool = $pool;
 
         $this->sql_ref = new \ReflectionClass('\x\db\Sql');
@@ -84,20 +102,26 @@ class Db
      * @return void
     */
     public function return() {
-        switch ($this->type) {
-            case 'create':
-                return \x\db\MysqlPool::run()->write_free($this->pool);
-            break;
-            case 'select':
-                return \x\db\MysqlPool::run()->read_free($this->pool);
-            break;
-            case 'log':
-                return \x\db\MysqlPool::run()->log_free($this->pool);
-            break;
-            default:
-                return false;
-            break;
+        if ($this->is_pool) {
+            switch ($this->type) {
+                case 'create':
+                    return \x\db\MysqlPool::run()->write_free($this->pool);
+                break;
+                case 'select':
+                    return \x\db\MysqlPool::run()->read_free($this->pool);
+                break;
+                case 'log':
+                    return \x\db\MysqlPool::run()->log_free($this->pool);
+                break;
+                default:
+                    return false;
+                break;
+            }
+        } else {
+            $this->pool = null;
+            return true;
         }
+        
         return false;
     }
 

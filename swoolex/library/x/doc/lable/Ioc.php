@@ -30,31 +30,49 @@ class Ioc extends Basics
             foreach ($route['father'] as $key=>$val) {
                 if ($key == 'Ioc') {
                     foreach ($val as $v) {
-                        $args = [];
-                        if (!empty($v['args'])) {
-                            $args = $v['args'];
+                        $name = $v['name'];
+
+                        $length = strpos($v['class'], '(');
+                        // 类命名空间地址
+                        $class = substr($v['class'], 0, $length);
+                        // 构造方法参数
+                        $class_args = str_replace(["' ,", "', "], "',", substr($v['class'], $length+1, strlen($v['class'])-($length+2)));
+                        
+                        if ($length > 1 && !empty($class_args)) {
+                            $_arr = explode("',", $class_args);
+                            $args_arr = [];
+                            foreach ($_arr as $v) {
+                                $args_arr[] = rtrim(ltrim($v, "'"), "'");
+                            }
+                            $in_reflection = new \reflectionClass($class);
+                            $obj = $in_reflection->newInstanceArgs($args_arr); 
+                        } else {
+                            $class = str_replace([' ', '()'], '', $v['class']);
+                            $in_reflection = new \reflectionClass($class);
+                            $obj = $in_reflection->newInstance(); 
                         }
 
-                        $name = $v['name'];
-                        $in_reflection = new \ReflectionClass($v['class']);
-                        $obj = $in_reflection->newInstance(); 
-
-                        # 动态属性注入
-                        if (!$this->controller_method->isStatic()) {
-                            if (!empty($v['function'])) {
-                                $in_method = $in_reflection->getmethod($v['function']);
-                                $this->controller_instance->$name = $in_method->invokeArgs($obj, $args);
-                            } else {
-                                $this->controller_instance->$name = $obj;
+                        // 执行方法
+                        if (empty($v['function'])) {
+                            if ($this->controller_method->isStatic()) {
+                                return $this->route_error('Ioc Static');
                             }
-                        # 静态属性注入
+                            $this->controller_instance->$name = $obj;
                         } else {
-                            if (!empty($v['function'])) {
-                                $in_method = $in_reflection->getmethod($value['function']);
-                                $reflection->setStaticPropertyValue($name, $in_method->invokeArgs($obj, $args));
+                            $length = strpos($v['function'], '(');
+                            $function = substr($v['function'], 0, $length);
+                            $function_args = str_replace(["' ,", "', "], "',", substr($v['function'], $length+1, strlen($v['function'])-($length+2)));
+                            $args_arr = [];
+                            if ($length > 1 && !empty($function_args)) {
+                                $_arr = explode("',", $function_args);
+                                foreach ($_arr as $v) {
+                                    $args_arr[] = rtrim(ltrim($v, "'"), "'");
+                                }
                             } else {
-                                $reflection->setStaticPropertyValue($name, $obj);
+                                $function = str_replace([' ', '()'], '', $v['function']);
                             }
+                            $in_method = $in_reflection->getmethod($function);
+                            $this->controller_instance->$name = $in_method->invokeArgs($obj, $args_arr);
                         }
                     }
                 }
@@ -66,31 +84,47 @@ class Ioc extends Basics
             foreach ($route['own'] as $key=>$val) {
                 if ($key == 'Ioc') {
                     foreach ($val as $v) {
-                        $args = [];
-                        if (!empty($v['args'])) {
-                            $args = $v['args'];
+                        $name = $v['name'];
+                        $length = strpos($v['class'], '(');
+                        // 类命名空间地址
+                        $class = substr($v['class'], 0, $length);
+                        // 构造方法参数
+                        $class_args = str_replace(["' ,", "', "], "',", substr($v['class'], $length+1, strlen($v['class'])-($length+2)));
+                        if ($length > 1 && !empty($class_args)) {
+                            $_arr = explode("',", $class_args);
+                            $args_arr = [];
+                            foreach ($_arr as $v) {
+                                $args_arr[] = rtrim(ltrim($v, "'"), "'");
+                            }
+                            $in_reflection = new \reflectionClass($class);
+                            $obj = $in_reflection->newInstanceArgs($args_arr); 
+                        } else {
+                            $class = str_replace([' ', '()'], '', $v['class']);
+                            $in_reflection = new \reflectionClass($class);
+                            $obj = $in_reflection->newInstance(); 
                         }
 
-                        $name = $v['name'];
-                        $in_reflection = new \ReflectionClass($v['class']);
-                        $obj = $in_reflection->newInstance(); 
-
-                        # 动态属性注入
-                        if (!$this->controller_method->isStatic()) {
-                            if (!empty($v['function'])) {
-                                $in_method = $in_reflection->getmethod($v['function']);
-                                $this->controller_instance->$name = $in_method->invokeArgs($obj, $args);
-                            } else {
-                                $this->controller_instance->$name = $obj;
+                        // 执行方法
+                        if (empty($v['function'])) {
+                            if ($this->controller_method->isStatic()) {
+                                return $this->route_error('Ioc Static');
                             }
-                        # 静态属性注入
+                            $this->controller_instance->$name = $obj;
                         } else {
-                            if (!empty($v['function'])) {
-                                $in_method = $in_reflection->getmethod($value['function']);
-                                $reflection->setStaticPropertyValue($name, $in_method->invokeArgs($obj, $args));
+                            $length = strpos($v['function'], '(');
+                            $function = substr($v['function'], 0, $length);
+                            $function_args = str_replace(["' ,", "', "], "',", substr($v['function'], $length+1, strlen($v['function'])-($length+2)));
+                            $args_arr = [];
+                            if ($length > 1 && !empty($function_args)) {
+                                $_arr = explode("',", $function_args);
+                                foreach ($_arr as $v) {
+                                    $args_arr[] = rtrim(ltrim($v, "'"), "'");
+                                }
                             } else {
-                                $reflection->setStaticPropertyValue($name, $obj);
+                                $function = str_replace([' ', '()'], '', $v['function']);
                             }
+                            $in_method = $in_reflection->getmethod($function);
+                            $this->controller_instance->$name = $in_method->invokeArgs($obj, $args_arr);
                         }
                     }
                 }

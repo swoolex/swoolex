@@ -135,14 +135,15 @@ class MysqlPool extends AbstractPool {
      * @global 无
      * @return void
     */
-    public function timing_recovery($time, $workerId) {
-        // 30分钟检测一次连接是否存活
-        $outtime = 1800*1000;
+    public function timing_recovery($workerId) {
+        // 15分钟检测一次连接是否存活
+        $outtime = 900*1000;
         \Swoole\Timer::tick($outtime, function () use($workerId) {
             # 堵塞循环
             $list = [];
             $num = 0;
-            for ($i=0; $i<$this->read_count; $i++) {
+            $max = ceil($this->read_count / 2);
+            for ($i=0; $i<$max; $i++) {
                 $obj = $this->read_connections->get();
                 if ($obj) {
                     try {
@@ -161,13 +162,18 @@ class MysqlPool extends AbstractPool {
             foreach ($list as $item) {
                 $this->read_connections->put($item);
             }
+            // 补充连接池
+            for ($i=0; $i<$num; $i++) {
+                $this->read_connections->put(null);
+            }
             $this->read_count = $this->read_count-$num;
             unset($list);
 
             # 堵塞循环
             $list = [];
             $num = 0;
-            for ($i=0; $i<$this->write_count; $i++) {
+            $max = ceil($this->write_count / 2);
+            for ($i=0; $i<$max; $i++) {
                 $obj = $this->write_connections->get();
                 if ($obj) {
                     try {
@@ -186,13 +192,18 @@ class MysqlPool extends AbstractPool {
             foreach ($list as $item) {
                 $this->write_connections->put($item);
             }
+            // 补充连接池
+            for ($i=0; $i<$num; $i++) {
+                $this->write_connections->put(null);
+            }
             $this->write_count = $this->write_count-$num;
             unset($list);
             
             # 堵塞循环
             $list = [];
             $num = 0;
-            for ($i=0; $i<$this->log_count; $i++) {
+            $max = ceil($this->log_count / 2);
+            for ($i=0; $i<$max; $i++) {
                 $obj = $this->log_connections->get();
                 if ($obj) {
                     try {
@@ -210,6 +221,10 @@ class MysqlPool extends AbstractPool {
             }
             foreach ($list as $item) {
                 $this->log_connections->put($item);
+            }
+            // 补充连接池
+            for ($i=0; $i<$num; $i++) {
+                $this->log_count->put(null);
             }
             $this->log_count = $this->log_count-$num;
             unset($list);

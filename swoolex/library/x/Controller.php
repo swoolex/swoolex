@@ -237,7 +237,7 @@ class Controller
             return false;
         }
 
-        $suffix_array = explode(',', str_replace(['.', ' '], '', $config['type']));
+        $suffix_array = explode(',', str_replace(['.', ' '], '', $config['ext']));
         $suffix = str_replace([
             'image/',
             'application/',
@@ -266,7 +266,7 @@ class Controller
         
         $cutting = substr($config['path'], strlen($config['path'])-1, 1);
         if ($cutting != '/' && $cutting != '\\') {
-            $config['path'].'/';
+            $config['path'] .= '/';
         }
         $config['path'] .= date('Ymd', time()).'/';
 
@@ -304,7 +304,7 @@ class Controller
         }
 
         $this->file_name = $name;
-        $this->file_path = str_replace(ROOT_PATH, '', $name);
+        $this->file_path = str_replace(ROOT_PATH, '', $config['path'].$name);
         return $this;
     }
 

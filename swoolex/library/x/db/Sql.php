@@ -341,8 +341,9 @@ class Sql extends AbstractSql {
         if ($status && $this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
+            if ($res === false) return false;
             $list = $res->fetchAll(\PDO::FETCH_NAMED);
-            if (empty($list)) return false;
+            if (empty($list)) return [];
             return $list;
         }
         return $sql;
@@ -363,6 +364,7 @@ class Sql extends AbstractSql {
         if ($status && $this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
+            if ($res === false) return false;
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
             return $info;
@@ -523,6 +525,8 @@ class Sql extends AbstractSql {
             if (!$res) return false;
 
             $res = $this->Db->query('SELECT LAST_INSERT_ID() as num;');
+            if ($res === false) return false;
+
             $list = $res->fetchAll(\PDO::FETCH_NAMED);
             if (empty($list)) return false;
             return $list[0]['num'];
@@ -596,6 +600,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
+            if ($res === false) return false;
+
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
             
@@ -622,6 +628,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
+            if ($res === false) return false;
+
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
 
@@ -648,6 +656,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
+            if ($res === false) return false;
+
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
 
@@ -674,6 +684,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
+            if ($res === false) return false;
+
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
 
@@ -700,6 +712,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
+            if ($res === false) return false;
+
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
 
@@ -726,6 +740,8 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
+            if ($res === false) return false;
+            
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
 

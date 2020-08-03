@@ -18,7 +18,7 @@ class Param extends Basics
      * 启动项
      * @todo 无
      * @author 小黄牛
-     * @version v1.2.1 + 2020.07.18
+     * @version v1.2.10 + 2020.07.30
      * @deprecated 暂不启用
      * @global 无
      * @param array $route 路由参数
@@ -81,7 +81,7 @@ class Param extends Basics
                 }
                 
                 // 参数预设
-                if (isset($val['value']) && empty($param) && $param != '0') {
+                if (isset($val['value']) && $this->isset_empty($param) == false) {
                     $param = $val['value'];
                     if ($is_get) $this->request->get[$name] = $val['value'];
                     if ($is_post) $this->request->post[$name] = $val['value'];
@@ -167,4 +167,20 @@ class Param extends Basics
         return $this->_return();
     }
 
+    /**
+     * 判断参数是否真null
+     * 如果是真的null会返回false
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.0.1 + 2020.07.24
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $param
+     * @return bool
+    */
+    private function isset_empty($param) {
+        if (!isset($param)) return false;
+        if (trim($param) == '') return false;
+        return true;
+    }
 }

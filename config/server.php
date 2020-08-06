@@ -56,6 +56,8 @@ return [
     'heartbeat_check_interval' => false,
     // 最大允许的空闲时间(S)
     'heartbeat_idle_time' => 120,
+    // 设置最大数据包尺寸，单位为字节(该参数关系HTTP文件上传的最大文件大小)
+    'package_max_length' => 1024*1024*2,
 
     // +-----------------------------
     // | Swoole 各个进程的进程别名

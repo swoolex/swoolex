@@ -54,6 +54,7 @@ class Server
             'open_tcp_keepalive' => $config['open_tcp_keepalive'],
             'heartbeat_check_interval' => $config['heartbeat_check_interval'],
             'heartbeat_idle_time' => $config['heartbeat_idle_time'],
+            'package_max_length' => $config['package_max_length'],
         ];
         if ($config['backlog']) $set['backlog'] = $config['backlog'];
         if ($config['reactor_num']) $set['reactor_num'] = $config['reactor_num'];

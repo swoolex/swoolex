@@ -45,7 +45,7 @@ class controller_error
             $obj = new \x\Controller();
             $obj->fetch($html);
         // websocket请求
-        } else if(\x\Container::getInstance()->has('server')) {
+        } else if(\x\Container::getInstance()->has('websocket_server')) {
             $obj = new \x\WebSocket();
             $obj->fetch('route_error', 'error', $error);
         }

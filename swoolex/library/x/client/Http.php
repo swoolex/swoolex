@@ -235,7 +235,7 @@ class Http
         if (!$this->client_class->hasMethod($name)) return false;
 
         $obj = $this->client_class->getmethod($name);
-        $this->client = $obj->invokeArgs($this->client, $arguments);
+        $obj->invokeArgs($this->client, $arguments);
         return $this;
     }
 }

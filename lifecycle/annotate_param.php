@@ -39,7 +39,7 @@ class annotate_param
             $obj = new \x\controller();
             $obj->fetch($tips);
         // websocket请求
-        } else if(\x\Container::getInstance()->has('server')) {
+        } else if(\x\Container::getInstance()->has('websocket_server')) {
             $obj = new \x\WebSocket();
             $obj->fetch('annotate_param_error', 'error', $tips);
         }

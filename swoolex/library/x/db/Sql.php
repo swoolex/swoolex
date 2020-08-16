@@ -436,7 +436,7 @@ class Sql extends AbstractSql {
         $sql .= ' SET ';
 
         foreach ($data as $key=>$val) {
-            $sql .= $key.'='.$this->int_string($val).',';
+            $sql .= '`'.$key.'`='.$this->int_string($val).',';
         }
         $sql = rtrim($sql, ',');
         $sql = $this->where_sql($sql).';';
@@ -471,8 +471,9 @@ class Sql extends AbstractSql {
         $field = ' (';
         $array = reset($list);
         foreach ($array as $key=>$val) {
-            $field .= $key.',';
+            $field .= '`'.$key.'`,';
         }
+        
         $sql .= rtrim($field, ',').')';
 
         $sql .= ' VALUES ';
@@ -508,7 +509,7 @@ class Sql extends AbstractSql {
 
         $field = ' (';
         foreach ($data as $key=>$val) {
-            $field .= $key.',';
+            $field .= '`'.$key.'`,';
         }
         $sql .= rtrim($field, ',').')';
 
@@ -549,7 +550,7 @@ class Sql extends AbstractSql {
         $sql = 'UPDATE';
         $sql .= ' '.$this->table;
         $sql .= ' SET';
-        $sql .= ' '.$field.'='.$field.'+'.$num;
+        $sql .= ' `'.$field.'`='.$field.'+'.$num;
         $sql = $this->where_sql($sql).';';
 
         if ($this->debug==false) {
@@ -573,7 +574,7 @@ class Sql extends AbstractSql {
         $sql = 'UPDATE';
         $sql .= ' '.$this->table;
         $sql .= ' SET';
-        $sql .= ' '.$field.'='.$field.'-'.$num;
+        $sql .= ' `'.$field.'`='.$field.'-'.$num;
         $sql = $this->where_sql($sql).';';
         
         if ($this->debug==false) {

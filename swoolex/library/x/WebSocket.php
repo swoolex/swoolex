@@ -64,6 +64,7 @@ class WebSocket
         if ($config['aes_key']) {
             $data = self::decrypt($data);
         }
+
         return json_decode($data, true);
     }
 
@@ -79,13 +80,16 @@ class WebSocket
      * @param string $msg 说明
      * @param mixed $data 结果集
      * @param string $fd 推送标记
+     * @param string $websocket_server websocket的连接实例，用于在定时器、sw事件中传入
      * @return void
     */
-    public final function fetch($action, $msg='success', $data=[], $fd=null) {
-        $websocket_frame = \x\Container::getInstance()->get('websocket_frame');
-        $websocket_server = \x\Container::getInstance()->get('websocket_server');
+    public final function fetch($action, $msg='success', $data=[], $fd=null, $websocket_server=null) {
+        if (!$websocket_server) $websocket_server = \x\Container::getInstance()->get('websocket_server');
 
-        if (!$fd) $fd = $websocket_frame->fd;
+        if (!$fd) {
+            $websocket_frame = \x\Container::getInstance()->get('websocket_frame');
+            $fd = $websocket_frame->fd;
+        }
         $config = \x\Config::run()->get('websocket');
         $array = [
             'action' => $action,

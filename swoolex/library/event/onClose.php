@@ -36,6 +36,10 @@ class onClose
         // 调用二次转发，不做重载
         $on = new \app\event\onClose;
         $on->run($server, $fd, $reactorId);
+
+        // 销毁整个请求级容器
+        \x\Container::getInstance()->clear();
+
     }
 }
 

@@ -62,6 +62,16 @@ class onWorkerStart
         // 启动Redis连接池
         $this->start_redis($workerId);
         
+        // 自动载入所有定时任务
+        if ($workerId == 0) {
+            $crontab_list = \x\Config::run()->get('crontab');
+            foreach($crontab_list as $app=>$fun){
+                // 载入定时器
+                $obj = new $app();
+                $obj->$fun($server);
+            }
+        }
+        
         // 调用二次转发，不做重载
         $on = new \app\event\onWorkerStart;
         $on->run($server, $workerId);

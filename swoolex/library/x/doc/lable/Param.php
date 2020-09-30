@@ -158,7 +158,7 @@ class Param extends Basics
                 if (\x\Config::run()->get('websocket.aes_key')) {
                     $this->websocket_frame->data = \x\WebSocket::encrypt($websocket_list);
                 } else {
-                    $this->websocket_frame->data = $websocket_list;
+                    $this->websocket_frame->data = json_encode($websocket_list, JSON_UNESCAPED_UNICODE);
                 }
             }
         }

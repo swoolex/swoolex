@@ -30,6 +30,10 @@ class onOpen
      * @return void
     */
     public function run($server, $request) {
+        // 记录到请求容器
+        \x\Container::getInstance()->set('websocket_frame', $request);
+        \x\Container::getInstance()->set('websocket_server', $server);
+
         $this->server = $server;
         // 调用二次转发，不做重载
         $on = new \app\event\onOpen;

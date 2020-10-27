@@ -26,12 +26,9 @@ class controller_error
      * @return bool
     */
     public function run($e, $error, $source) {
-        // websocket请求
-        if(\x\Container::getInstance()->has('websocket_server')) {
-            $obj = new \x\WebSocket();
-            $obj->fetch('route_error', 'error', $error);
+        $type = \x\Config::run()->get('server.sw_service_type');
         // HTTP请求
-        } else if (\x\Container::getInstance()->has('request')) {
+        if ($type == 'http') {
             // 开启调试模式则记录错误日志
             if (\x\Config::run()->get('app.de_bug') == true) {
                 # 引入详细报错页面
@@ -48,6 +45,10 @@ class controller_error
 
             $obj = new \x\Controller();
             $obj->fetch($html);
+        // websocket请求
+        } else  if($type == 'websocket') {
+            $obj = new \x\WebSocket();
+            $obj->fetch('route_error', 'error', $error);
         }
         unset($obj);
         return true;

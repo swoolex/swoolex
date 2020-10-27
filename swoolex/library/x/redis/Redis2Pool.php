@@ -105,6 +105,7 @@ class Redis2Pool{
     */
     public function pop() {
         $this->count--;
+        if (!$this->connections) return false;
         return $this->connections->get();
     }
 
@@ -120,6 +121,7 @@ class Redis2Pool{
     */
     public function free($obj) {
         $this->count++;
+        if (!$this->connections) return false;
         return $this->connections->put($obj);
     }
     

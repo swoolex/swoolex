@@ -95,7 +95,7 @@ class Param extends Basics
                 if (isset($val['empty']) && $val['empty'] == 'true') {
                     if (!isset($param)) {
                         $null = true;
-                    } else if (trim($param) == '') {
+                    } else if (is_array($param) == false && trim($param) == '') {
                         $null = true;
                     }
                 }
@@ -105,50 +105,52 @@ class Param extends Basics
                     return $this->param_error_callback($callback, $tips, $name, 'NULL');
                 }
 
-                // 类型判断
-                if (!empty($val['type']) && !empty($param)) {
-                    $param_type = explode('|', $val['type']);
-                    $param_status = false;
-                    $attach = '';
-                    foreach ($param_type as $v) {
-                        $is = 'is_'.$v;
-                        if ($is($param)) {
-                            $param_status = true;
-                        } else {
-                            $attach .= $is.'、';
+                if (is_array($param) == false) {
+                    // 类型判断
+                    if (!empty($val['type']) && !empty($param)) {
+                        $param_type = explode('|', $val['type']);
+                        $param_status = false;
+                        $attach = '';
+                        foreach ($param_type as $v) {
+                            $is = 'is_'.$v;
+                            if ($is($param)) {
+                                $param_status = true;
+                            } else {
+                                $attach .= $is.'、';
+                            }
+                        }
+                        // 全都没通过
+                        if ($param_status === false) {
+                            // 中断
+                            return $this->param_error_callback($callback, $tips, $name, 'TYPE', rtrim($attach, '、'));
                         }
                     }
-                    // 全都没通过
-                    if ($param_status === false) {
-                        // 中断
-                        return $this->param_error_callback($callback, $tips, $name, 'TYPE', rtrim($attach, '、'));
-                    }
-                }
 
-                // 长度判断
-                $chinese = false;
-                if (!empty($val['chinese']) && $val['chinese'] == 'true') {
-                    $chinese = true;
-                }
-                if ($chinese) {
-                    $length = mb_strlen($param, 'UTF8'); 
-                } else {
-                    $length = strlen($param); 
-                }
-                // 最小长度判断
-                if (!empty($val['min']) && $val['min'] > $length) {
-                    // 中断
-                    return $this->param_error_callback($callback, $tips, $name, 'MIN');
-                }
-                // 最大长度判断
-                if (!empty($val['max']) && $val['max'] < $length) {
-                    // 中断
-                    return $this->param_error_callback($callback, $tips, $name, 'MAX');
-                }
-                // 正则判断regular
-                if (!empty($val['regular']) && !preg_match($val['regular'], $param)) {
-                    // 中断
-                    return $this->param_error_callback($callback, $tips, $name, 'REGULAR', $val['regular']);
+                    // 长度判断
+                    $chinese = false;
+                    if (!empty($val['chinese']) && $val['chinese'] == 'true') {
+                        $chinese = true;
+                    }
+                    if ($chinese) {
+                        $length = mb_strlen($param, 'UTF8'); 
+                    } else {
+                        $length = strlen($param); 
+                    }
+                    // 最小长度判断
+                    if (!empty($val['min']) && $val['min'] > $length) {
+                        // 中断
+                        return $this->param_error_callback($callback, $tips, $name, 'MIN');
+                    }
+                    // 最大长度判断
+                    if (!empty($val['max']) && $val['max'] < $length) {
+                        // 中断
+                        return $this->param_error_callback($callback, $tips, $name, 'MAX');
+                    }
+                    // 正则判断regular
+                    if (!empty($val['regular']) && !preg_match($val['regular'], $param)) {
+                        // 中断
+                        return $this->param_error_callback($callback, $tips, $name, 'REGULAR', $val['regular']);
+                    }
                 }
             }
 

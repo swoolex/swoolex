@@ -145,7 +145,6 @@ class Http
         }
         // 端口
         if (isset($array['port'])) {
-            $this->domain .= ':'.$array['port'];
             $this->port = $array['port'];
         }
         // API地址

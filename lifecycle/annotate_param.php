@@ -34,12 +34,13 @@ class annotate_param
             }
         }
         
+        $type = \x\Config::run()->get('server.sw_service_type');
         // HTTP请求
-        if (\x\Container::getInstance()->has('request')) {
+        if ($type == 'http') {
             $obj = new \x\controller();
             $obj->fetch($tips);
         // websocket请求
-        } else if(\x\Container::getInstance()->has('websocket_server')) {
+        } else if($type == 'websocket') {
             $obj = new \x\WebSocket();
             $obj->fetch('annotate_param_error', 'error', $tips);
         }

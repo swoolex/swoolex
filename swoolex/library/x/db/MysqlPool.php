@@ -51,6 +51,7 @@ class MysqlPool extends AbstractPool {
     */
     public function read_pop() {
         $this->read_count--;
+        if (!$this->read_connections) return false;
         return $this->read_connections->get();
     }
 
@@ -66,6 +67,7 @@ class MysqlPool extends AbstractPool {
     */
     public function read_free($obj) {
         $this->read_count++;
+        if (!$this->read_connections) return false;
         return $this->read_connections->put($obj);
     }
     
@@ -80,6 +82,7 @@ class MysqlPool extends AbstractPool {
     */
     public function write_pop() {
         $this->write_count--;
+        if (!$this->write_connections) return false;
         return $this->write_connections->get();
     }
 
@@ -95,6 +98,7 @@ class MysqlPool extends AbstractPool {
     */
     public function write_free($obj) {
         $this->write_count++;
+        if (!$this->write_connections) return false;
         return $this->write_connections->put($obj);
     }
 
@@ -109,6 +113,7 @@ class MysqlPool extends AbstractPool {
     */
     public function log_pop() {
         $this->log_count--;
+        if (!$this->log_connections) return false;
         return $this->log_connections->get();
     }
     /**
@@ -123,6 +128,7 @@ class MysqlPool extends AbstractPool {
     */
     public function log_free($obj) {
         $this->log_count++;
+        if (!$this->log_connections) return false;
         return $this->log_connections->put($obj);
     }
 

@@ -158,7 +158,11 @@ class Sql extends AbstractSql {
                     $where = rtrim($where, 'OR ').')';
                     $this->where[] = $where;
                 } else {
-                    $this->where[] = $v[0].' '.$v[1].' '.$this->int_string($v[2]);
+                    if ($v[2] === null) {
+                        $this->where[] = $v[0].' '.$v[1];
+                    } else {
+                        $this->where[] = $v[0].' '.$v[1].' '.$this->int_string($v[2]);
+                    }
                 }
             }
         } else {

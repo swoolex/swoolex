@@ -13,6 +13,7 @@ namespace app\controller\test;
 use x\Controller;
 
 /**
+ * @Test(msg="我是自定义的注解")
  * @Controller(prefix="ceshi")
 */
 class index extends Controller
@@ -20,6 +21,7 @@ class index extends Controller
     public static $all;
 
     /**
+     * @Test(msg="我是自定义的注解")
      * @RequestMapping(route="/index", method="GET", title="测试文件上传")
     */
     public function A() {

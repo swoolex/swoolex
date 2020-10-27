@@ -125,6 +125,9 @@ class Route
         // 环绕操作
         $ret = (new \x\doc\lable\AopAround())->run($route);
         if ($ret !== true) return $ret;
+        // 自定义注解
+        $ret = $this->diy_annotation($route);
+        if ($ret !== true) return $ret;
         // 异常操作 - 在这里触发控制器
         $ret = (new \x\doc\lable\AopThrows())->run($route);
         if ($ret !== true) return $ret;
@@ -136,6 +139,64 @@ class Route
         if ($ret !== true) return $ret;
 
         return false;
+    }
+
+    /**
+     * 自定义注解载入
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array $route 被找到的路由
+     * @return bool
+    */
+    private function diy_annotation($route) {
+        /**
+         * 内置注解标签大全
+        */
+        $arr = [
+            'RequestMapping',
+            'Ioc',
+            'AopBefore',
+            'AopAfter',
+            'AopAround',
+            'AopThrows',
+            'Param',
+            'Controller',
+            'onRoute',
+        ];
+        // 注册自定义注解类
+        // 控制器注解
+        foreach ($route['father'] as $k=>$v) {
+            if (in_array($k, $arr) == false) {
+                // 自定义注解类地址
+                $file = ROOT_PATH.'/annotation/'.$k.'.php';
+                // 存在则载入
+                if (file_exists($file)) {
+                    $class = '\annotation\\'.$k;
+                    $obj = new $class;
+                    $ret = $obj->run($v, 1);
+                    if ($ret !== true) return $ret;
+                }
+            }
+        }
+        // 操作方法注解
+        foreach ($route['own'] as $k=>$v) {
+            if (in_array($k, $arr) == false) {
+                // 自定义注解类地址
+                $file = ROOT_PATH.'/annotation/'.$k.'.php';
+                // 存在则载入
+                if (file_exists($file)) {
+                    $class = '\annotation\\'.$k;
+                    $obj = new $class;
+                    $ret = $obj->run($v, 2);
+                    if ($ret !== true) return $ret;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**

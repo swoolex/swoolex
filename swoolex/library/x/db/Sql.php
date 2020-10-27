@@ -156,26 +156,87 @@ class Sql extends AbstractSql {
                         $where .= '('.$val.' '.$v[1].' '.$this->int_string($v[2]).') OR ';
                     }
                     $where = rtrim($where, 'OR ').')';
-                    $this->where[] = $where;
+                    $this->where[] = [$where, 1];
                 } else {
                     if ($v[2] === null) {
-                        $this->where[] = $v[0].' '.$v[1];
+                        $this->where[] = [($v[0].' '.$v[1]), 1];
                     } else {
-                        $this->where[] = $v[0].' '.$v[1].' '.$this->int_string($v[2]);
+                        $this->where[] = [($v[0].' '.$v[1].' '.$this->int_string($v[2])), 1];
                     }
                 }
             }
         } else {
             if ($value !== false) {
-                $this->where[] = $field.' '.$operator.' '.$this->int_string($value);
+                $this->where[] = [($field.' '.$operator.' '.$this->int_string($value)), 1];
             } else if ($operator !== null) {
-                $this->where[] = $field.'='.$this->int_string($operator);
+                $this->where[] = [($field.'='.$this->int_string($operator)), 1];
             } else {
-                $this->where[] = $field;
+                $this->where[] = [$field, 1];
             }
         }
         return $this;
-    } 
+    }
+    /**
+     * 条件IN
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $field 只可以是字段
+     * @param string $in 条件
+     * @return void
+    */
+    public function whereIn($field, $in) {
+        if (stripos($in, '(') === false) {
+            $in = '('.$in.')';
+        }
+        $this->where[] = [$field.' IN '.$in, 1];
+        return $this;
+    }
+    /**
+     * 条件NotIn
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $field 只可以是字段
+     * @param string $in 条件
+     * @return void
+    */
+    public function whereNotIn($field, $in) {
+        if (stripos($in, '(') === false) {
+            $in = '('.$in.')';
+        }
+        $this->where[] = [$field.' NOT IN '.$in, 1];
+        return $this;
+    }
+    /**
+     * 条件OR
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $field 只可以是字段
+     * @param string $operator 表达式
+     * @param string $value 条件
+     * @return void
+    */
+    public function whereOr($field, $operator=null, $value=false) {
+        if (!$field) return $this;
+        
+        if ($value !== false) {
+            $this->where[] = [($field.' '.$operator.' '.$this->int_string($value)), 2];
+        } else if ($operator !== null) {
+            $this->where[] = [($field.'='.$this->int_string($operator)), 2];
+        } else {
+            $this->where[] = [$field, 2];
+        }
+
+        return $this;
+    }
     /**
      * 时间条件
      * @todo 无
@@ -211,7 +272,7 @@ class Sql extends AbstractSql {
         }
         
         if ($ret) {
-            $this->where[] = $ret;
+            $this->where[] = [$ret, 1];
         }
 
         return $this;
@@ -342,6 +403,7 @@ class Sql extends AbstractSql {
     */
     public function select($status=true) {
         $sql = $this->select_sql(false);
+
         if ($status && $this->debug==false) {
             $this->clean_up();
             $res = $this->Db->query($sql);
@@ -350,6 +412,7 @@ class Sql extends AbstractSql {
             if (empty($list)) return [];
             return $list;
         }
+
         return $sql;
     }
     /**
@@ -373,6 +436,7 @@ class Sql extends AbstractSql {
             if (empty($info)) return false;
             return $info;
         }
+
         return $sql;
     }
     /**
@@ -797,14 +861,61 @@ class Sql extends AbstractSql {
     */
     private function where_sql($sql) {
         if ($this->where) {
-            $sql .= ' where';
+            $list_sql = [];
+            $status = false;
+            $top_type = false;
+            $num = count($this->where);
+
             foreach ($this->where as $k=>$v) {
                 if ($k == 0) {
-                    $sql .= ' '.$v;
+                    $list = [];
+                    $list[] = $v;
                 } else {
-                    $sql .= ' AND '.$v;
+                    $type = $this->where[($k-1)][1];
+                    if ($v[1] != $this->where[($k-1)][1]) {
+                        $list_sql[] = [$list, $type];
+                        $list = [];
+                    }
+                    $list[] = $v;
                 }
             }
+            if (isset($list)) {
+                $list_sql[] = [$list, $v[1]];
+            }
+            $where = '';
+            $num = count($list_sql);
+            foreach ($list_sql as $k=>$v) {
+                if ($v[1] == 1) {
+                    $sql_str = '(';
+                    foreach ($v[0] as $val) {
+                        $sql_str .= $val[0].' AND ';
+                    }
+                    $sql_str = rtrim($sql_str, 'AND ').')';
+                } else {
+                    $sql_str = '';
+                    foreach ($v[0] as $val) {
+                        $sql_str .= $val[0].' OR ';
+                    }
+                    $sql_str = rtrim($sql_str, 'OR ');
+                }
+
+                if ($k < $num) {
+                    if (!empty($top_sql)) {
+                        $where .= '('.$top_sql.' OR '.$sql_str.')';
+                    } else {
+                        $where .= ' AND ';
+                    }
+                    $top_type = $list_sql[($k+1)][1] ?? 0;
+                    if ($v[1] == 1 && $top_type == 2) {
+                        $top_sql = $sql_str;
+                    } else {
+                        if (empty($top_sql)) $where .= $sql_str;
+                        $top_sql = '';
+                    }
+                }
+            }
+            $where = ltrim($where, ' AND ');
+            $sql .= ' where '.$where;
         }
         return $sql;
     }

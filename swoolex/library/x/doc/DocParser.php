@@ -113,7 +113,10 @@ class DocParser
 
             $array = explode('(', $string);
             $param = $array[0];
-            if ($this->check($param) == false) return false;
+
+            // 开放自定义注解
+            // if ($this->check($param) == false) return false;
+
             $string = str_replace($param.'(', '', $string);
             $value = substr($string, 0, strlen($string)-1);
             $value = preg_replace ( "/\s(?=\s)/","\\1", $value );
@@ -133,14 +136,23 @@ class DocParser
 
                 $return[$key] = $val;
             }
-            # Ioc的需要特殊存储
-            if ($param == 'Ioc' || $param == 'Param') {
+            # 以下内置注解不需要特殊存储
+            $arr = [
+                'RequestMapping',
+                'AopBefore',
+                'AopAfter',
+                'AopAround',
+                'AopThrows',
+                'Controller',
+                'onRoute',
+            ];
+            if (in_array($param, $arr)) {
+                $this->params[$param] = $return;
+            } else {
                 $index = 0;
                 if (isset($this->params[$param])) $index = count($this->params[$param]);
                 
                 $this->params[$param][$index] = $return;
-            } else {
-                $this->params[$param] = $return;
             }
             return true;
         }

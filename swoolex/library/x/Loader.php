@@ -78,7 +78,7 @@ class Loader
      * 注册自动加载机制
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.25
+     * @version v1.2.16 + 2020.10.27
      * @deprecated 暂不启用
      * @global 无
      * @param string $autoload 需要注册的空间地址
@@ -119,6 +119,7 @@ class Loader
             'app' => ROOT_PATH.'/app/',
             'extend' => ROOT_PATH.'/extend/',
             'lifecycle' => ROOT_PATH.'/lifecycle/',
+            'annotation' => ROOT_PATH.'/annotation/',
         ]);
         // 加载类库映射文件
         if (is_file($rootPath . 'config' . DIRECTORY_SEPARATOR . 'classmap.php')) {
@@ -130,7 +131,6 @@ class Loader
 
         // 自动加载extend目录
         self::addAutoLoadDir($rootPath . 'extend');
-        self::addAutoLoadDir($rootPath . 'lifecycle');
     }
 
     /**

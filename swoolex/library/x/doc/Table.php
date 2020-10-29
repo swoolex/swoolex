@@ -58,8 +58,14 @@ class Table
         $this->add_list($list, $cutting, 'websocket');
 
         // 新增生命周期回调事件
+        $route = $this->route();
         $obj = new \lifecycle\route_start();
-        $obj->run($this->route());
+        $obj->run($route);
+
+        // 写入路由缓存
+        $route_file = \x\Config::run()->get('server.route_file');
+        $json = json_encode($route, JSON_UNESCAPED_UNICODE);
+        file_put_contents($route_file, $json);
     }
 
     /**

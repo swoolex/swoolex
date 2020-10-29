@@ -25,6 +25,20 @@ class Ioc extends Basics
      * @return true
     */
     public function run($route){
+        // HTTP请求
+        if (!empty($this->request->server['request_method'])) {
+            if ($this->request->server['request_method'] == 'GET') {
+                $param = $this->request->get;
+            } else {
+                $param = $this->request->post;
+            }
+            // 收到了单元测试发起请求
+            if (!empty($param['SwooleXTestCase']) && $param['SwooleXTestCase'] == 1) {
+                // 更新容器
+                return $this->_return();
+            }
+        }
+
         # 循环注入父容器
         if (isset($route['father'])) {
             foreach ($route['father'] as $key=>$val) {

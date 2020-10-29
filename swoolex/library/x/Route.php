@@ -119,6 +119,9 @@ class Route
         // 容器
         $ret = (new \x\doc\lable\Ioc())->run($route);
         if ($ret !== true) return $ret;
+        // 单元测试操作
+        $ret = (new \x\doc\lable\TestCase())->run($route);
+        if ($ret !== true) return $ret;
         // 前置操作
         $ret = (new \x\doc\lable\AopBefore())->run($route);
         if ($ret !== true) return $ret;
@@ -165,6 +168,7 @@ class Route
             'Param',
             'Controller',
             'onRoute',
+            'TestCase'
         ];
         // 注册自定义注解类
         // 控制器注解

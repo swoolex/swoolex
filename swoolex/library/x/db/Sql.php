@@ -58,6 +58,10 @@ class Sql extends AbstractSql {
     */
     private $prefix;
     /**
+     * TestCase唯一别名
+    */
+    public $test_case;
+    /**
      * 不执行sql
     */
     private $debug = false;
@@ -370,6 +374,20 @@ class Sql extends AbstractSql {
         return $this;
     }
     /**
+     * 测试用例别名设置
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.17 + 2020.10.29
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $name 别名
+     * @return void
+    */
+    public function test($name) {
+        $this->test_case = $name;
+        return $this;
+    }
+    /**
      * 链表
      * @todo 无
      * @author 小黄牛
@@ -402,6 +420,9 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function select($status=true) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         $sql = $this->select_sql(false);
 
         if ($status && $this->debug==false) {
@@ -426,6 +447,9 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function find($status=true) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         $sql = $this->select_sql(true);
 
         if ($status && $this->debug==false) {
@@ -465,6 +489,9 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function delete($status=true) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         // 无where条件不允许执行
         if (empty($this->where)) return false;
 
@@ -496,6 +523,9 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function update($data) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         // 无where条件不允许执行
         if (empty($this->where)) return false;
 
@@ -525,6 +555,9 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function insert($data) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         $list = [];
         # 检测是否单个新增
         if (!isset($data[0])) {
@@ -571,6 +604,8 @@ class Sql extends AbstractSql {
      * @return bool|int
     */
     public function insertGetId($data) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
 
         $sql = 'INSERT INTO';
         $sql .= ' '.$this->table;
@@ -615,6 +650,9 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function setInc($field, $num=1) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         $sql = 'UPDATE';
         $sql .= ' '.$this->table;
         $sql .= ' SET';
@@ -639,6 +677,9 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function setDec($field, $num=1) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         $sql = 'UPDATE';
         $sql .= ' '.$this->table;
         $sql .= ' SET';
@@ -662,6 +703,9 @@ class Sql extends AbstractSql {
      * @return mixed
     */
     public function count($field=false) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         $field = $field ?: '*';
         $this->field = 'COUNT('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
@@ -690,6 +734,9 @@ class Sql extends AbstractSql {
      * @return mixed
     */
     public function max($field=false) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         if ($field == false) return false;
         $this->field = 'MAX('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
@@ -718,6 +765,9 @@ class Sql extends AbstractSql {
      * @return mixed
     */
     public function min($field=false) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         if ($field == false) return false;
         $this->field = 'MIN('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
@@ -746,6 +796,9 @@ class Sql extends AbstractSql {
      * @return mixed
     */
     public function avg($field=false) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         if ($field == false) return false;
         $this->field = 'AVG('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
@@ -774,6 +827,9 @@ class Sql extends AbstractSql {
      * @return mixed
     */
     public function sum($field=false) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         if ($field == false) return false;
         $this->field = 'SUM('.$field.') AS '.$this->ploy_alias;
         $sql = $this->select_sql(true);
@@ -802,6 +858,9 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function value($field) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         if ($field == false) return false;
         $this->field = $field;
         $sql = $this->select_sql(true);
@@ -830,6 +889,9 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function query($sql) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         $res = $this->Db->query($sql);
         $info = $res->fetchAll(\PDO::FETCH_NAMED);
         if (empty($info)) return false;
@@ -847,6 +909,9 @@ class Sql extends AbstractSql {
      * @return void
     */
     public function exec($sql) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
         return $this->Db->exec($sql);
     }
     /**
@@ -1025,12 +1090,36 @@ class Sql extends AbstractSql {
 
         return $data;
     }
+    
+    /**
+     * 单元测试DB替换
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function testcase() {
+        if (\x\Container::getInstance()->has('testcase')) {
+            $obj = \x\Container::getInstance()->get('testcase');
+            $name = $this->test_case;
+            if (isset($obj->$name)) {
+                return $obj->$name;
+            } else {
+                $obj = new \lifecycle\testcase_callback();
+                $obj->run('Db-TestCase Key：'.$name.' 未定义'.PHP_EOL);
+                return false;
+            }
+        }
+        return 'SwooleXTestCase';
+    }
 
     /**
      * 由于是单例，用完就得清除某些共用成员
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.28
+     * @version v1.2.17 + 2020.10.29
      * @deprecated 暂不启用
      * @global 无
      * @return void
@@ -1047,5 +1136,6 @@ class Sql extends AbstractSql {
         $this->group = null;
         $this->join = null;
         $this->debug = false;
+        $this->test_case = null;
     }
 }

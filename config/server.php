@@ -78,6 +78,8 @@ return [
     'worker_pid_file' => ROOT_PATH.'/env/worker.pid', 
     // 记录tasker的进程id
     'tasker_pid_file' => ROOT_PATH.'/env/tasker.pid', 
+    // 记录路由的文件
+    'route_file' => ROOT_PATH.'/env/route_file.env', 
 
     // +-----------------------------
     // | WebSocket 服务的独立配置

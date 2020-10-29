@@ -120,6 +120,7 @@ class Loader
             'extend' => ROOT_PATH.'/extend/',
             'lifecycle' => ROOT_PATH.'/lifecycle/',
             'annotation' => ROOT_PATH.'/annotation/',
+            'testcase' => ROOT_PATH.'/testcase/',
         ]);
         // 加载类库映射文件
         if (is_file($rootPath . 'config' . DIRECTORY_SEPARATOR . 'classmap.php')) {

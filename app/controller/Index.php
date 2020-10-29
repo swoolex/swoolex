@@ -25,6 +25,24 @@ class Index extends Controller
     }
 
     /**
+     * @TestCase(class="/testcase/index/test", title="用例一")
+     * @TestCase(class="/testcase/index/test", title="用例二")
+     * @TestCase(class="/testcase/index/test", title="用例三")
+     * @RequestMapping(route="/testcase", method="get", title="单元测试注解demo")
+     * @Ioc(class="\x\Db", name="Db")
+    */
+    public function testcase() {
+        $list = $this->Db->name('admin')->test('A1')->find();
+        $this->Db->return();
+        
+        if ($list['name'] == '1') {
+            return $this->fetch('使用测试用例');
+        } else {
+            return $this->fetch($list['name']);
+        }
+    }
+
+    /**
      * @RequestMapping(route="test", method="get", title="测试获取整个应用路由")
     */
     public function test() {

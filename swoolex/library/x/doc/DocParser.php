@@ -31,6 +31,7 @@ class DocParser
         'Controller', // 控制器路由绑定
         'onRoute', // 不允许访问的路由
         'Param', // 参数过滤
+        'TestCase', // 单元测试
     ];
 
     private static $instance = null; // 创建静态对象变量,用于存储唯一的对象实例  

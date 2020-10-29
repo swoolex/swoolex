@@ -74,7 +74,7 @@ class App
         $command = $argv[1]; // 指令
         $this->_server_start['server'] = $argv[2] ?? null;
         $this->_server_start['option'] = $argv[3] ?? null;
-        
+
         // 删除全局变量
         unset($argc);
         unset($argv);
@@ -161,14 +161,84 @@ class App
                 
 				@unlink($this->config['pid_file']);
 				@unlink($this->config['worker_pid_file']);
-				@unlink($this->config['tasker_pid_file']);
+                @unlink($this->config['tasker_pid_file']);
+                @unlink($this->config['route_file']);
+                
 				var_dump(posix_kill($idArray['master_pid'], SIGKILL));
+            break;
+            // 单元测试服务
+            case 'test':
+                $route_url = $this->_server_start['option'];
+                if (!$route_url) {
+                    die('请输入需要测试的路由'.PHP_EOL);
+                }
+                switch ($this->_server_start['server']) {
+                    case 'http':
+                        $array = json_decode(file_get_contents($this->config['route_file']), true);
+                        $route = $array['http'];
+                        if ($route_url != '/') {
+                            $route_url = ltrim($route_url, '/');
+                        }
+                        if (empty($route[$route_url])) {
+                            die('该路由不存在'.PHP_EOL);
+                        }
+                        if (empty($route[$route_url]['own']['TestCase'])) {
+                            die('该路由暂无用例'.PHP_EOL);
+                        }
+                        $this->http_test_case($route_url, $route[$route_url]);
+                    break;
+                    case 'websocket':
+                        echo '暂不支持'.PHP_EOL;
+                    break;
+                    default:
+                        echo '参数错误'.PHP_EOL;
+                    break;
+                }
             break;
             // 没有的指令
             default:
 				$this->echo_handle_command();
 		  	break;
         }
+    }
+
+    /**
+     * 单元测试调试-单条-HTTP
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array $route 路由信息
+     * @return void
+    */
+    private function http_test_case($url, $route) {
+        $type = strtolower($route['method']);
+        $url = '127.0.0.1:'.\x\Config::run()->get('server.port').'/'.ltrim($url, '/');
+        if ($type == 'get') {
+            $url .= '?SwooleXTestCase=1';
+        }
+
+        // 这里什么都不用做，直接触发一次路由就行，请求里代个触发参数
+        $curl = curl_init();  
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+
+        if ($type == 'post') {
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, [
+                'SwooleXTestCase' => 1,
+            ]);
+        }
+
+        // 单位 秒
+        curl_setopt($curl, CURLOPT_TIMEOUT, 2);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);        
+        $body = curl_exec($curl);
+        curl_close($curl);
+        
+        echo $body;
     }
 
     /**
@@ -227,7 +297,8 @@ class App
         echo '2. start [服务类型] -d，以Daemon模式开启服务'.PHP_EOL;
         echo '3. status，查看服务器的状态'.PHP_EOL;
         echo '4. stop，停止服务器'.PHP_EOL;
-        echo '5. reload，热加载所有业务代码'.PHP_EOL.PHP_EOL;
+        echo '5. reload，热加载所有业务代码'.PHP_EOL;
+        echo '6. test [服务类型] [路由地址]'.PHP_EOL.PHP_EOL;
         echo 'SERVER: Types of services supported'.PHP_EOL;
         echo '1. http，WEB服务'.PHP_EOL;
         echo '2. websocket，WebSocket服务'.PHP_EOL;

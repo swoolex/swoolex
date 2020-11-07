@@ -214,12 +214,14 @@ class DebugGer
     private function set_tab4() {
         $this->html .= '<div style="width: 100%;height: 100%;overflow-y: auto;display: none;" id="swoole_div4">';
         $array = \x\Container::getInstance()->get('http_sql_log');
-        foreach ($array as $val) {
-            $this->html .= '<div class="swoole_div" style="height: auto;line-height: 20px;">';
-            $this->html .= '<font style="font-weight: bold;">调用来源：</font><font color="#8c2a07">'.$val['file'].'</font><br/>';
-            $this->html .= '<font style="font-weight: bold;">SQL：</font><font color="red">'.$val['sql'].'</font><br/>';
-            $this->html .= '<font style="font-weight: bold;">耗时：</font><font color="#b800d8">'.$val['time'].'s</font>';
-            $this->html .= '</div>';
+        if ($array) {
+            foreach ($array as $val) {
+                $this->html .= '<div class="swoole_div" style="height: auto;line-height: 20px;">';
+                $this->html .= '<font style="font-weight: bold;">调用来源：</font><font color="#8c2a07">'.$val['file'].'</font><br/>';
+                $this->html .= '<font style="font-weight: bold;">SQL：</font><font color="red">'.$val['sql'].'</font><br/>';
+                $this->html .= '<font style="font-weight: bold;">耗时：</font><font color="#b800d8">'.$val['time'].'s</font>';
+                $this->html .= '</div>';
+            }
         }
         $this->html .= '</div>';
     }

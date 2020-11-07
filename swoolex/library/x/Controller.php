@@ -55,12 +55,10 @@ class Controller
             if (\x\Container::getInstance()->has('response_status')) {
                 return false;
             }
-            $DebugGer = new DebugGer();
-            $debug_html = $DebugGer->run();
-        
+            
             $Response = \x\Container::getInstance()->get('response');
             $Response->status($status);
-            $status = $Response->end($string.$debug_html);
+            $status = $Response->end($string);
 
             \x\Container::getInstance()->set('response_status', $status);
             return $status;

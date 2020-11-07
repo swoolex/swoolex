@@ -169,7 +169,7 @@ class Container
             $this->instances[$CoroutineId][$abstract] = $concrete;
         // 其他绑定
         } else {
-            $this->bind[$CoroutineId][$abstract] = $concrete;
+            $this->instances[$CoroutineId][$abstract] = $concrete;
         }
 
         return $this;

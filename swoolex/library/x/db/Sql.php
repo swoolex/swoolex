@@ -409,6 +409,7 @@ class Sql extends AbstractSql {
         ];
         return $this;
     }
+
     /**
      * 终结方法-查询
      * @todo 无
@@ -426,8 +427,11 @@ class Sql extends AbstractSql {
         $sql = $this->select_sql(false);
 
         if ($status && $this->debug==false) {
+            $start_time = microtime(true);
             $this->clean_up();
             $res = $this->Db->query($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
             $list = $res->fetchAll(\PDO::FETCH_NAMED);
             if (empty($list)) return [];
@@ -453,8 +457,11 @@ class Sql extends AbstractSql {
         $sql = $this->select_sql(true);
 
         if ($status && $this->debug==false) {
+            $start_time = microtime(true);
             $this->clean_up();
             $res = $this->Db->query($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
@@ -509,7 +516,11 @@ class Sql extends AbstractSql {
 
         if ($status && $this->debug==false) {
             $this->clean_up();
-            return $this->Db->exec($sql);
+            $start_time = microtime(true);
+            $res = $this->Db->exec($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
+            return $res;
         }
         return $sql;
     }
@@ -541,7 +552,11 @@ class Sql extends AbstractSql {
 
         if ($this->debug==false) {
             $this->clean_up();
-            return $this->Db->exec($sql);
+            $start_time = microtime(true);
+            $res = $this->Db->exec($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
+            return $res;
         }
         return $sql;
     }
@@ -590,7 +605,11 @@ class Sql extends AbstractSql {
         
         if ($this->debug==false) {
             $this->clean_up();
-            return $this->Db->exec($sql);
+            $start_time = microtime(true);
+            $res = $this->Db->exec($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
+            return $res;
         }
         return $sql;
     }
@@ -625,10 +644,18 @@ class Sql extends AbstractSql {
         
         if ($this->debug == false) {
             $this->clean_up();
+            
+            $start_time = microtime(true);
             $res = $this->Db->exec($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
             if (!$res) return false;
 
-            $res = $this->Db->query('SELECT LAST_INSERT_ID() as num;');
+            $sql = 'SELECT LAST_INSERT_ID() as num;';
+            $start_time = microtime(true);
+            $res = $this->Db->query($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
 
             $list = $res->fetchAll(\PDO::FETCH_NAMED);
@@ -661,7 +688,11 @@ class Sql extends AbstractSql {
 
         if ($this->debug==false) {
             $this->clean_up();
-            return $this->Db->exec($sql);
+            $start_time = microtime(true);
+            $res = $this->Db->exec($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
+            return $res;
         }
         return $sql;
     }
@@ -688,7 +719,11 @@ class Sql extends AbstractSql {
         
         if ($this->debug==false) {
             $this->clean_up();
-            return $this->Db->exec($sql);
+            $start_time = microtime(true);
+            $res = $this->Db->exec($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
+            return $res;
         }
         return $sql;
     }
@@ -712,7 +747,11 @@ class Sql extends AbstractSql {
 
         if ($this->debug==false) {
             $this->clean_up();
+            
+            $start_time = microtime(true);
             $res = $this->Db->query($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
 
             $info = $res->fetch(\PDO::FETCH_NAMED);
@@ -743,7 +782,11 @@ class Sql extends AbstractSql {
         
         if ($this->debug==false) {
             $this->clean_up();
+            
+            $start_time = microtime(true);
             $res = $this->Db->query($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
 
             $info = $res->fetch(\PDO::FETCH_NAMED);
@@ -774,7 +817,11 @@ class Sql extends AbstractSql {
         
         if ($this->debug==false) {
             $this->clean_up();
+            
+            $start_time = microtime(true);
             $res = $this->Db->query($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
 
             $info = $res->fetch(\PDO::FETCH_NAMED);
@@ -805,7 +852,11 @@ class Sql extends AbstractSql {
         
         if ($this->debug==false) {
             $this->clean_up();
+
+            $start_time = microtime(true);
             $res = $this->Db->query($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
 
             $info = $res->fetch(\PDO::FETCH_NAMED);
@@ -836,7 +887,11 @@ class Sql extends AbstractSql {
 
         if ($this->debug==false) {
             $this->clean_up();
+
+            $start_time = microtime(true);
             $res = $this->Db->query($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
 
             $info = $res->fetch(\PDO::FETCH_NAMED);
@@ -867,7 +922,11 @@ class Sql extends AbstractSql {
 
         if ($this->debug==false) {
             $this->clean_up();
+
+            $start_time = microtime(true);
             $res = $this->Db->query($sql);
+            $end_time = microtime(true);
+            $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
             
             $info = $res->fetch(\PDO::FETCH_NAMED);
@@ -892,7 +951,10 @@ class Sql extends AbstractSql {
         $test = $this->testcase();
         if ($test != 'SwooleXTestCase') return $test;
 
+        $start_time = microtime(true);
         $res = $this->Db->query($sql);
+        $end_time = microtime(true);
+        $this->record($sql, $start_time, $end_time);
         $info = $res->fetchAll(\PDO::FETCH_NAMED);
         if (empty($info)) return false;
 
@@ -912,7 +974,11 @@ class Sql extends AbstractSql {
         $test = $this->testcase();
         if ($test != 'SwooleXTestCase') return $test;
 
-        return $this->Db->exec($sql);
+        $start_time = microtime(true);
+        $res = $this->Db->exec($sql);
+        $end_time = microtime(true);
+        $this->record($sql, $start_time, $end_time);
+        return $res;
     }
     /**
      * 查询相关通用语句组装
@@ -1113,6 +1179,38 @@ class Sql extends AbstractSql {
             }
         }
         return 'SwooleXTestCase';
+    }
+
+    /**
+     * 记录Log
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function record($sql, $start_time, $end_time) {
+        // 注入调试内容
+        if (\x\Config::run()->get('app.de_bug')) {
+            $debug = debug_backtrace();
+            $file = '';
+            // 获得调用来源
+            if (!empty($debug[1])) {
+                $file = !empty($debug[1]['file']) ? 'Class：'.$debug[1]['file'] : 'Function：'.$debug[1]['function'];
+            }
+            // 计算调用时间
+            $time = number_format(($end_time-$start_time), 7);
+            // 写入记录
+            $array = \x\Container::getInstance()->get('http_sql_log');
+            if (!$array) $array = [];
+            $array[] = [
+                'sql' => $sql,
+                'file' => $file,
+                'time' => $time
+            ];
+            \x\Container::getInstance()->set('http_sql_log', $array);
+        }
     }
 
     /**

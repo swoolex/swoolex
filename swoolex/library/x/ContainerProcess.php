@@ -145,7 +145,7 @@ class ContainerProcess
             $this->instances[$abstract] = $concrete;
         // 其他绑定
         } else {
-            $this->bind[$abstract] = $concrete;
+            $this->instances[$abstract] = $concrete;
         }
 
         return $this;

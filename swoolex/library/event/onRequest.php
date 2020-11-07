@@ -68,6 +68,14 @@ class onRequest
         \x\Container::getInstance()->set('request', $request);
         \x\Container::getInstance()->set('response', $response);
 
+        // 注入调试内容
+        if (\x\Config::run()->get('app.de_bug')) {
+            // 请求开始时间
+            \x\Container::getInstance()->set('http_start_time', microtime(true));
+            // 请求开始内容消耗
+            \x\Container::getInstance()->set('http_start_cpu', memory_get_usage());
+        }
+        
         # 开始转发路由
         $obj = new \x\Route();
         $obj->start();

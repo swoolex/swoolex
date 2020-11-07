@@ -55,9 +55,12 @@ class Controller
             if (\x\Container::getInstance()->has('response_status')) {
                 return false;
             }
+            $DebugGer = new DebugGer();
+            $debug_html = $DebugGer->run();
+        
             $Response = \x\Container::getInstance()->get('response');
             $Response->status($status);
-            $status = $Response->end($string);
+            $status = $Response->end($string.$debug_html);
 
             \x\Container::getInstance()->set('response_status', $status);
             return $status;
@@ -119,7 +122,11 @@ class Controller
         $this->is_view();
         $content = $this->view->display($content, $vars, $config);
         $Response = \x\Container::getInstance()->get('response');
-        return $Response->end($content);
+        
+        $DebugGer = new DebugGer();
+        $debug_html = $DebugGer->run();
+
+        return $Response->end($content.$debug_html);
     }
 
     /**

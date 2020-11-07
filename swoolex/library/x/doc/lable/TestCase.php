@@ -22,9 +22,10 @@ class TestCase extends Basics
      * @deprecated 暂不启用
      * @global 无
      * @param array $route 路由参数
+     * @param string $request_uri 路由地址
      * @return true
     */
-    public function run($route){
+    public function run($route, $request_uri){
         // HTTP请求
         if (!empty($this->request->server['request_method'])) {
             if ($this->request->server['request_method'] == 'GET') {
@@ -52,7 +53,7 @@ class TestCase extends Basics
                     $headers = $obj->getHeaders() ?? [];
                     // 这里不够好，没有判断有没有发起测试成功
                     $data['SwooleXTestCaseClass'] = $v['class'];
-                    $v['body'] = $this->http_test_case($route, $data, $headers);
+                    $v['body'] = $this->http_test_case($request_uri, $route, $data, $headers);
                     $ret[] = $v;
                 }
                 $endtime = explode(' ',microtime());
@@ -67,6 +68,7 @@ class TestCase extends Basics
                     $tips .= PHP_EOL;
                     $tips .= '执行结果：'.$v['body'].PHP_EOL.PHP_EOL;
                 }
+
                 return $this->testcase_callback($tips);
             // 收到了单元测试调试请求
             } else if (!empty($param['SwooleXTestCase']) && $param['SwooleXTestCase'] == 2) {
@@ -92,9 +94,9 @@ class TestCase extends Basics
      * @param array $headers 请求头
      * @return void
     */
-    private function http_test_case($route, $data=[], $headers=[]) {
+    private function http_test_case($request_uri, $route, $data=[], $headers=[]) {
         $type = strtolower($route['method']);
-        $url = '127.0.0.1:'.\x\Config::run()->get('server.port').'/'.ltrim($route['name']);
+        $url = '127.0.0.1:'.\x\Config::run()->get('server.port').'/'.ltrim($request_uri);
         $data['SwooleXTestCase'] = 2;
 
         if ($type == 'get') {

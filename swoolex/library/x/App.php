@@ -168,7 +168,7 @@ class App
             break;
             // 单元测试服务
             case 'test':
-                $route_url = $this->_server_start['option'];
+                $route_url = strtolower($this->_server_start['option']);
                 if (!$route_url) {
                     die('请输入需要测试的路由'.PHP_EOL);
                 }
@@ -233,7 +233,7 @@ class App
         }
 
         // 单位 秒
-        curl_setopt($curl, CURLOPT_TIMEOUT, 2);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 180);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);        
         $body = curl_exec($curl);
         curl_close($curl);

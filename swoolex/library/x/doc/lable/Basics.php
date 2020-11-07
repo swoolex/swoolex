@@ -59,6 +59,13 @@ class Basics
      * @return void
     */
     protected function param_error_callback($callback, $tips, $name, $status, $attach=null) {
+        // 若为单元测试调试，则直接通过
+        if (
+            (!empty($this->request->get['SwooleXTestCase'])) || 
+            (!empty($this->request->post['SwooleXTestCase']))
+        ) {
+            return true;
+        }
         // 如果不定义回调事件，则启用系统的生命周期回调处理
         if (empty($callback)) {
             $callback = '\lifecycle\\annotate_param';
@@ -84,6 +91,14 @@ class Basics
      * @return void
     */
     protected function route_error($status) {
+        // 若为单元测试调试，则直接通过
+        if (
+            (!empty($this->request->get['SwooleXTestCase'])) || 
+            (!empty($this->request->post['SwooleXTestCase']))
+        ) {
+            return true;
+        }
+        
         $obj = new \lifecycle\route_error();
         $obj->run($status);
         return false;

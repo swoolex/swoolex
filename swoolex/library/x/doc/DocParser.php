@@ -116,7 +116,14 @@ class DocParser
             $param = $array[0];
 
             // 开放自定义注解
-            // if ($this->check($param) == false) return false;
+            if ($this->check($param) == false) {
+                // 查找自定义注解类地址
+                $file = ROOT_PATH.'/annotation/'.$param.'.php';
+                // 不存在则抛弃
+                if (!file_exists($file)) {
+                    return false;
+                }
+            }
 
             $string = str_replace($param.'(', '', $string);
             $value = substr($string, 0, strlen($string)-1);

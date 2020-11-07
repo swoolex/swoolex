@@ -66,7 +66,7 @@ class Route
                 $this->session();
             }
 
-            $this->ico_injection($route);
+            $this->ico_injection($route, $request_uri);
         }
     }
 
@@ -104,9 +104,10 @@ class Route
      * @deprecated 暂不启用
      * @global 无
      * @param array $route 被找到的路由
+     * @param string $request_uri 路由地址
      * @return void
     */
-    private function ico_injection($route) {
+    private function ico_injection($route, $request_uri) {
         // 实例化控制器
         $reflection = new \ReflectionClass($route['n']);
         \x\Container::getInstance()->set('controller_instance', $reflection->newInstance());
@@ -120,7 +121,7 @@ class Route
         $ret = (new \x\doc\lable\Ioc())->run($route);
         if ($ret !== true) return $ret;
         // 单元测试操作
-        $ret = (new \x\doc\lable\TestCase())->run($route);
+        $ret = (new \x\doc\lable\TestCase())->run($route, $request_uri);
         if ($ret !== true) return $ret;
         // 前置操作
         $ret = (new \x\doc\lable\AopBefore())->run($route);

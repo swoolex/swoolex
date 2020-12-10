@@ -106,6 +106,24 @@ class Request
     }
 
     /**
+     * 判断是否AJAX请求
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.19 + 2020.12.10
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public static function is_ajax() {
+        $Request = \x\Container::getInstance()->get('request');
+        if (!$Request) return false;
+        if (isset($Request->header['x-requested-with']) && $Request->header['x-requested-with'] == 'XMLHttpRequest') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 是否使用SSL
      * @todo 无
      * @author 小黄牛

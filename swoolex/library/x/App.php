@@ -98,8 +98,6 @@ class App
                 $this->create_redis_pool_log();
                 // 打印服务器字幕
                 $this->echo_start_command();
-                // 先初始化路由表
-                \x\doc\Table::run()->start();
                 // 启动服务
                 $service = new \x\service\Server(); 
                 $service->start($this->_server_start['server'], $this->_server_start['option']);

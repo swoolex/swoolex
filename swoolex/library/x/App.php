@@ -66,7 +66,7 @@ class App
 
         global $argc, $argv;
 
-		if ($argc <= 1 || $argc > 4 ) {
+		if ($argc <= 1 || $argc > 6 ) {
             $this->echo_handle_command();
             exit;
         }
@@ -74,10 +74,6 @@ class App
         $command = $argv[1]; // 指令
         $this->_server_start['server'] = $argv[2] ?? null;
         $this->_server_start['option'] = $argv[3] ?? null;
-
-        // 删除全局变量
-        unset($argc);
-        unset($argv);
         
         // 处理命令行执行
         switch ($command) {
@@ -195,9 +191,23 @@ class App
             break;
             // 没有的指令
             default:
-				$this->echo_handle_command();
+                // 转发到外部扩展
+                $cmd = ucfirst($command);
+                $file = dirname(__FILE__).'/cmd/'.$cmd.'.php';
+                if (!file_exists($file)) {
+                    $this->echo_handle_command();
+                } else {
+                    $class = "\x\cmd\\".$cmd;
+                    $obj = new $class();
+                    $obj->run($argv);
+                    unset($obj);
+                }
 		  	break;
         }
+        
+        // 删除全局变量
+        unset($argc);
+        unset($argv);
     }
 
     /**
@@ -296,7 +306,8 @@ class App
         echo '3. status，查看服务器的状态'.PHP_EOL;
         echo '4. stop，停止服务器'.PHP_EOL;
         echo '5. reload，热加载所有业务代码'.PHP_EOL;
-        echo '6. test [服务类型] [路由地址]'.PHP_EOL.PHP_EOL;
+        echo '6. test [服务类型] [路由地址]'.PHP_EOL;
+        echo '7. controller [服务类型] [路由地址] [方法名称] [路由名称]'.PHP_EOL.PHP_EOL;
         echo 'SERVER: Types of services supported'.PHP_EOL;
         echo '1. http，WEB服务'.PHP_EOL;
         echo '2. websocket，WebSocket服务'.PHP_EOL;

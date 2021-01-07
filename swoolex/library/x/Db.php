@@ -78,7 +78,7 @@ class Db
             }
             $this->is_pool = true;
         }
-        
+
         if (!$pool) {
             return false;
         }

@@ -14,6 +14,8 @@ return [
     'de_bug' => true,
     // 语言包
     'lang' => 'zh-cn',
+    // 默认时区
+    'default_timezone' => 'PRC',
     
     // +-----------------------------
     // | Cookies

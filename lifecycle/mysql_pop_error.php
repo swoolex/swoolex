@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | 初始化
+// | 当应用层捕捉到Mysql连接数小于等于0时，会回调至此
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -9,28 +9,23 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-namespace x;
+namespace lifecycle;
 
-// 框架当前版本
-define('VERSION', 'v1.2.22');
-// 项目根地址
-define('ROOT_PATH', dirname(__DIR__));
-// 缓存 && 日志根地址
-define('RUNTIME_PATH', ROOT_PATH.'/runtime/');
-
-// 载入Loader类
-require_once __DIR__.'/library/x/Loader.php';
-
-// 注册自动加载
-Loader::register();
-
-// 引入系统助手函数
-require_once __DIR__.'/helper.php';
-// 引入应用函数
-require_once ROOT_PATH.'/common/common.php';
-
-// 配置文件加载
-Config::run();
-
-// 日志模块初始化
-Log::run()->start();
+class mysql_pop_error
+{
+    /**
+     * 接受回调处理
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.15
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $type 连接池类型：read、write、log
+     * @return bool
+    */
+    public function run($type) {
+        // 此处可自行实现消息通知
+        echo $type.' Mysql 连接数不足！'.PHP_EOL;
+        return true;
+    }
+}

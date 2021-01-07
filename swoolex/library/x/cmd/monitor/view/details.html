@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+    <meta content="webkit" name="renderer" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HTTP监控台 - SW-X</title>
+    <style>
+    body,html{margin:0;padding:0;background: #f1f2f7; font-family: "微软雅黑";font-size: 16px;}
+    .card-header {padding: .75rem 1.25rem;margin-bottom: 0;background-color: #fff;border-bottom: 1px solid rgba(0,0,0,.125);width:100%;}
+    .card-title {margin-bottom: .75rem;}
+    .table {width: 100%;margin-bottom: 1rem;background-color: transparent;}
+    .table td {color: #343a40;font-size: 14px;font-weight: 600;vertical-align: middle;background: #f7f7f7;}
+    .table th, .table td {border: none;border-bottom: 1px solid #e8e9ef;color: #868e96;font-size: 12px;font-weight: normal;padding: .75em 1.25em;}
+    .header{width: 400px;text-align: left;}
+    .header th{background: #fff;border-color: #fff;width: 170px;}
+    </style>
+</head>
+
+<body>
+    
+<div>
+    
+    <table class="table header" style="width: 1170px;">
+        <tr>
+            <th>FD</rh>
+            <td>{$info.fd}</td>
+        </tr>
+        <tr>
+            <th>请求时间</rh>
+            <td>{$info.start_time}</td>
+        </tr>
+        <tr>
+            <th>结束时间</rh>
+            <td>{$info.end_time|default=''}</td>
+        </tr>
+        <tr>
+            <th>状态</rh>
+            <td>{if ($v.status==1)}<font color="red">进行中</font>{else /}已结束{/if}</td>
+        </tr>
+        <tr>
+            <th>请求类型</rh>
+            <td>{$info.request_method}</td>
+        </tr>
+        <tr>
+            <th>请求协议</rh>
+            <td>{$info.server_protocol}</td>
+        </tr>
+        <tr>
+            <th>路由</rh>
+            <td>{$info.route}</td>
+        </tr>
+        <tr>
+            <th>URL参数</rh>
+            <td>{$info.query_string}</td>
+        </tr>
+        <tr>
+            <th>日志地址</rh>
+            <td>{$file}</td>
+        </tr>
+        <tr>
+            <th>是否报错</rh>
+            <td>{if ($v.is_error==1)}<font color="red">是</font>{else /}否{/if}</td>
+        </tr>
+        <tr>
+            <th>错误文件</rh>
+            <td>{$info.error_file}</td>
+        </tr>
+        <tr>
+            <th>错误行数</rh>
+            <td>{$info.error_line}</td>
+        </tr>
+        <tr>
+            <th>错误内容</rh>
+            <td>{$info.error_message}</td>
+        </tr>
+        <tr>
+            <th>请求头</rh>
+            <td><pre>{:json_encode($info['header'], JSON_UNESCAPED_UNICODE)}</pre></td>
+        </tr>
+        <tr>
+            <th>GET参数</rh>
+            <td><pre>{:json_encode($info['get'], JSON_UNESCAPED_UNICODE)}</pre></td>
+        </tr>
+        <tr>
+            <th>POST参数</rh>
+            <td><pre>{:json_encode($info['post'], JSON_UNESCAPED_UNICODE)}</pre></td>
+        </tr>
+
+
+    </table>
+    
+</body>
+</html>

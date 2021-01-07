@@ -33,35 +33,39 @@ class onStart
      * @return void
     */
     public function run($server) {
-        $this->server = $server;
+        try {
+            $this->server = $server;
 
-        $config = \x\Config::run()->get('server');
-        //如果是以Daemon形式开启的服务，记录master和manager的进程id
-        if ($config['daemonize'] === true) {
-            file_put_contents($config['pid_file'], json_encode([
-                'master_pid' => $server->master_pid,
-                'manager_pid' => $server->manager_pid,
-            ]));
-            // 创建tasker进程文件 和 worker进程文件
-            // tasker和worker进程的pid将会在workerstart回调中写入到文件中
-            touch($config['worker_pid_file']);
-            touch($config['tasker_pid_file']);
-        }
-
-        // 自动载入所有定时任务
-        if ($this->status) {
-            $this->status = false;
-            $crontab_list = \x\Config::run()->get('crontab');
-            foreach($crontab_list as $app=>$fun){
-                // 载入定时器
-                $obj = new $app();
-                $obj->$fun($server);
+            $config = \x\Config::run()->get('server');
+            //如果是以Daemon形式开启的服务，记录master和manager的进程id
+            if ($config['daemonize'] === true) {
+                file_put_contents($config['pid_file'], json_encode([
+                    'master_pid' => $server->master_pid,
+                    'manager_pid' => $server->manager_pid,
+                ]));
+                // 创建tasker进程文件 和 worker进程文件
+                // tasker和worker进程的pid将会在workerstart回调中写入到文件中
+                touch($config['worker_pid_file']);
+                touch($config['tasker_pid_file']);
             }
+
+            // 自动载入所有定时任务
+            if ($this->status) {
+                $this->status = false;
+                $crontab_list = \x\Config::run()->get('crontab');
+                foreach($crontab_list as $app=>$fun){
+                    // 载入定时器
+                    $obj = new $app();
+                    $obj->$fun($server);
+                }
+            }
+            
+            // 调用二次转发，不做重载
+            $on = new \app\event\onStart;
+            $on->run($server);
+        } catch (\Throwable $throwable) {
+            return \x\Error::run()->halt($throwable);
         }
-        
-        // 调用二次转发，不做重载
-        $on = new \app\event\onStart;
-        $on->run($server);
     }
 
 }

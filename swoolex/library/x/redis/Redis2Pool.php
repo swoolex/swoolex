@@ -104,6 +104,11 @@ class Redis2Pool{
      * @return obj
     */
     public function pop() {
+        if ($this->count <= 0) {
+            $this->pop_error('write');
+            throw new \Exception("Redis Pop <= 0");
+            return false;
+        }
         $this->count--;
         if (!$this->connections) return false;
         return $this->connections->get();
@@ -183,5 +188,21 @@ class Redis2Pool{
             ->withDbIndex($this->config['dbindex'])
             ->withTimeout($this->config['timeout'])
         , $this->max);
+    }
+
+    /**
+     * 当连接池数小于等于0时，回调的通知函数
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.15
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $type 连接池类型
+     * @return void
+    */
+    protected function pop_error($type) {
+        $obj = new \lifecycle\redis_pop_error();
+        $obj->run($type);
+        return false;
     }
 }

@@ -111,4 +111,16 @@ return [
     // 接口允许自定义请求头的字段
     'headers' => 'Content-Type,Content-Length,Accept-Encoding,X-Requested-with, Origin, api_key',
 
+    // +-----------------------------
+    // | onRequst HTTP请求日志监控相关
+    // +-----------------------------
+    
+    // 是否开启监控
+    'http_monitor_status' => false,
+    // 控制台账号
+    'http_monitor_username' => 'swoolex',
+    // 控制台密码
+    'http_monitor_password' => 'swoolex',
+    // 监控文件存放根地址-需要/结尾
+    'http_monitor_dir_root' => ROOT_PATH.'/runtime/http_monitor/',
 ];

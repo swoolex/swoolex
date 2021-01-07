@@ -31,11 +31,15 @@ class onConnect
      * @return void
     */
     public function run($server, $fd, $reactorId) {
-        $this->server = $server;
+        try {
+            $this->server = $server;
 
-        // 调用二次转发，不做重载
-        $on = new \app\event\onConnect;
-        $on->run($server, $fd, $reactorId);
+            // 调用二次转发，不做重载
+            $on = new \app\event\onConnect;
+            $on->run($server, $fd, $reactorId);
+        } catch (\Throwable $throwable) {
+            return \x\Error::run()->halt($throwable);
+        }
     }
 
 }

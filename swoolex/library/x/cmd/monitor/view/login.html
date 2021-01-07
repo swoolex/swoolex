@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+    <meta content="webkit" name="renderer" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HTTP监控台 - SW-X</title>
+    <style>
+body{height:100%;background:#edf0f5;font-family:"Microsoft YaHei",Arial,Helvetica,sans-serif;color:#89a;font-size:14px}
+.logon{width:530px;margin:0 auto;position:relative;top:8%}
+.logon .logon-copyright{text-align:center;font-size:14px;color:#89a;line-height:2}
+.logon-frame{width:440px;margin:30px auto;border:1px solid #e5e9ed;background:#fff;padding:35px 40px;border-radius:3px}
+.logon .logon-nopadding{padding:0}
+.logon-sort{height:48px}
+.logon .logon-sort a:last-child{border-right:none;border-radius:0 3px 0 0}
+.logon .logon-sort a{border-radius:3px 0 0 0;display:inline-block;float:left;width:50%;line-height:48px;text-align:center;border-right:1px solid #e5e9ed;color:#7a8a9a;background:#f8f9fb;border-bottom:1px solid #e5e9ed}
+input,button,select,textarea,a,object{outline:none !important}
+a{color:#337ab7;text-decoration:none}
+.logon .logon-frame .logon-box-inner{margin:20px 0 0 0}
+.logon .logon-nopadding .logon-box-inner{padding:20px 40px 40px}
+.form-group{margin-bottom:15px}
+.logon .logon-frame .input-group{margin-bottom:20px;position:relative;z-index:1}
+.logon .input-group .input-group-addon{border:1px solid #e5e9ed;background:#f1f4f8;border-width:1px 0 1px 1px;width:10%;float:left;height:28px;line-height:28px}
+.input-group-addon:first-child{border-right:0}
+.input-group .form-control:first-child,.input-group-addon:first-child,.input-group-btn:first-child>.btn,.input-group-btn:first-child>.btn-group>.btn,.input-group-btn:first-child>.dropdown-toggle,.input-group-btn:last-child>.btn-group:not(:last-child)>.btn,.input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle){border-top-right-radius:0;border-bottom-right-radius:0}
+.input-group-addon{padding:6px 12px;font-size:14px;font-weight:400;line-height:1;color:#555;text-align:center;background-color:#eee;border:1px solid #ccc;border-radius:4px}
+.input-group-addon,.input-group-btn{width:1%;white-space:nowrap;vertical-align:middle}
+.input-group .form-control,.input-group-addon,.input-group-btn{display:table-cell}
+.logon .input-group .form-control{height:38px;border:1px solid #e5e9ed;box-shadow:none;width:81%;text-indent:10px}
+.logon .logon-frame .btn-primary{width:100%;background-color:#46be68}
+.btn-success{background:#46be68;border-color:#46be68}
+.btn-success{color:#fff;background-color:#46be68;border-color:#4cae4c}
+.btn-primary{color:#fff;background-color:#46be68;border-color:#46be68}
+.btn{display:inline-block;padding:6px 12px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.42857143;text-align:center;white-space:nowrap;vertical-align:middle;-ms-touch-action:manipulation;touch-action:manipulation;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;background-image:none;border:1px solid transparent;border-radius:4px}
+input,button,select,textarea,a,object{outline:none !important}
+button,input,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}
+button,html input[type=button],input[type=reset],input[type=submit]{-webkit-appearance:button;cursor:pointer}
+button,select{text-transform:none}
+button{overflow:visible}
+button,input,optgroup,select,textarea{margin:0;font:inherit;color:inherit}
+    </style>
+    <!--依赖JQ-->
+    <script src="https://blog.junphp.com/public/js/jquery.min.js"></script>
+    <!--引入captcha SDK-->
+    <script type="text/javascript" src="https://blog.junphp.com/api/geetest_captcha/php/junphp_geetest_captcha.js"></script>
+    <!--引入captcha css SDK-->
+    <link href="https://blog.junphp.com/api/geetest_captcha/php/junphp_geetest_captcha.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="logon">
+        <div class="logon-copyright" style="font-size: 30px;margin-top: 50px;">SW-X HTTP 请求监控台</div>
+        <div class="logon-frame logon-nopadding">
+            <div class="logon-sort">
+                <a href="javascript:;" style="width: 100%;font-size: 18px;">账号登录</a>
+            </div>
+
+            <div class="form-group logon-box-inner" >
+                <form class="logon-form">
+                    <div class="input-group">
+                        <span class="input-group-addon">账号</span>
+                        <input type="text" class="form-control" id="username" placeholder="账号">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">密码</span>
+                        <input type="Password" name="password" id="password" class="form-control" placeholder="密码">
+                    </div>
+                    <div class="input-group">
+                        <div class="junphp_geetest_captcha"></div>
+                    </div>
+                    <div class="logon-button">
+                        <button type="button" class="btn btn-success btn-primary" id="loginSubmit">
+                            登录
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="logon-copyright">
+            <div class="logon-copyrightTip">为了获得更好的使用体验，建议使用<a href="javascript:;">360浏览器极速模式</a>、IE10或更高版本。</div>
+            Copyright ? 2020-2021 <a href="https://www.sw-x.cn" target="_blank">www.sw-x.cn</a>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+$('#loginSubmit').click(function(){
+    $.ajax({
+        url : '/HttpMonitor/login_send',
+        type : 'post',
+        data : {
+            appid:'blog.junphp.com',
+            junphp_session_id:$('#junphp_geetest_session_id').val(),
+            junphp_appkey:$('#junphp_geetest_appkey').val(),
+            junphp_sign:$('#junphp_geetest_sign').val(),
+            junphp_time:$('#junphp_geetest_time').val(),
+            junphp_geetest:$('#junphp_geetest').val(),
+            junphp_yes:$('#junphp_geetest_yes').val(),
+            username:$('#username').val(),
+            password:$('#password').val(),
+        },
+        success : function(arr){
+            var array = eval('('+arr+')');
+            if (array.code != '00') {
+                alert(array['msg']);
+                // 过期，刷新验证码
+                junphp_vif_captcha();
+            } else {
+                window.location.href=array['data'];
+            }
+        }
+    });
+})
+</script>

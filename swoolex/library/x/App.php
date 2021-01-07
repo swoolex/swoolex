@@ -89,6 +89,8 @@ class App
                 if ($this->_server_start['option'] && $this->_server_start['option'] != '-d') {
                     $this->echo_swoolex_error('sw-x start daemonize error，support only：-d');
                 }
+                // 设置默认时区
+                date_default_timezone_set(\x\Config::run()->get('app.default_timezone'));
                 // 初始化连接池日志文件
                 $this->create_mysql_pool_log();
                 $this->create_redis_pool_log();
@@ -307,7 +309,8 @@ class App
         echo '4. stop，停止服务器'.PHP_EOL;
         echo '5. reload，热加载所有业务代码'.PHP_EOL;
         echo '6. test [服务类型] [路由地址]'.PHP_EOL;
-        echo '7. controller [服务类型] [路由地址] [方法名称] [路由名称]'.PHP_EOL.PHP_EOL;
+        echo '7. controller [服务类型] [路由地址] [方法名称] [路由名称]'.PHP_EOL;
+        echo '8. monitor start，创建HTTP请求监控WEB服务组件'.PHP_EOL.PHP_EOL;
         echo 'SERVER: Types of services supported'.PHP_EOL;
         echo '1. http，WEB服务'.PHP_EOL;
         echo '2. websocket，WebSocket服务'.PHP_EOL;

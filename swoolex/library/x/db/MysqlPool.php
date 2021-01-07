@@ -50,6 +50,11 @@ class MysqlPool extends AbstractPool {
      * @return obj
     */
     public function read_pop() {
+        if ($this->read_count <= 0) {
+            $this->pop_error('read');
+            throw new \Exception("Dao Read Pop <= 0");
+            return false;
+        }
         $this->read_count--;
         if (!$this->read_connections) return false;
         return $this->read_connections->get();
@@ -81,6 +86,11 @@ class MysqlPool extends AbstractPool {
      * @return obj
     */
     public function write_pop() {
+        if ($this->write_count <= 0) {
+            $this->pop_error('write');
+            throw new \Exception("Dao Write Pop <= 0");
+            return false;
+        }
         $this->write_count--;
         if (!$this->write_connections) return false;
         return $this->write_connections->get();
@@ -112,6 +122,11 @@ class MysqlPool extends AbstractPool {
      * @return obj
     */
     public function log_pop() {
+        if ($this->log_count <= 0) {
+            $this->pop_error('log');
+            throw new \Exception("Dao Log Pop <= 0");
+            return false;
+        }
         $this->log_count--;
         if (!$this->log_connections) return false;
         return $this->log_connections->get();
@@ -295,5 +310,21 @@ class MysqlPool extends AbstractPool {
             ->withUsername($database['user'])
             ->withPassword($database['password'])
         , $size);
+    }
+
+    /**
+     * 当连接池数小于等于0时，回调的通知函数
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.15
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $type 连接池类型
+     * @return void
+    */
+    protected function pop_error($type) {
+        $obj = new \lifecycle\mysql_pop_error();
+        $obj->run($type);
+        return false;
     }
 }

@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+    <meta content="webkit" name="renderer" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HTTP监控台 - SW-X</title>
+    <style>
+    body,html{margin:0;padding:0;background: #f1f2f7; font-family: "微软雅黑";font-size: 16px;}
+    .card-header {padding: .75rem 1.25rem;margin-bottom: 0;background-color: #fff;border-bottom: 1px solid rgba(0,0,0,.125);width:98%;}
+    .card-title {margin-bottom: .75rem;}
+    .table {width: 100%;margin-bottom: 1rem;background-color: transparent;}
+    .table td {color: #343a40;font-size: 14px;font-weight: 600;vertical-align: middle;}
+    .table th, .table td {border: none;border-bottom: 1px solid #e8e9ef;color: #868e96;font-size: 12px;font-weight: normal;padding: .25em 1.25em;}
+    .table th{padding: .75em 1.25em;}
+    .header td{padding: 2px 5px;}
+    .content td, .content th{text-align: left;}
+    .content td{background:#fff}
+    .badge-complete {background: #00c292;}
+    .badge {display: inline-block;padding: 10PX;font-size:13px; line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;border-radius: .25rem;text-decoration: none;}
+    select,input,button{padding: 5px 7px; border: 1px solid #ccc;border-radius: 5px;background: #fff;}
+
+    ul,li{list-style: none;margin: 0;padding: 0;float: left;}
+    ul{padding: 5px 10px; background: #fff; width: 99%;}
+    ul li{margin: 0 10px;}
+    ul li a{    color: #fff;
+    border: 1px solid #00c292;
+    text-decoration: none;
+    padding: 2px 10px;
+    border-radius: 5px;
+    background: #00c292;
+    font-family: '微软雅黑';
+    font-size: 14px;}
+    ul .current a{color: #333;background: #fff;border: 1px solid #00c292;}
+    
+    </style>
+    <!--依赖JQ-->
+    <script src="https://blog.junphp.com/public/js/jquery.min.js"></script>
+    <link href="https://blog.junphp.com/public/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://blog.junphp.com/public/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="https://blog.junphp.com/public/js/iframe.js" type="text/javascript"></script>
+    <style>
+    .modal.show .modal-dialog{max-width: 1180px;}
+    .modal-title{ position: absolute;}
+    </style>
+</head>
+
+<body>
+    
+<div>
+    <div class="card-header">
+        <strong class="card-title">SW-X HTTP 请求日志</strong>
+    </div>
+    <form action="/HttpMonitor/index">
+        <input type="hidden" name="username" value="{$param.username}">
+        <input type="hidden" name="password" value="{$param.username}">
+        <input type="hidden" name="ip" value="{$param.ip}">
+    <table class="table header" style="width: 1170px;">
+        <tr>
+            <td width=150>查询条件只支持2选1：</td>
+            <td width=80>请求状态：</td>
+            <td width=50><select name="status">
+                <option value="">全部</option>
+                <option value="1" {if (!empty($param['status']) && $param['status'] == 1)} selected{/if}>进行中</option>
+                <option value="2" {if (!empty($param['status']) && $param['status'] == 2)} selected{/if}>已结束</option>
+            </select></td>
+            <td width=80>路由地址：</td>
+            <td width=50>
+                <input type="text" name="route" style="width: 250px;" value="{$param.route|default=''}">
+            </td>
+            <td width=120>记录日期(只到天)：</td>
+            <td width=50>
+                <input type="text" name="date" value="{$param.date|default=''}">
+            </td>
+            <td width=100>
+                <button type="submit">搜索</button>
+            </td>
+        </tr>
+    </table>
+    </form>
+</div>
+
+<div>
+    <div class="card-header">
+        <strong class="card-title">记录列表</strong>
+    </div>
+    <table class="table content">
+        <tr>
+            <th style="text-align: center;" width=60>fd</th>
+            <th style="text-align: center;" width=180>请求时间</th>
+            <th style="text-align: center;" width=180>结束时间</th>
+            <th style="text-align: center;" width=60>状态</th>
+            <th style="text-align: center;" width=80>请求类型</th>
+            <th style="text-align: center;" width=60>请求协议</th>
+            <th style="text-align: center;" >路由</th>
+            <th style="text-align: center;" width=80>是否报错</th>
+            <th style="text-align: center;" width=80>操作</th>
+        </tr>
+        {foreach $list as $v}
+        <tr>
+            <td>{$v.fd}</td>
+            <td style="text-align: center;">{$v.start_time}</td>
+            <td style="text-align: center;">{$v.end_time|default=''}</td>
+            <td style="text-align: center;">{if ($v.status==1)}<font color="red">进行中</font>{else /}已结束{/if}</td>
+            <td style="text-align: center;">{$v.request_method}</td>
+            <td style="text-align: center;">{$v.server_protocol}</td>
+            <td>{$v.route}</td>
+            <td style="text-align: center;">{if ($v.is_error==1)}<font color="red">是</font>{else /}否{/if}</td>
+            <td>
+                <a href='javascript:(0);' class="badge badge-complete" style="color:#fff;padding: 5px 10px;" onclick="ajaxs('{$v.file}')">详情</a>
+            </td>
+        </tr>
+        {/foreach}
+    </table>
+    <div>
+        <ul>
+            {$page|raw}
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
+<script>
+function ajaxs(file) {
+    iframe.createIframe('详情', '/HttpMonitor/details?file='+file, {
+        'width':'1180px',
+        'height':'600px',
+        'footer':'none' // 设置不要点击按钮
+    })
+}
+</script>

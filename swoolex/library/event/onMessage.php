@@ -30,22 +30,26 @@ class onMessage
      * @return void
     */
     public function run($server, $frame) {
-        $this->server = $server;
-        
-        // 请求注入容器
-        \x\Container::getInstance()->set('websocket_server', $server);
-        \x\Container::getInstance()->set('websocket_frame', $frame);
+        try {
+            $this->server = $server;
+            
+            // 请求注入容器
+            \x\Container::getInstance()->set('websocket_server', $server);
+            \x\Container::getInstance()->set('websocket_frame', $frame);
 
-        # 开始转发路由
-        $obj = new \x\Route();
-        $obj->start();
+            # 开始转发路由
+            $obj = new \x\Route();
+            $obj->start();
 
-        // 调用二次转发，不做重载
-        $on = new \app\event\onMessage;
-        $on->run();
+            // 调用二次转发，不做重载
+            $on = new \app\event\onMessage;
+            $on->run();
 
-        // 销毁整个请求级容器
-        \x\Container::getInstance()->clear();
+            // 销毁整个请求级容器
+            \x\Container::getInstance()->clear();
+        } catch (\Throwable $throwable) {
+            return \x\Error::run()->halt($throwable);
+        }
     }
 }
 

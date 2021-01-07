@@ -32,11 +32,15 @@ class onTask
      * @return void
     */
     public function run($server, $task_id, $src_worker_id, $data) {
-        $this->server = $server;
-        
-        // 调用二次转发，不做重载
-        $on = new \app\event\onTask;
-        $on->run($server, $task_id, $src_worker_id, $data);
+        try {
+            $this->server = $server;
+            
+            // 调用二次转发，不做重载
+            $on = new \app\event\onTask;
+            $on->run($server, $task_id, $src_worker_id, $data);
+        } catch (\Throwable $throwable) {
+            return \x\Error::run()->halt($throwable);
+        }
     }
 }
 

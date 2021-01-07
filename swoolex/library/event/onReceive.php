@@ -32,11 +32,15 @@ class onReceive
      * @return void
     */
     public function run($server, $fd, $reactorId, $data=null) {
-        $this->server = $server;
-        
-        // 调用二次转发，不做重载
-        $on = new \app\event\onReceive;
-        $on->run($server, $fd, $reactorId, $data);
+        try {
+            $this->server = $server;
+            
+            // 调用二次转发，不做重载
+            $on = new \app\event\onReceive;
+            $on->run($server, $fd, $reactorId, $data);
+        } catch (\Throwable $throwable) {
+            return \x\Error::run()->halt($throwable);
+        }
     }
 
 }

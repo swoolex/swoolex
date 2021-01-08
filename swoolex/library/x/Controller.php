@@ -305,7 +305,7 @@ class Controller
         }
 
         $this->file_name = $name;
-        $this->file_path = str_replace(ROOT_PATH, '', $config['path'].$name);
+        $this->file_path = $config['path'].$name;
         return $this;
     }
 

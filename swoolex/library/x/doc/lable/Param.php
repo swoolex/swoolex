@@ -59,97 +59,107 @@ class Param extends Basics
                 $websocket_list = $obj->get_data();
             }
 
-
             foreach ($route['own']['Param'] as $val) {
                 if (empty($val['name'])) continue;
-                $name = $val['name'];
-                // 获取回调事件名称
-                $callback = '';
-                if (!empty($val['callback'])) {
-                    $callback = $val['callback'];
-                }
-
-                // 提示内容
-                $tips = $val['tips']??'';
-
-                // 先获取参数
-                $param = '';
-                if ($is_get) $param = $get_list[$name]??'';
-                if (empty($param)) {
-                    if ($is_post) $param = $post_list[$name]??'';
-                    if ($is_websocket) $param = $websocket_list['data'][$name]??'';
-                }
                 
-                // 参数预设
-                if (isset($val['value']) && $this->isset_empty($param) == false) {
-                    $param = $val['value'];
-                    if ($is_get) $this->request->get[$name] = $val['value'];
-                    if ($is_post) $this->request->post[$name] = $val['value'];
-                    if ($is_websocket) {
-                        $websocket_list['data'][$name] = $val['value'];
+                // 请求类型
+                $is_continue = true;
+                if ($is_websocket == false && !empty($val['method'])) {
+                    if (strtoupper($val['method']) != $this->request->server['request_method']) {
+                        $is_continue = false;
                     }
                 }
 
-                // 判断是否允许为空
-                $null = false;
-                if (isset($val['empty']) && $val['empty'] == 'true') {
-                    if (!isset($param)) {
-                        $null = true;
-                    } else if (is_array($param) == false && trim($param) == '') {
-                        $null = true;
+                if ($is_continue) {
+                    $name = $val['name'];
+                    // 获取回调事件名称
+                    $callback = '';
+                    if (!empty($val['callback'])) {
+                        $callback = $val['callback'];
                     }
-                }
-                // 不允许为空
-                if ($null) {
-                    // 中断
-                    return $this->param_error_callback($callback, $tips, $name, 'NULL');
-                }
 
-                if (is_array($param) == false) {
-                    // 类型判断
-                    if (!empty($val['type']) && !empty($param)) {
-                        $param_type = explode('|', $val['type']);
-                        $param_status = false;
-                        $attach = '';
-                        foreach ($param_type as $v) {
-                            $is = 'is_'.$v;
-                            if ($is($param)) {
-                                $param_status = true;
-                            } else {
-                                $attach .= $is.'、';
+                    // 提示内容
+                    $tips = $val['tips']??'';
+
+                    // 先获取参数
+                    $param = '';
+                    if ($is_get) $param = $get_list[$name]??'';
+                    if (empty($param)) {
+                        if ($is_post) $param = $post_list[$name]??'';
+                        if ($is_websocket) $param = $websocket_list['data'][$name]??'';
+                    }
+                    
+                    // 参数预设
+                    if (isset($val['value']) && $this->isset_empty($param) == false) {
+                        $param = $val['value'];
+                        if ($is_get) $this->request->get[$name] = $val['value'];
+                        if ($is_post) $this->request->post[$name] = $val['value'];
+                        if ($is_websocket) {
+                            $websocket_list['data'][$name] = $val['value'];
+                        }
+                    }
+
+                    // 判断是否允许为空
+                    $null = false;
+                    if (isset($val['empty']) && $val['empty'] == 'true') {
+                        if (!isset($param)) {
+                            $null = true;
+                        } else if (is_array($param) == false && trim($param) == '') {
+                            $null = true;
+                        }
+                    }
+                    // 不允许为空
+                    if ($null) {
+                        // 中断
+                        return $this->param_error_callback($callback, $tips, $name, 'NULL');
+                    }
+                    // 只有真的不为空，才走这个规则
+                    if (is_array($param) == false && $this->isset_empty($param) == true) {
+                        // 类型判断
+                        if (!empty($val['type']) && !empty($param)) {
+                            $param_type = explode('|', $val['type']);
+                            $param_status = false;
+                            $attach = '';
+                            foreach ($param_type as $v) {
+                                $is = 'is_'.$v;
+                                if ($is($param)) {
+                                    $param_status = true;
+                                } else {
+                                    $attach .= $is.'、';
+                                }
+                            }
+                            // 全都没通过
+                            if ($param_status === false) {
+                                // 中断
+                                return $this->param_error_callback($callback, $tips, $name, 'TYPE', rtrim($attach, '、'));
                             }
                         }
-                        // 全都没通过
-                        if ($param_status === false) {
-                            // 中断
-                            return $this->param_error_callback($callback, $tips, $name, 'TYPE', rtrim($attach, '、'));
-                        }
-                    }
 
-                    // 长度判断
-                    $chinese = false;
-                    if (!empty($val['chinese']) && $val['chinese'] == 'true') {
-                        $chinese = true;
-                    }
-                    if ($chinese) {
-                        $length = mb_strlen($param, 'UTF8'); 
-                    } else {
-                        $length = strlen($param); 
-                    }
-                    // 最小长度判断
-                    if (!empty($val['min']) && $val['min'] > $length) {
-                        // 中断
-                        return $this->param_error_callback($callback, $tips, $name, 'MIN');
-                    }
-                    // 最大长度判断
-                    if (!empty($val['max']) && $val['max'] < $length) {
-                        // 中断
-                        return $this->param_error_callback($callback, $tips, $name, 'MAX');
-                    }
-                    // 正则判断regular
-                    if (!empty($val['regular']) && !preg_match($val['regular'], $param)) {
-                        // 中断
-                        return $this->param_error_callback($callback, $tips, $name, 'REGULAR', $val['regular']);
+                        // 长度判断
+                        $chinese = false;
+                        if (!empty($val['chinese']) && $val['chinese'] == 'true') {
+                            $chinese = true;
+                        }
+                        if ($chinese) {
+                            $length = mb_strlen($param, 'UTF8'); 
+                        } else {
+                            $length = strlen($param); 
+                        }
+                        // 最小长度判断
+                        if (!empty($val['min']) && $val['min'] > $length) {
+                            // 中断
+                            return $this->param_error_callback($callback, $tips, $name, 'MIN');
+                        }
+                        // 最大长度判断
+                        if (!empty($val['max']) && $val['max'] < $length) {
+                            // 中断
+                            return $this->param_error_callback($callback, $tips, $name, 'MAX');
+                        }
+                        // 正则判断regular
+                        if (!empty($val['regular']) && !preg_match($val['regular'], $param)) {
+                            // 中断
+                            return $this->param_error_callback($callback, $tips, $name, 'REGULAR', $val['regular']);
+                        }
                     }
                 }
             }

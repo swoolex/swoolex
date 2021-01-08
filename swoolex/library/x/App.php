@@ -91,6 +91,9 @@ class App
                 }
                 // 设置默认时区
                 date_default_timezone_set(\x\Config::run()->get('app.default_timezone'));
+                // 清空初始化文件
+                file_put_contents($this->config['worker_pid_file'], '');
+                file_put_contents($this->config['tasker_pid_file'], '');
                 // 初始化连接池日志文件
                 $this->create_mysql_pool_log();
                 $this->create_redis_pool_log();

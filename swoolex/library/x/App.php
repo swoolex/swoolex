@@ -27,6 +27,7 @@ class App
         'http',
         'websocket',
         'server',
+        'rpc',
     ];
     /**
      * 启动的服务参数

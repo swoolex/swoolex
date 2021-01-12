@@ -77,8 +77,7 @@ class Server
                 $this->service = new \Swoole\WebSocket\Server($config['host'], $config['port'], SWOOLE_PROCESS, $wss);
             break;
             case 'server':
-                // 注册错误和异常处理机制
-                \x\Error::register();
+            case 'rpc':
                 $this->service = new \Swoole\Server($config['host'], $config['port'], SWOOLE_PROCESS, $wss);
             break;
         }
@@ -147,6 +146,7 @@ class Server
         $this->service->on('Message', [$this->ioc('onMessage'), 'run']);
         # 监听外部调用请求
         $this->service->on('Request', [$this->ioc('onRequest', $this->service, $this->config), 'run']);
+
         # 启动服务
         $this->service->start();
     }

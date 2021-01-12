@@ -23,7 +23,7 @@ return [
     // 启动的 Reactor 线程数
     'reactor_num' => false,
     // 启动的 Worker 进程数
-    'worker_num' => 4,
+    'worker_num' => 1,
     // 设置 worker 进程的最大任务数
     'max_request' => 0,
     // 最大允许的连接数

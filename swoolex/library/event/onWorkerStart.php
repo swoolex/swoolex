@@ -32,6 +32,9 @@ class onWorkerStart
     public function run($server, $workerId) {
         $this->server = $server;
 
+        // 初始化微服务
+        \x\Rpc::run()->start();
+
         // 初始化路由表
         \x\doc\Table::run()->start();
 

@@ -12,7 +12,7 @@
 namespace x;
 
 // 框架当前版本
-define('VERSION', 'v1.2.23');
+define('VERSION', 'v1.2.24');
 // 项目根地址
 define('ROOT_PATH', dirname(__DIR__));
 // 缓存 && 日志根地址
@@ -28,6 +28,9 @@ Loader::register();
 require_once __DIR__.'/helper.php';
 // 引入应用函数
 require_once ROOT_PATH.'/common/common.php';
+
+// 注册错误和异常处理机制
+Error::run()->register();
 
 // 配置文件加载
 Config::run();

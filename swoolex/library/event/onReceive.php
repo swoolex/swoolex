@@ -32,16 +32,62 @@ class onReceive
      * @return void
     */
     public function run($server, $fd, $reactorId, $data=null) {
+
         try {
             $this->server = $server;
-            
-            // 调用二次转发，不做重载
-            $on = new \app\event\onReceive;
-            $on->run($server, $fd, $reactorId, $data);
+            // 微服务
+            if (\x\Config::run()->get('server.sw_service_type') == 'rpc') {
+                $this->rpc($server, $fd, $reactorId, $data);
+            } else {
+                $this->server($server, $fd, $reactorId, $data);
+            }
         } catch (\Throwable $throwable) {
             return \x\Error::run()->halt($throwable);
         }
     }
 
+    /**
+     * 微服务TCP服务
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function rpc($server, $fd, $reactorId, $data) {
+        // 请求注入容器
+        \x\Container::getInstance()->set('server', $server);
+        \x\Container::getInstance()->set('reactorId', $reactorId);
+        // 数据解密
+        if (\x\Config::run()->get('rpc.aes_status') == true) {
+            $Currency = new \x\rpc\Currency();
+            $data = $Currency->aes_decrypt($data);
+            unset($Currency);
+        }
+        $data = json_decode($data, true);
+
+        # 开始转发路由
+        $obj = new \x\rpc\ServerRoute();
+        $obj->start($server, $fd, $reactorId, $data);
+
+        // 销毁整个请求级容器
+        \x\Container::getInstance()->clear();
+    }
+
+    /**
+     * 普通TCP服务
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function server($server, $fd, $reactorId, $data) {
+        // 调用二次转发，不做重载
+        $on = new \app\event\onReceive;
+        $on->run($server, $fd, $reactorId, $data);
+    }
 }
 

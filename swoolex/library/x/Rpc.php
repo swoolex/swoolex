@@ -210,6 +210,37 @@ class Rpc
                 }
             }
         }
+        self::$config[$class][$function][] = $val;
+        return true;
+    }
+
+    /**
+     * 删除某条配置
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $class 配置KEY
+     * @param string $function 配置KEY
+     * @param string $title 配置名称
+     * @return void
+    */
+    public static function deleteOne($class, $function, $title=null) {
+        if (isset(self::$config[$class][$function])) {
+            if ($title) {
+                $list = self::$config[$class][$function];
+                foreach ($list as $k=>$v) {
+                    if ($v['title'] == $title) {
+                        unset(self::$config[$class][$function][$k]);
+                        return true;
+                    }
+                }
+            } else {
+                unset(self::$config[$class][$function]);
+                return true;
+            }
+        }
         return false;
     }
 }

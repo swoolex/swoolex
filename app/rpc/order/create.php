@@ -13,7 +13,13 @@ namespace app\rpc\order;
 
 class create {
 
+    // rpc - order/create->run()服务
     public function run() {
+        // 请求参数
+        var_dump($this->param);
+        // 请求头
+        var_dump($this->headers);
+        // 返回值
         return ['id' => 1];
     }
     

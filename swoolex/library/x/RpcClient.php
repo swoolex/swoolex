@@ -201,7 +201,7 @@ class RpcClient
         foreach ($list as $k=>$v) {
             if (isset($v['is_fault']) && $v['is_fault'] == 0) {
                 $yes_list[] = $v;
-            } else if (empty($v['is_fault'])) {
+            } else if (empty($v['is_fault']) && empty($v['status'])) {
                 $yes_list[] = $v;
             }
         }

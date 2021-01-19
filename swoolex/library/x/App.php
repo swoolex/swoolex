@@ -315,6 +315,7 @@ class App
         echo '6. test [服务类型] [路由地址]'.PHP_EOL;
         echo '7. controller [服务类型] [路由地址] [方法名称] [路由名称]'.PHP_EOL;
         echo '8. monitor start，创建HTTP请求监控WEB服务组件'.PHP_EOL.PHP_EOL;
+        echo '9. rpc start，创建HTTP-RPC 控制台WEB服务组件'.PHP_EOL.PHP_EOL;
         echo 'SERVER: Types of services supported'.PHP_EOL;
         echo '1. http，WEB服务'.PHP_EOL;
         echo '2. websocket，WebSocket服务'.PHP_EOL;

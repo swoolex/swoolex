@@ -40,4 +40,14 @@ return [
     'write_timeout' => 10.0,
     // SWOOLE-CLIENT 发送超时 
     'read_timeout' => 0.5, 
+
+    
+    // +-----------------------------
+    // | HTTP-RPC控制台相关
+    // +-----------------------------
+    
+    // 控制台账号
+    'http_rpc_username' => 'swoolex',
+    // 控制台密码
+    'http_rpc_password' => 'swoolex',
 ];

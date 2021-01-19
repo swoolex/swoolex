@@ -162,19 +162,18 @@ class Error {
     public function halt($throwable) {
         $trace = $throwable->getTrace();
         $start = current($trace);
-
         $e = [];
         # 获得错误信息
-        $e['file']    = $start['file'];
+        $e['file']    = $start['file'] ?? $start['class'];
         $e['line']    = $throwable->getLine();
         $e['message'] = $throwable->getMessage();
         $e['trace']   = $trace;
         # 获得错误上下文内容
-        $source       = $this->getSourceCode($e['file'], $e['line']);
+        $source       = isset($start['file']) ? $this->getSourceCode($e['file'], $e['line']) : ['first'=>'', 'source'=>[]];
 
         $txt  = 'ThrowableError in：'.$e['file'].'，Line：'. $e['line'];
         $txt .= '行， 原因：'.nl2br(htmlentities($e['message']));
-
+        
 		# 开启调试模式则记录错误日志
         if (\x\Config::run()->get('app.de_bug') == true) {
             # 第一次异常才写入日志

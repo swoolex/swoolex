@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+    <meta content="webkit" name="renderer" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HTTP-RPC 控制台 - SW-X</title>
+    <style>
+    body,html{margin:0;padding:0;background: #f1f2f7; font-family: "微软雅黑";font-size: 16px;}
+    .card-header {padding: .75rem 1.25rem;margin-bottom: 0;background-color: #fff;border-bottom: 1px solid rgba(0,0,0,.125);width:100%;}
+    .card-title {margin-bottom: .75rem;}
+    .table {width: 100%;margin-bottom: 1rem;background-color: transparent;}
+    .table td {color: #343a40;font-size: 14px;font-weight: 600;vertical-align: middle;}
+    .table th, .table td {border: none;border-bottom: 1px solid #e8e9ef;color: #868e96;font-size: 13px;font-weight: normal;padding: .25em 1.25em;}
+    .table th{padding: .75em 1.25em;}
+    .header td{padding: 2px 5px;}
+    .content td, .content th{text-align: left;}
+    .content td{background:#fff}
+    .badge-complete {background: #00c292;}
+    .badge {display: inline-block;padding: 10PX;font-size:13px; line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;border-radius: .25rem;text-decoration: none;}
+    select,input,button{padding: 5px 7px; border: 1px solid #ccc;border-radius: 5px;background: #fff;}
+
+    ul,li{list-style: none;margin: 0;padding: 0;float: left;}
+    ul{padding: 5px 10px; background: #fff; width: 99%;}
+    ul li{margin: 0 10px;}
+    ul li a{    color: #fff;
+    border: 1px solid #00c292;
+    text-decoration: none;
+    padding: 2px 10px;
+    border-radius: 5px;
+    background: #00c292;
+    font-family: '微软雅黑';
+    font-size: 14px;}
+    ul .current a{color: #333;background: #fff;border: 1px solid #00c292;}
+    
+    </style>
+    <!--依赖JQ-->
+    <script src="https://blog.junphp.com/public/js/jquery.min.js"></script>
+    <link href="https://blog.junphp.com/public/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://blog.junphp.com/public/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="https://blog.junphp.com/public/js/iframe.js" type="text/javascript"></script>
+    <style>
+    .modal.show .modal-dialog{max-width: 1180px;}
+    .modal-title{ position: absolute;}
+    </style>
+</head>
+
+<body>
+
+<div>
+    <div class="card-header">
+        <strong class="card-title">RPC列表</strong>
+
+        <button type="button" id="autoReflush" style="float: right;font-size: 13px;">开启自动刷新</button>
+        <div id="ms" style="width: auto;float: right;font-size: 13px;margin: 6px;"></div>
+    </div>
+    <table class="table content">
+        <tr>
+            <th style="text-align: center;" width=60>序号</th>
+            <th style="text-align: center;" >状态</th>
+            <th style="text-align: center;" >服务地址</th>
+            <th style="text-align: center;" >服务名称</th>
+            <th style="text-align: center;" >TC-IP</th>
+            <th style="text-align: center;" >端口</th>
+            <th style="text-align: center;" >节点是否已故障</th>
+            <th style="text-align: center;" >评分</th>
+            <th style="text-align: center;" >延迟</th>
+        </tr>
+        {foreach $arr as $k=>$v}
+        <tr>
+            <td>{$k+1}</td>
+            <td style="text-align: center;">
+                {if (isset($v['status']) && $v.status==2)}关闭[<font color="red" style="cursor: pointer;" onclick="tab('{$v.class}', '{$v.function}', '{$v.title}', 0)">启用</font>]{else /}启用[<font color="red" style="cursor: pointer;" onclick="tab('{$v.class}', '{$v.function}', '{$v.title}', 2)">关闭</font>]{/if}
+            </td>
+            <td style="text-align: center;"><font color="#005aff">{$v.url}</font></td>
+            <td style="text-align: center;">{$v.title}</td>
+            <td style="text-align: center;">{$v.ip}</td>
+            <td style="text-align: center;">{$v.port}</td>
+            <td style="text-align: center;">{if (isset($v['is_fault']) && $v.is_fault==1)}<font color="red">是</font>{else /}否{/if}</td>
+            <td style="text-align: center;">{$v.score|default='100'}</td>
+            <td style="text-align: center;">{$v.ping_ms|default='0'}ms</td>
+        </tr>
+        {/foreach}
+    </table>
+</div>
+
+</body>
+</html>
+<script>
+function tab(clas, fun, title, status) {
+    if (confirm('你确认切换该节点状态吗?')) {
+        $.ajax({
+            type: 'post',
+            data: {
+                class:clas,
+                function:fun,
+                title:title,
+                status:status,
+            },
+            url: "/HttpRpc/update_status",
+            success: function(data) {
+                var array = eval('('+data+')');
+                if (array['code'] == '00') {
+                    window.location.reload();
+                } else {
+                    alert(array['msg']);
+                }
+            }
+        });
+    }
+}
+var fresh;
+var stop = false;
+$("#autoReflush").click(function(){
+    if(!stop){
+        $('#ms').html('每5秒自动刷新一次 ');
+        //指定5秒刷新一次
+        fresh = setInterval(function(){
+            window.location.href='?username={$param.username}&password={$param.username}&ip={$param.ip}&reload=1';
+        },5000); 
+        $(this).text("关闭自动刷新");
+        stop=true;
+    }else{
+        clearInterval(fresh);
+        $(this).text("开启自动刷新");
+        $('#ms').html('');
+        stop = false;
+    }
+});
+{if (!empty($param['reload']))}
+$("#autoReflush").click();
+{/if}
+</script>

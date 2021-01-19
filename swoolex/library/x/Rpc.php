@@ -74,6 +74,9 @@ class Rpc
             foreach ($config as $k => $v) {
                 foreach ($v as $kk => $vv) {
                     foreach ($vv as $key => $val) {
+                        // 手动关闭的节点不需要检测
+                        if (!empty($val['status'])) continue;
+
                         $shell = 'ping  -c 1 '.$val['ip'];
                         $arr = \Swoole\Coroutine\System::exec($shell);
                         if ($arr == false) {

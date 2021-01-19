@@ -169,7 +169,7 @@ class onRequest
             'request_method' => $request->server['request_method'], // 请求类型
             'server_protocol' => $request->server['server_protocol'], // 请求协议
             'route' => $request->server['request_uri'], // 路由
-            'query_string' => $request->server['query_string'], // URL参数
+            'query_string' => $request->server['query_string'] ?? [], // URL参数
             'header' => $request->header, // 请求头
             'get' => $request->get ?? [], // GET参数
             'post' => $request->post ?? [], // POST参数
@@ -221,7 +221,7 @@ class onRequest
             // 写入报错日志 
             $trace = $throwable->getTrace();
             $start = current($trace);
-            $array['error_file']    = $start['file'];
+            $array['error_file']    = $start['file'] ?? '';
             $array['error_line']    = $throwable->getLine();
             $array['error_message'] = $throwable->getMessage();
         }

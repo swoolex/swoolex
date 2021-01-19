@@ -39,7 +39,6 @@ class ServerCurrency
             $json = $Currency->aes_encrypt($json);
             unset($Currency);
         }
-        $server->send($fd, $json);
-        return $server->close($fd);
+        return $server->send($fd, $json);
     }
 }

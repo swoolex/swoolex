@@ -16,10 +16,6 @@ class Rpc
     private static $instance = null; // 创建静态对象变量,用于存储唯一的对象实例  
     private function __construct(){} // 私有化构造函数，防止外部调用
     private function __clone(){}     // 私有化克隆函数，防止外部克隆对象
-    /**
-     * 全站配置项
-    */
-    private static $config = [];
 
     /**
      * 实例化对象方法，供外部获得唯一的对象
@@ -32,7 +28,7 @@ class Rpc
     }
 
     /**
-     * 初始化服务
+     * 初始化配置文件
      * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
@@ -40,23 +36,16 @@ class Rpc
      * @global 无
      * @return void
     */
-    public function start() {
-        self::$instance::runtime();
-        self::$instance::ping();
-    }
-
-    /**
-     * 初始化配置项
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
-    */
-    private static function runtime() {
+    public static function start() {
         $file = ROOT_PATH.'/rpc/map.php';
-        self::$config = require $file;
+        $config = require_once $file;
+
+        $redis_key = \x\Config::run()->get('rpc.redis_key');
+        $redis = new \x\Redis();
+        $redis->set($redis_key, json_encode($config, JSON_UNESCAPED_UNICODE));
+        $redis->return();
+
+        self::ping();
     }
 
     /**
@@ -70,7 +59,12 @@ class Rpc
     */
     private static function ping() {
         \Swoole\Timer::tick(3000, function ($timer_id) {
-            $config = self::$config;
+            $redis_key = \x\Config::run()->get('rpc.redis_key');
+            $redis = new \x\Redis();
+            $config = $redis->get($redis_key);
+            $redis->return();
+            $config = $config ? json_decode($config, true) : [];
+
             foreach ($config as $k => $v) {
                 foreach ($v as $kk => $vv) {
                     foreach ($vv as $key => $val) {
@@ -84,7 +78,7 @@ class Rpc
                         } else {
                             $str = $arr['output'];
                             if (stripos($str, 'time=') !== false) {
-                                self::$config[$k][$kk][$key]['is_fault'] = 0;
+                                $config[$k][$kk][$key]['is_fault'] = 0;
                                 $arr = explode('time=', $str);
                                 $arr = explode(' ms', $arr[1]);
 
@@ -103,17 +97,22 @@ class Rpc
                                 } else if ($ms <= 100 && $score < 100) {
                                     $score += 5;
                                 }
-                                self::$config[$k][$kk][$key]['score'] = $score;
-                                self::$config[$k][$kk][$key]['ping_ms'] = $ms;
+                                if ($score > 100) $score = 100;
+                                $config[$k][$kk][$key]['score'] = $score;
+                                $config[$k][$kk][$key]['ping_ms'] = $ms;
                             } else {
-                                self::$config[$k][$kk][$key]['is_fault'] = 1;
-                                self::$config[$k][$kk][$key]['ping_ms'] = 999;
+                                $config[$k][$kk][$key]['is_fault'] = 1;
+                                $config[$k][$kk][$key]['ping_ms'] = 999;
                                 self::ping_error($k, $kk, $val, 2);
                             }
                         }
                     }
                 }
             }
+
+            $redis = new \x\Redis();
+            $redis->set($redis_key, json_encode($config, JSON_UNESCAPED_UNICODE));
+            $redis->return();
         });
     }
 
@@ -133,26 +132,6 @@ class Rpc
     }
 
     /**
-     * 更新配置
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $key 配置KEY
-     * @param mixed $val 配置参数
-     * @return void
-    */
-    public static function set($key, $val) {
-        if (isset(self::$config[$key])) {
-            $config = array_merge(self::$config[$key], $val);
-            self::$config[$key] = $config;
-        } else {
-            self::$config[$key] = $val;
-        }
-    }
-
-    /**
      * 读取配置
      * @todo 无
      * @author 小黄牛
@@ -163,13 +142,19 @@ class Rpc
      * @return void
     */
     public static function get($key=null) {
+        $redis_key = \x\Config::run()->get('rpc.redis_key');
+        $redis = new \x\Redis();
+        $config = $redis->get($redis_key);
+        $redis->return();
+        $config = $config ? json_decode($config, true) : [];
+        
         if ($key) {
-            if (isset(self::$config[$key])) {
-                return self::$config[$key];
+            if (isset($config[$key])) {
+                return $config[$key];
             }
             return false;
         }
-        return self::$config;
+        return $config;
     }
 
     /**
@@ -183,8 +168,19 @@ class Rpc
      * @return void
     */
     public static function delete($key) {
-        if (isset(self::$config[$key])) {
-            unset(self::$config[$key]);
+        $redis_key = \x\Config::run()->get('rpc.redis_key');
+        $redis = new \x\Redis();
+        $config = $redis->get($redis_key);
+        $redis->return();
+        $config = $config ? json_decode($config, true) : [];
+
+        if (isset($config[$key])) {
+            unset($config[$key]);
+
+            $redis = new \x\Redis();
+            $redis->set($redis_key, json_encode($config, JSON_UNESCAPED_UNICODE));
+            $redis->return();
+
             return true;
         }
         
@@ -204,11 +200,56 @@ class Rpc
      * @return void
     */
     public static function setOne($class, $function, $val) {
-        if (isset(self::$config[$class][$function])) {
-            $list = self::$config[$class][$function];
+        $redis_key = \x\Config::run()->get('rpc.redis_key');
+        $redis = new \x\Redis();
+        $config = $redis->get($redis_key);
+        $redis->return();
+        $config = $config ? json_decode($config, true) : [];
+
+        if (isset($config[$class][$function])) {
+            $list = $config[$class][$function];
             foreach ($list as $k=>$v) {
                 if ($v['title'] == $val['title'] && $v['ip'] == $val['ip'] && $v['port'] == $val['port']) {
-                    self::$config[$class][$function][$k] = $val;
+                    $config[$class][$function][$k] = $val;
+
+                    $redis = new \x\Redis();
+                    $redis->set($redis_key, json_encode($config, JSON_UNESCAPED_UNICODE));
+                    $redis->return();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 删除某条配置
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $class 配置KEY
+     * @param string $function 配置KEY
+     * @param mixed $val 配置参数
+     * @return void
+    */
+    public static function deleteOne($class, $function, $val) {
+        $redis_key = \x\Config::run()->get('rpc.redis_key');
+        $redis = new \x\Redis();
+        $config = $redis->get($redis_key);
+        $redis->return();
+        $config = $config ? json_decode($config, true) : [];
+
+        if (isset($config[$class][$function])) {
+            $list = $config[$class][$function];
+            foreach ($list as $k=>$v) {
+                if ($v['title'] == $val['title'] && $v['ip'] == $val['ip'] && $v['port'] == $val['port']) {
+                    unset($config[$class][$function][$k]);
+
+                    $redis = new \x\Redis();
+                    $redis->set($redis_key, json_encode($config, JSON_UNESCAPED_UNICODE));
+                    $redis->return();
                     return true;
                 }
             }

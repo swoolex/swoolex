@@ -81,7 +81,7 @@ class RpcClient
      * @param int $num 请求次数
      * @return mixed
     */
-    public function run($class, $function, $headers=[], $param=[], $num=1) {
+    public function run($class, $function, $param=[], $headers=[], $num=1) {
         if ((time()-$this->start_time) >= $this->out_time) {
             $this->msg = "rpc request timeout";
             $this->code = '408';

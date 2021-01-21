@@ -40,12 +40,17 @@ return [
     'write_timeout' => 10.0,
     // SWOOLE-CLIENT 发送超时 
     'read_timeout' => 0.5, 
-
     
     // +-----------------------------
-    // | HTTP-RPC控制台相关
+    // | Redis 服务的Key
     // +-----------------------------
+    'redis_key' => 'swoolex_rpc',
     
+    // +-----------------------------
+    // | HTTP-RPC服务中心相关
+    // +-----------------------------
+    // 当前应用是否为服务中心
+    'http_rpc_is'       => false,
     // 控制台账号
     'http_rpc_username' => 'swoolex',
     // 控制台密码

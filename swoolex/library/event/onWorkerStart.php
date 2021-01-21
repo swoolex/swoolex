@@ -32,9 +32,6 @@ class onWorkerStart
     public function run($server, $workerId) {
         $this->server = $server;
 
-        // 初始化微服务
-        \x\Rpc::run()->start();
-
         // 初始化路由表
         \x\doc\Table::run()->start();
 
@@ -64,6 +61,11 @@ class onWorkerStart
         $this->start_mysql($workerId);
         // 启动Redis连接池
         $this->start_redis($workerId);
+
+        // 初始化微服务
+        if (\x\Config::run()->get('rpc.http_rpc_is') == true) {
+            \x\Rpc::run()->start();
+        }
         
         // 自动载入所有定时任务
         if ($workerId == 0) {

@@ -37,6 +37,10 @@ class RpcClient
      * 请求超时时间(S)
     */
     private $out_time;
+    /**
+     * 发送次数
+    */
+    private $send_num = 1;
 
     /**
      * 标记开始时间
@@ -97,7 +101,7 @@ class RpcClient
         // 权重获取
         $list = $list[$function];
         // 递归到最后一个节点了
-        if ($num > count($list)) {
+        if ($num < $this->send_num) {
             return false;
         }
         $config = $this->weightConfig($list);
@@ -110,7 +114,7 @@ class RpcClient
         // 发送请求
         $res = $this->send($config, $class, $function, $headers, $param);
         if ($res === false) {
-            return $this->run($class, $function, $headers, $param, ($num+1));
+            return $this->run($class, $function, $param, $headers, ($num+1));
         }
 
         return $res;
@@ -118,6 +122,8 @@ class RpcClient
 
     // 发送微服务请求
     private function send($config, $class, $function, $headers=[], $param=[]) {
+        $this->send_num++;
+
         // 更新当前请求数
         $config['request_num'] = isset($config['request_num']) ? ($config['request_num']+1) : 1;
         Rpc::run()->setOne($class, $function, $config);

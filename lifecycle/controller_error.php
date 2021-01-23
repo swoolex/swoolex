@@ -40,7 +40,7 @@ class controller_error
 
             // 引入文件
             ob_start();
-            include_once $exceptionFile;
+            include $exceptionFile;
             $html = ob_get_clean();
 
             $obj = new \x\Controller();

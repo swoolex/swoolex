@@ -37,6 +37,10 @@ class Db
      * 是否使用的连接池
     */
     private $is_pool;
+    /**
+     * 是否归还了链接
+    */
+    private $return_status = false;
     
     /**
      * 选择连接池
@@ -89,7 +93,21 @@ class Db
 
         $this->sql_ref = new \ReflectionClass('\x\db\Sql');
         $this->sql = new \x\db\Sql();
-        $this->sql->Db = $this;
+    }
+
+    /**
+     * 利用析构函数，防止有漏掉没归还的连接，让其自动回收，减少不规范的开发者
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function __destruct() {
+        if ($this->return_status === false) {
+            $this->return();
+        }
     }
 
     /**
@@ -102,7 +120,11 @@ class Db
      * @return void
     */
     public function return() {
+        if ($this->return_status !== false) {
+            return true;
+        }
         if ($this->is_pool) {
+            $this->return_status = true;
             switch ($this->type) {
                 case 'create':
                     return \x\db\MysqlPool::run()->write_free($this->pool);
@@ -119,6 +141,7 @@ class Db
             }
         } else {
             $this->pool = null;
+            $this->return_status = true;
             return true;
         }
         
@@ -213,6 +236,7 @@ class Db
         if (!$this->sql_ref->hasMethod($name)) return false;
 
         $obj = $this->sql_ref->getmethod($name);
+        $this->sql->Db = $this; // 用之前先传输PDO过去
         $this->sql = $obj->invokeArgs($this->sql, $arguments);
         return $this->sql;
     }

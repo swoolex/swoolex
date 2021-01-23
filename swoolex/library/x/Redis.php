@@ -22,6 +22,10 @@ class Redis
      * SQL构造器反射类
     */
     private $sql_ref;
+    /**
+     * 是否归还了链接
+    */
+    private $return_status = false;
     
     /**
      * 选择连接池
@@ -37,6 +41,21 @@ class Redis
     }
 
     /**
+     * 利用析构函数，防止有漏掉没归还的连接，让其自动回收，减少不规范的开发者
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function __destruct() {
+        if ($this->return_status === false) {
+            $this->return();
+        }
+    }
+
+    /**
      * 归还连接池
      * @todo 无
      * @author 小黄牛
@@ -46,6 +65,7 @@ class Redis
      * @return void
     */
     public function return() {
+        $this->return_status = true;
         return \x\redis\Redis2Pool::run()->free($this->pool);
     }
 
@@ -65,6 +85,17 @@ class Redis
         $ref = new \ReflectionClass($this->pool);
         $ins = $this->pool;
         if (!$ref->hasMethod($name)) return false;
+
+        // 加上前缀
+		if ($name == 'rawCommand') {
+			if (isset($arguments[1])) {
+				$arguments[1] = \x\Config::run()->get('redis.table').$arguments[1];
+			}
+		} else {
+			if (isset($arguments[0])) {
+				$arguments[0] = \x\Config::run()->get('redis.table').$arguments[0];
+			}
+		}
 
         $obj = $ref->getmethod($name);
         return $obj->invokeArgs($ins, $arguments);

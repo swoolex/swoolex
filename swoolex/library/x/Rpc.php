@@ -209,7 +209,7 @@ class Rpc
         if (isset($config[$class][$function])) {
             $list = $config[$class][$function];
             foreach ($list as $k=>$v) {
-                if ($v['title'] == $val['title'] && $v['ip'] == $val['ip'] && $v['port'] == $val['port']) {
+                if ($v['title'] == $val['title']) {
                     $config[$class][$function][$k] = $val;
 
                     $redis = new \x\Redis();
@@ -244,7 +244,7 @@ class Rpc
         if (isset($config[$class][$function])) {
             $list = $config[$class][$function];
             foreach ($list as $k=>$v) {
-                if ($v['title'] == $val['title'] && $v['ip'] == $val['ip'] && $v['port'] == $val['port']) {
+                if ($v['title'] == $val['title']) {
                     unset($config[$class][$function][$k]);
 
                     $redis = new \x\Redis();

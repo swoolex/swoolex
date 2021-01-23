@@ -57,7 +57,16 @@ class MysqlPool extends AbstractPool {
         }
         $this->read_count--;
         if (!$this->read_connections) return false;
-        return $this->read_connections->get();
+        
+        $pool = $this->read_connections->get();
+
+        $res = $pool->getAttribute(\PDO::ATTR_SERVER_INFO);
+        if ($res === false) {
+            $this->read_free(null);
+            return $this->read_pop();
+        }
+
+        return $pool;
     }
 
     /**
@@ -93,7 +102,15 @@ class MysqlPool extends AbstractPool {
         }
         $this->write_count--;
         if (!$this->write_connections) return false;
-        return $this->write_connections->get();
+        $pool = $this->write_connections->get();
+
+        $res = $pool->getAttribute(\PDO::ATTR_SERVER_INFO);
+        if ($res === false) {
+            $this->write_free(null);
+            return $this->write_pop();
+        }
+
+        return $pool;
     }
 
     /**
@@ -129,7 +146,15 @@ class MysqlPool extends AbstractPool {
         }
         $this->log_count--;
         if (!$this->log_connections) return false;
-        return $this->log_connections->get();
+        $pool = $this->log_connections->get();
+
+        $res = $pool->getAttribute(\PDO::ATTR_SERVER_INFO);
+        if ($res === false) {
+            $this->log_free(null);
+            return $this->log_pop();
+        }
+
+        return $pool;
     }
     /**
      * 日志-归还一个连接

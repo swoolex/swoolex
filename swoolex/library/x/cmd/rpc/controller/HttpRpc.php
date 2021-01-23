@@ -136,17 +136,9 @@ class HttpRpc extends Controller
         $list = \x\Rpc::run()->get($param['class']);
         $list = $list[$param['function']];
 
-        if ($param['title'] != $param['title2']) {
-            foreach ($list as $v) {
-                if ($v['title'] == $param['title']) {
-                    return $this->returnJson('01', '该节点名称已被使用');
-                }
-            }
-        }
-
         $arr = [];
         foreach ($list as $v) {
-            if ($v['title'] == $param['title2']) {
+            if ($v['title'] == $param['title']) {
                 $arr = $v;
                 break;
             }
@@ -158,6 +150,7 @@ class HttpRpc extends Controller
             $arr['port'] = $param['port'];
             $arr['score'] = $param['score'];
             $arr['status'] = $param['status'];
+
             \x\Rpc::run()->setOne($param['class'], $param['function'], $arr);
             $this->save_map();
             return $this->returnJson('00', '修改成功');

@@ -71,7 +71,10 @@ class Error {
                 $error['line'] = $errline;
                 break;
         }
-        $this->halt2($error);
+
+        if (strpos($error['message'], 'MySQL server has gone away')===false){
+            $this->halt2($error);
+        }
     }
 
     /**

@@ -29,6 +29,7 @@ class rpc_error
      * @return bool
     */
     public function run($class, $function, $config, $status) {
+        
         // 此处可自行实现消息通知
         echo '微服务：'.$class.' '.$function.' 错误，事件编号：'.$status.PHP_EOL;
         return true;

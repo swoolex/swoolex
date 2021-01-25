@@ -39,6 +39,27 @@ class Controller
     private $view;
 
     /**
+     * 利用析构函数，自动回收归还连接池
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function __destruct() {
+        $list = get_object_vars($this);
+        foreach ($list as $name=>$value) {
+            if (is_object($value)) {
+                $obj = get_class($value);
+                if ($obj == 'x\\Db' || $obj == 'x\\Redis') {
+                    $this->$name->return();
+                }
+            }
+        }
+    }
+    
+    /**
      * 输出内容到页面
      * @todo 无
      * @author 小黄牛

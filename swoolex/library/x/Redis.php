@@ -87,15 +87,18 @@ class Redis
         if (!$ref->hasMethod($name)) return false;
 
         // 加上前缀
+        $prefix = \x\Config::run()->get('redis.table');
 		if ($name == 'rawCommand') {
 			if (isset($arguments[1])) {
-				$arguments[1] = \x\Config::run()->get('redis.table').$arguments[1];
+				$arguments[1] = $prefix.$arguments[1];
 			}
 		} else {
 			if (isset($arguments[0])) {
-				$arguments[0] = \x\Config::run()->get('redis.table').$arguments[0];
+                if (!is_array($arguments[0])) {
+                    $arguments[0] = $prefix.$arguments[0];
+                }
 			}
-		}
+        }
 
         $obj = $ref->getmethod($name);
         return $obj->invokeArgs($ins, $arguments);

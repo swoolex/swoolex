@@ -16,6 +16,10 @@ return [
     'lang' => 'zh-cn',
     // 默认时区
     'default_timezone' => 'PRC',
+    // APP错误日志写入
+    'error_log_status' => true,
+    // SQL日志写入
+    'sql_log_status' => true,
     
     // +-----------------------------
     // | Cookies

@@ -90,9 +90,6 @@ class Db
         $this->debug = \x\Config::run()->get('app.de_bug');
 
         $this->pool = $pool;
-
-        $this->sql_ref = new \ReflectionClass('\x\db\Sql');
-        $this->sql = new \x\db\Sql();
     }
 
     /**
@@ -231,13 +228,6 @@ class Db
      * @return void
     */
     public function __call($name, $arguments=[]) {
-        if (!$this->sql_ref) return false;
-        if (empty($name)) return false;
-        if (!$this->sql_ref->hasMethod($name)) return false;
-
-        $obj = $this->sql_ref->getmethod($name);
-        $this->sql->Db = $this; // 用之前先传输PDO过去
-        $this->sql = $obj->invokeArgs($this->sql, $arguments);
-        return $this->sql;
+        return call_user_func_array([new \x\db\Sql($this), $name], $arguments);
     }
 }

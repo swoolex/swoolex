@@ -143,7 +143,7 @@ class Error {
         $txt .= '行， 原因：'.nl2br(htmlentities($e['message']));
 
 		# 开启调试模式则记录错误日志
-        if (\x\Config::run()->get('app.de_bug') == true) {
+        if (\x\Config::run()->get('app.error_log_status') == true) {
             # 第一次异常才写入日志
             \x\Log::run($txt); 
         }
@@ -178,7 +178,7 @@ class Error {
         $txt .= '行， 原因：'.nl2br(htmlentities($e['message']));
         
 		# 开启调试模式则记录错误日志
-        if (\x\Config::run()->get('app.de_bug') == true) {
+        if (\x\Config::run()->get('app.error_log_status') == true) {
             # 第一次异常才写入日志
             \x\Log::run($txt); 
         }

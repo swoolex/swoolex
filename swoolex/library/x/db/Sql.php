@@ -75,6 +75,33 @@ class Sql extends AbstractSql {
     public $ploy_alias = 'swoolex';
 
     /**
+     * 注入Db
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @param Db $Db
+     * @return void
+    */
+    public function __construct($Db) {
+        $this->Db = $Db;
+    }
+
+    /**
+     * 销毁Db
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function __destruct() {
+        $this->Db = null;
+    }
+
+    /**
      * 调试SQL语句
      * @todo 无
      * @author 小黄牛
@@ -153,19 +180,23 @@ class Sql extends AbstractSql {
 
         if (is_array($field)) {
             foreach ($field as $v) {
-                if (stripos($v[0], '|') !== false) {
-                    $where = '(';
-                    $array = explode('|', $v[0]);
-                    foreach ($array as $val) {
-                        $where .= '('.$val.' '.$v[1].' '.$this->int_string($v[2]).') OR ';
-                    }
-                    $where = rtrim($where, 'OR ').')';
-                    $this->where[] = [$where, 1];
+                if (is_string($v)) {
+                    $this->where[] = [$v, 1];
                 } else {
-                    if ($v[2] === null) {
-                        $this->where[] = [($v[0].' '.$v[1]), 1];
+                    if (stripos($v[0], '|') !== false) {
+                        $where = '(';
+                        $array = explode('|', $v[0]);
+                        foreach ($array as $val) {
+                            $where .= '('.$val.' '.$v[1].' '.$this->int_string($v[2]).') OR ';
+                        }
+                        $where = rtrim($where, 'OR ').')';
+                        $this->where[] = [$where, 1];
                     } else {
-                        $this->where[] = [($v[0].' '.$v[1].' '.$this->int_string($v[2])), 1];
+                        if ($v[2] === null) {
+                            $this->where[] = [($v[0].' '.$v[1]), 1];
+                        } else {
+                            $this->where[] = [($v[0].' '.$v[1].' '.$this->int_string($v[2])), 1];
+                        }
                     }
                 }
             }
@@ -1130,7 +1161,7 @@ class Sql extends AbstractSql {
      * @return string
     */
     private function int_string($string) {
-        if (is_numeric($string)) return $string;
+        if (is_float($string) || is_int($string)) return $string;
         # 判断是怕查询内容里带单双引号
         if (stripos($string, '"') !== false) {
             return '\''.$this->anti($string).'\'';
@@ -1192,7 +1223,7 @@ class Sql extends AbstractSql {
     */
     private function record($sql, $start_time, $end_time) {
         // 注入调试内容
-        if (\x\Config::run()->get('app.de_bug')) {
+        if (\x\Config::run()->get('app.sql_log_status')) {
             $debug = debug_backtrace();
             $file = '';
             // 获得调用来源

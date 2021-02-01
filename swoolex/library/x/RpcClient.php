@@ -41,6 +41,35 @@ class RpcClient
      * 发送次数
     */
     private $send_num = 1;
+    /**
+     * 请求路由
+    */
+    private $class;
+    /**
+     * 请求方法
+    */
+    private $function;
+    /**
+     * 是否异步执行
+    */
+    private $task=false;
+    /**
+     * 请求头
+    */
+    private $headers = [];
+    /**
+     * 请求参数
+    */
+    private $param = [];
+    /**
+     * 开始请求时间
+    */
+    private $start_ms;
+    /**
+     * 当前请求配置
+    */
+    private $config;
+
 
     /**
      * 标记开始时间
@@ -53,7 +82,41 @@ class RpcClient
     */
     public function __construct() {
         $this->start_time = time();
+        $this->start_ms = microtime(true);
         $this->out_time = \x\Config::run()->get('rpc.out_time');
+    }
+    
+    /**
+     * 判断单个请求延迟
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function __destruct() {
+        if (!empty($this->config['max_ms'])) {
+            $end_ms = microtime(true);
+            $ms = ($end_ms-$this->start_ms)*1000;
+            if ($ms >= $this->config['max_ms']) {
+                $msg  = '请求耗时（ms）：'.$ms.PHP_EOL;
+                $msg .= '请求路由：'.$this->class.PHP_EOL;
+                $msg .= '请求方法：'.$this->function.PHP_EOL;
+                $msg .= '请求头：'.json_encode($this->headers, JSON_UNESCAPED_UNICODE).PHP_EOL;
+                $msg .= '请求参数：'.json_encode($this->param, JSON_UNESCAPED_UNICODE).PHP_EOL;
+                $msg .= '请求节点：'.json_encode($this->config, JSON_UNESCAPED_UNICODE).PHP_EOL.PHP_EOL;
+
+                $dir = ROOT_PATH.'/runtime/rpc/';
+                if (is_dir($dir) == false) {
+                    mkdir($dir, 0755);
+                }
+
+                $file_path = $dir.date('Ymd').'.log';
+                // 写入日志记录
+                \Swoole\Coroutine\System::writeFile($file_path, $msg, FILE_APPEND);
+            }
+        }
     }
 
     /**
@@ -83,9 +146,16 @@ class RpcClient
      * @param array $headers 请求头
      * @param array $param 请求参数
      * @param int $num 请求次数
+     * @param bool $task 是否异步执行
      * @return mixed
     */
-    public function run($class, $function, $param=[], $headers=[], $num=1) {
+    public function run($class, $function, $param=[], $headers=[], $num=1, $task=false) {
+        $this->class = $class;
+        $this->function = $function;
+        $this->param = $param;
+        $this->headers = $headers;
+        $this->task = $task;
+
         if ((time()-$this->start_time) >= $this->out_time) {
             $this->msg = "rpc request timeout";
             $this->code = '408';
@@ -114,7 +184,7 @@ class RpcClient
         // 发送请求
         $res = $this->send($config, $class, $function, $headers, $param);
         if ($res === false) {
-            return $this->run($class, $function, $param, $headers, ($num+1));
+            return $this->run($class, $function, $param, $headers, $num, $task);
         }
 
         return $res;
@@ -122,6 +192,7 @@ class RpcClient
 
     // 发送微服务请求
     private function send($config, $class, $function, $headers=[], $param=[]) {
+        $this->config = $config;
         $this->send_num++;
 
         // 更新当前请求数
@@ -133,6 +204,7 @@ class RpcClient
             'function' => $function,
             'headers' => $headers,
             'param' => $param,
+            'task' => $this->task,
         ], JSON_UNESCAPED_UNICODE);
 
         $rpc = \x\Config::run()->get('rpc');
@@ -192,6 +264,11 @@ class RpcClient
         $this->data = $body['data'];
 
         if ($this->status == '200') {
+            if ($this->task) {
+                $this->msg = 'Task Success';
+            } else {
+                $this->msg = 'Success';
+            }
             return $this->data;
         }
 

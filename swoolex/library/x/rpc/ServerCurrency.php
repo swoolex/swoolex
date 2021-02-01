@@ -27,7 +27,7 @@ class ServerCurrency
      * @param array $data
      * @return void
     */
-    public function returnJson($server, $fd, $status, $msg="SUCCESS", $data=[]) {
+    public function returnJson($server, $fd, $status, $msg="SUCCESS", $data=[], $request=null) {
         $json = json_encode([
             'status' => "{$status}",
             'msg' => $msg,
@@ -39,6 +39,28 @@ class ServerCurrency
             $json = $Currency->aes_encrypt($json);
             unset($Currency);
         }
+
+        if ($fd == 0) {
+            if ($request) {
+                $txt  = '请求路由：'.$request['class'].PHP_EOL;
+                $txt .= '请求方法：'.$request['function'].PHP_EOL;
+                $txt .= '请求头：'.json_encode($request['headers'], JSON_UNESCAPED_UNICODE).PHP_EOL;
+                $txt .= '请求参数：'.json_encode($request['param'], JSON_UNESCAPED_UNICODE).PHP_EOL;
+                $txt .= '失败状态：'.$status.PHP_EOL;
+                $txt .= '失败描述：'.$msg.PHP_EOL.PHP_EOL;
+    
+                $dir = ROOT_PATH.'/runtime/rpc/';
+                if (is_dir($dir) == false) {
+                    mkdir($dir, 0755);
+                }
+    
+                $file_path = $dir.date('Ymd').'.log';
+                // 写入日志记录
+                \Swoole\Coroutine\System::writeFile($file_path, $txt, FILE_APPEND);
+            }
+            return $data;
+        }
+
         return $server->send($fd, $json);
     }
 }

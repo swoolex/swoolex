@@ -28,19 +28,19 @@ class ServerRoute
     */
     public function start($server, $fd, $reactorId, $data) {
         $ServerCurrency = new ServerCurrency();
-        if (!$data) return $ServerCurrency->returnJson($server, $fd, '501', 'The data is empty, maybe AES decryption failed！');
-        if (empty($data['class'])) return $ServerCurrency->returnJson($server, $fd, '502', 'Parameter class cannot be empty！');
-        if (empty($data['function'])) return $ServerCurrency->returnJson($server, $fd, '503', 'Parameter function cannot be empty！');
+        if (!$data) return $ServerCurrency->returnJson($server, $fd, '501', 'The data is empty, maybe AES decryption failed！', $data);
+        if (empty($data['class'])) return $ServerCurrency->returnJson($server, $fd, '502', 'Parameter class cannot be empty！', $data);
+        if (empty($data['function'])) return $ServerCurrency->returnJson($server, $fd, '503', 'Parameter function cannot be empty！', $data);
 
         $class = '\app\rpc\\'.str_replace('/', '\\', ltrim(rtrim($data['class'], '/'), '/'));
-        if (!class_exists($class)) return $ServerCurrency->returnJson($server, $fd, '504', 'The requested processing class does not exist！');
+        if (!class_exists($class)) return $ServerCurrency->returnJson($server, $fd, '504', 'The requested processing class does not exist！', $data);
         $ref = new \ReflectionClass($class);
-        if (!$ref->hasMethod($data['function'])) return $ServerCurrency->returnJson($server, $fd, '505', 'The requested method does not exist！');
+        if (!$ref->hasMethod($data['function'])) return $ServerCurrency->returnJson($server, $fd, '505', 'The requested method does not exist！', $data);
 
         // 实例化操作方法
         $function = $ref->getmethod($data['function']);
-        if ($function->isStatic()) return $ServerCurrency->returnJson($server, $fd, '506', 'Static classes cannot be called！');
-        if (!$function->isPublic()) return $ServerCurrency->returnJson($server, $fd, '507', 'Private or protected methods cannot be called！');
+        if ($function->isStatic()) return $ServerCurrency->returnJson($server, $fd, '506', 'Static classes cannot be called！', $data);
+        if (!$function->isPublic()) return $ServerCurrency->returnJson($server, $fd, '507', 'Private or protected methods cannot be called！', $data);
         
         // 成员属性注入
         $obj = $ref->newInstance();

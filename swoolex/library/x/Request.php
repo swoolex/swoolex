@@ -44,6 +44,21 @@ class Request
     }
 
     /**
+     * 获取raw参数
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.0.1 + 2020.05.29
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public static function raw() {
+        $Request = \x\Container::getInstance()->get('request');
+        if (!$Request) return false;
+        return $Request->rawContent();
+    }
+
+    /**
      * 获取get参数
      * @todo 无
      * @author 小黄牛

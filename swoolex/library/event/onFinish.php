@@ -31,8 +31,43 @@ class onFinish
      * @return void
     */
     public function run($server, $task_id, $data) {
-        $this->server = $server;
+        try {
+            $this->server = $server;
+            // 微服务
+            if (\x\Config::run()->get('server.sw_service_type') == 'rpc') {
+                $this->rpc($server, $task_id, $data);
+            } else {
+                $this->server($server, $task_id, $data);
+            }
+        } catch (\Throwable $throwable) {
+            return \x\Error::run()->halt($throwable);
+        }
+    }
 
+    
+    /**
+     * 微服务TCP服务
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function rpc($server, $task_id, $data) {
+        
+    }
+
+    /**
+     * 普通TCP服务
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.16 + 2020.10.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function server($server, $task_id, $data) {
         // 调用二次转发，不做重载
         $on = new \app\event\onFinish;
         $on->run($server, $task_id, $data);

@@ -68,6 +68,7 @@
             <th style="text-align: center;" >节点是否已故障</th>
             <th style="text-align: center;" >评分</th>
             <th style="text-align: center;" >延迟</th>
+            <th style="text-align: center;" >正常最大延迟</th>
             <th style="text-align: center;" >操作</th>
         </tr>
         {foreach $arr as $k=>$v}
@@ -83,6 +84,7 @@
             <td style="text-align: center;">{if (isset($v['is_fault']) && $v.is_fault==1)}<font color="red">是</font>{else /}否{/if}</td>
             <td style="text-align: center;">{$v.score|default='100'}</td>
             <td style="text-align: center;">{$v.ping_ms|default='0'}ms</td>
+            <td style="text-align: center;">{$v.max_ms|default='0'}ms</td>
             <td style="text-align: center;">
                 <button type="button" class="button" onclick="add('{$v.class}', '{$v.function}', '{$v.title}')">复制</button>
                 <button type="button" class="button" onclick="update('{$v.class}', '{$v.function}', '{$v.title}')">修改</button>
@@ -99,7 +101,7 @@
 function add(clas, fun, title) {
     iframe.createIframe('添加新节点', '/HttpRpc/create?class='+clas+'&function='+fun+'&title='+title, {
         'width':'600px',
-        'height':'400px',
+        'height':'450px',
         'function':'ajaxs'
     })
 }
@@ -114,7 +116,7 @@ function ajaxs() {
 function update(clas, fun, title) {
     iframe.createIframe('编辑节点', '/HttpRpc/update?class='+clas+'&function='+fun+'&title='+title, {
         'width':'600px',
-        'height':'400px',
+        'height':'450px',
         'function':'ajaxs'
     })
 }

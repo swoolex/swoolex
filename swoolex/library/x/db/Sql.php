@@ -145,6 +145,8 @@ class Sql extends AbstractSql {
     */
     public function table($table) {
         $this->clean_up();
+        # 获取数据表前缀
+        $this->prefix = \x\Config::run()->get('mysql.prefix');
         $this->table = $table;
         return $this;
     }

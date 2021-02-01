@@ -38,7 +38,7 @@
     <style>
     .form-group{padding: 10px;}
     .col-md-12{width: 90%;}
-    label{width: 100px;text-align: right;display: block;float: left;}
+    label{width: 130px;text-align: right;display: block;float: left;}
     </style>
 </head>
 
@@ -48,27 +48,31 @@
     <form id="myForm">
         <div class="form-group col-md-12">
             <label>路由：</label>
-            <input type="text" style="width: 370px;" name="class" value="{$info.class|default=''}">
+            <input type="text" style="width: 340px;" name="class" value="{$info.class|default=''}">
         </div>
         <div class="form-group col-md-12">
             <label>接口：</label>
-            <input type="text" style="width: 370px;" name="function" value="{$info.function|default=''}">
+            <input type="text" style="width: 340px;" name="function" value="{$info.function|default=''}">
         </div>
         <div class="form-group col-md-12">
             <label>节点名称：</label>
-            <input type="text" style="width: 370px;" name="title" value="{$info.title|default=''}">
+            <input type="text" style="width: 340px;" name="title" value="{$info.title|default=''}">
         </div>
         <div class="form-group col-md-12">
             <label>TCP-IP：</label>
-            <input type="text" style="width: 370px;" name="ip" value="{$info.ip|default=''}">
+            <input type="text" style="width: 340px;" name="ip" value="{$info.ip|default=''}">
         </div>
         <div class="form-group col-md-12">
             <label>端口：</label>
-            <input type="text" style="width: 370px;" name="port" value="{$info.port|default=''}">
+            <input type="text" style="width: 340px;" name="port" value="{$info.port|default=''}">
         </div>
         <div class="form-group col-md-12">
             <label>初始化评分：</label>
-            <input type="number" style="width: 370px;" name="score" min="0" max="100" value="{$info.score|default='100'}">
+            <input type="number" style="width: 340px;" name="score" min="0" max="100" value="{$info.score|default='100'}">
+        </div>
+        <div class="form-group col-md-12">
+            <label>正常延迟(ms)：</label>
+            <input type="number" style="width: 340px;" name="max_ms" min="0" max="10000" value="{$info.max_ms|default='200'}">
         </div>
         <div class="form-group col-md-12">
             <label>状态：</label>

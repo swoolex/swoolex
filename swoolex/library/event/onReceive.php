@@ -67,6 +67,20 @@ class onReceive
         }
         $data = json_decode($data, true);
 
+        if (isset($data['task'])) {
+            if ($data['task'] == true) {
+                // 投递异步任务
+                $data['swoolex_rpc_task'] = 1;
+                $task_id = $server->task(json_encode($data, JSON_UNESCAPED_UNICODE));
+                // 直接返回结果
+                $ServerCurrency = new \x\rpc\ServerCurrency();
+                $ret = $ServerCurrency->returnJson($server, $fd, '200', 'SUCCESS', true);
+                // 销毁整个请求级容器
+                \x\Container::getInstance()->clear();
+                return $ret;
+            }
+        }
+
         # 开始转发路由
         $obj = new \x\rpc\ServerRoute();
         $obj->start($server, $fd, $reactorId, $data);

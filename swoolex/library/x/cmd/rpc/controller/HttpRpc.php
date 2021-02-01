@@ -71,6 +71,7 @@ class HttpRpc extends Controller
             'port' => $param['port'],
             'score' => $param['score'],
             'status' => $param['status'],
+            'max_ms' => $param['max_ms'],
         ];
 
         $list = \x\Rpc::run()->get();
@@ -150,6 +151,7 @@ class HttpRpc extends Controller
             $arr['port'] = $param['port'];
             $arr['score'] = $param['score'];
             $arr['status'] = $param['status'];
+            $arr['max_ms'] = $param['max_ms'];
 
             \x\Rpc::run()->setOne($param['class'], $param['function'], $arr);
             $this->save_map();
@@ -273,7 +275,10 @@ class HttpRpc extends Controller
         }
         if (!empty($arr)) {
             $res = \x\Rpc::run()->deleteOne($param['class'], $param['function'], $arr);
-            if ($res) return $this->returnJson('00', '节点删除成功');
+            if ($res) {
+                $this->save_map();
+                return $this->returnJson('00', '节点删除成功');
+            }
         }
         return $this->returnJson('01', '节点不存在！');
     }

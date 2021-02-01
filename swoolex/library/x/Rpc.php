@@ -78,28 +78,36 @@ class Rpc
                         } else {
                             $str = $arr['output'];
                             if (stripos($str, 'time=') !== false) {
-                                $config[$k][$kk][$key]['is_fault'] = 0;
-                                $arr = explode('time=', $str);
-                                $arr = explode(' ms', $arr[1]);
+                                $shell = 'netstat -anp|grep '.$val['port'];
+                                $arr = \Swoole\Coroutine\System::exec($shell);
+                                if (empty($arr['output'])) {
+                                    $config[$k][$kk][$key]['is_fault'] = 1;
+                                    $config[$k][$kk][$key]['ping_ms'] = 999;
+                                    self::ping_error($k, $kk, $val, 2);
+                                } else {
+                                    $config[$k][$kk][$key]['is_fault'] = 0;
+                                    $arr = explode('time=', $str);
+                                    $arr = explode(' ms', $arr[1]);
 
-                                $score = isset($val['score']) ? $val['score'] : 100;
-                                $ms = $arr[0];
-                                if ($ms > 460) {
-                                    $score -= 50;
-                                } else if ($ms > 400 && $ms <= 460) {
-                                    $score -= 40;
-                                } else if ($ms > 300 && $ms <= 400) {
-                                    $score -= 30;
-                                } else if ($ms > 200 && $ms <= 300) {
-                                    $score -= 20;
-                                } else if ($ms > 100 && $ms <= 200) {
-                                    $score -= 10;
-                                } else if ($ms <= 100 && $score < 100) {
-                                    $score += 5;
+                                    $score = isset($val['score']) ? $val['score'] : 100;
+                                    $ms = $arr[0];
+                                    if ($ms > 460) {
+                                        $score -= 50;
+                                    } else if ($ms > 400 && $ms <= 460) {
+                                        $score -= 40;
+                                    } else if ($ms > 300 && $ms <= 400) {
+                                        $score -= 30;
+                                    } else if ($ms > 200 && $ms <= 300) {
+                                        $score -= 20;
+                                    } else if ($ms > 100 && $ms <= 200) {
+                                        $score -= 10;
+                                    } else if ($ms <= 100 && $score < 100) {
+                                        $score += 5;
+                                    }
+                                    if ($score > 100) $score = 100;
+                                    $config[$k][$kk][$key]['score'] = $score;
+                                    $config[$k][$kk][$key]['ping_ms'] = $ms;
                                 }
-                                if ($score > 100) $score = 100;
-                                $config[$k][$kk][$key]['score'] = $score;
-                                $config[$k][$kk][$key]['ping_ms'] = $ms;
                             } else {
                                 $config[$k][$kk][$key]['is_fault'] = 1;
                                 $config[$k][$kk][$key]['ping_ms'] = 999;

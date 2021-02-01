@@ -23,6 +23,10 @@ class Redis
     */
     private $sql_ref;
     /**
+     * 前缀
+    */
+    private $prefix;
+    /**
      * 是否归还了链接
     */
     private $return_status = false;
@@ -38,6 +42,7 @@ class Redis
     */
     public function __construct() {
         $this->pool = \x\redis\Redis2Pool::run()->pop();
+        $this->prefix = \x\Config::run()->get('redis.table');
     }
 
     /**
@@ -68,6 +73,21 @@ class Redis
         $this->return_status = true;
         return \x\redis\Redis2Pool::run()->free($this->pool);
     }
+    
+    /**
+     * 手动修改表前缀
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $prefix
+     * @return void
+    */
+    public function prefix($prefix) {
+        $this->prefix = $prefix;
+        return $this;
+    }
 
     /**
      * 事件注入
@@ -87,15 +107,14 @@ class Redis
         if (!$ref->hasMethod($name)) return false;
 
         // 加上前缀
-        $prefix = \x\Config::run()->get('redis.table');
 		if ($name == 'rawCommand') {
 			if (isset($arguments[1])) {
-				$arguments[1] = $prefix.$arguments[1];
+				$arguments[1] = $this->prefix.$arguments[1];
 			}
 		} else {
 			if (isset($arguments[0])) {
                 if (!is_array($arguments[0])) {
-                    $arguments[0] = $prefix.$arguments[0];
+                    $arguments[0] = $this->prefix.$arguments[0];
                 }
 			}
         }

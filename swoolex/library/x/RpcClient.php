@@ -69,6 +69,14 @@ class RpcClient
      * 当前请求配置
     */
     private $config;
+    /**
+     * 异步回调地址
+    */
+    private $callback = false;
+    /**
+     * 异步回调请求类型
+    */
+    private $callback_type = 'post';
 
 
     /**
@@ -147,14 +155,18 @@ class RpcClient
      * @param array $param 请求参数
      * @param int $num 请求次数
      * @param bool $task 是否异步执行
+     * @param string $callback 异步任务回调地址
+     * @param string $callback_type 异步任务回调类型
      * @return mixed
     */
-    public function run($class, $function, $param=[], $headers=[], $num=1, $task=false) {
+    public function run($class, $function, $param=[], $headers=[], $num=1, $task=false, $callback=false, $callback_type='post') {
         $this->class = $class;
         $this->function = $function;
         $this->param = $param;
         $this->headers = $headers;
         $this->task = $task;
+        $this->callback = $callback;
+        $this->callback_type = $callback_type;
 
         if ((time()-$this->start_time) >= $this->out_time) {
             $this->msg = "rpc request timeout";
@@ -184,7 +196,7 @@ class RpcClient
         // 发送请求
         $res = $this->send($config, $class, $function, $headers, $param);
         if ($res === false) {
-            return $this->run($class, $function, $param, $headers, $num, $task);
+            return $this->run($class, $function, $param, $headers, $num, $task, $callback, $callback_type);
         }
 
         return $res;
@@ -205,6 +217,8 @@ class RpcClient
             'headers' => $headers,
             'param' => $param,
             'task' => $this->task,
+            'callback' => $this->callback,
+            'callback_type' => $this->callback_type,
         ], JSON_UNESCAPED_UNICODE);
 
         $rpc = \x\Config::run()->get('rpc');

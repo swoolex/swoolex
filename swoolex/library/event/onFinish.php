@@ -55,7 +55,30 @@ class onFinish
      * @return void
     */
     private function rpc($server, $task_id, $data) {
-        
+        $param = json_decode($data, true);
+        // 节点信息
+        $config = $param['config'];
+        // 返回值信息
+        $data = $param['data'];
+
+        // 需要异步回调通知
+        if (!empty($config['callback'])) {
+            $body = [
+                'code' => 200,
+                'msg' => 'rpc finish success',
+                'data' => $data,
+            ];
+            $httpClient = (new \x\Client())->http();
+            if ($config['callback_type'] == 'post') {
+                $httpClient->domain($config['callback'])
+                ->body($body)
+                ->post();
+            } else {
+                $httpClient->domain($config['callback'])
+                ->body($body)
+                ->get();
+            }
+        }
     }
 
     /**

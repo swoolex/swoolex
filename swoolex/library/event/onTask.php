@@ -54,15 +54,19 @@ class onTask
      * @return void
     */
     private function rpc($server, $task) {
-        $data = json_decode($data->data, true);
-
         # 开始转发路由
+        $config = json_decode($task->data, true);
         $obj = new \x\rpc\ServerRoute();
-        $ret = $obj->start($server, 0, 0, json_decode($task->data, true));
+        $ret = $obj->start($server, 0, 0, $config);
 
-        if (is_array($ret)) $ret = json_encode($ret, JSON_UNESCAPED_UNICODE);
+        # 配置传输
+        $array = [
+            'config' => $config,
+            'data' => $ret,
+        ];
+
         // 异步通知
-        $task->finish($ret);
+        $task->finish(json_encode($array, JSON_UNESCAPED_UNICODE));
 
         // 销毁整个请求级容器
         \x\Container::getInstance()->clear();

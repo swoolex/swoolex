@@ -282,6 +282,41 @@ class HttpRpc extends Controller
         }
         return $this->returnJson('01', '节点不存在！');
     }
+
+    /**
+     * @RequestMapping(route="/error_list", method="get", title="HTTP-RPC错判日志列表")
+    */
+    public function error_list() {
+        if (!\x\Session::get('httprpc')) {
+            return $this->display('HttpRpc/error'); 
+        }
+        $param = \x\Request::get();
+        $key = 'err_';
+        if (!empty($param['class'])) {
+            $key .= str_replace('/', '_', $param['class']);
+        }
+        if (!empty($param['class']) && !empty($param['function'])) {
+            $key .= '|'.$param['function'];
+        }
+        
+        $redis = new \x\Redis();
+        $title = $redis->lrange('rpc_err_list', 0, -1);
+        $key_list = [];
+        foreach ($title as $v) {
+            if (stripos($v, $key) !== false) {
+                $key_list[] = $v;
+            }
+        }
+        $list = [];
+        foreach ($key_list as $key) {
+            $list[] = $redis->lrange($key, 0, -1);
+        }
+        $redis->return(); 
+
+        $this->assign('param', $param);
+        $this->assign('list', $list);
+        return $this->display();
+    }
     
     //------------------------------------ 助手函数 ---------------------------------------
 

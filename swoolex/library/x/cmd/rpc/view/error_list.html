@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+    <meta content="webkit" name="renderer" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HTTP-RPC 控制台 - SW-X</title>
+    <style>
+    body,html{margin:0;padding:0;background: #f1f2f7; font-family: "微软雅黑";font-size: 16px;}
+    .card-header {padding: .75rem 1.25rem;margin-bottom: 0;background-color: #fff;border-bottom: 1px solid rgba(0,0,0,.125);width:100%;}
+    .card-title {margin-bottom: .75rem;}
+    .table {width: 100%;margin-bottom: 1rem;background-color: transparent;}
+    .table td {color: #343a40;font-size: 14px;font-weight: 600;vertical-align: middle;}
+    .table th, .table td {border: none;border-bottom: 1px solid #e8e9ef;color: #868e96;font-size: 13px;font-weight: normal;padding: .25em 1.25em;}
+    .table th{padding: .75em 1.25em;}
+    .header td{padding: 2px 5px;}
+    .content td, .content th{text-align: left;}
+    .content td{background:#fff}
+    .badge-complete {background: #00c292;}
+    .badge {display: inline-block;padding: 10PX;font-size:13px; line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;border-radius: .25rem;text-decoration: none;}
+    select,input,button{padding: 5px 7px; border: 1px solid #ccc;border-radius: 5px;background: #fff;}
+
+    ul,li{list-style: none;margin: 0;padding: 0;float: left;}
+    ul{padding: 5px 10px; background: #fff; width: 99%;}
+    ul li{margin: 0 10px;}
+    ul li a{    color: #fff;
+    border: 1px solid #00c292;
+    text-decoration: none;
+    padding: 2px 10px;
+    border-radius: 5px;
+    background: #00c292;
+    font-family: '微软雅黑';
+    font-size: 14px;}
+    ul .current a{color: #333;background: #fff;border: 1px solid #00c292;}
+    
+    </style>
+    <!--依赖JQ-->
+    <script src="https://blog.junphp.com/public/js/jquery.min.js"></script>
+    <link href="https://blog.junphp.com/public/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://blog.junphp.com/public/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="https://blog.junphp.com/public/js/iframe.js" type="text/javascript"></script>
+    <style>
+    .modal-content{width: 600px;}
+    .modal-title{ position: absolute;}
+    .button{font-size: 13px;padding: 2px 10px;}
+    pre{
+        word-break: break-all; 
+        word-wrap:break-word;
+        white-space: pre-wrap;
+    }
+    </style>
+</head>
+
+<body>
+
+<div>
+    <div class="card-header">
+        <strong class="card-title">错误日志</strong>
+        <button type="button" style="font-size: 13px;" onclick="window.location.href='/HttpRpc/index';">返回-控制台</button>
+
+        <button type="button" id="autoReflush" style="float: right;font-size: 13px;">开启自动刷新</button>
+        <div id="ms" style="width: auto;float: right;font-size: 13px;margin: 6px;"></div>
+    </div>
+    <form action="/HttpRpc/error_list">
+        <div>
+            服务路由：
+            <input type="text" name="class" style="width: 450px;" value="{$param.class|default=''}">
+            服务方法：
+            <input type="text" name="function" style="width: 200px;" value="{$param.function|default=''}">
+            <button type="submit">搜索</button>
+        </div>
+    </form>
+    <table class="table content">
+        <tr>
+            <th style="text-align: center;" width=60>序号</th>
+            <th style="text-align: center;" >服务地址</th>
+            <th style="text-align: center;" >TC-IP</th>
+            <th style="text-align: center;" >端口</th>
+            <th style="text-align: center;" >是否异步</th>
+            <th style="text-align: center;" >异步通知地址</th>
+            <th style="text-align: center;" >异步类型</th>
+            <th style="text-align: center;" >发生时间</th>
+            <th style="text-align: center;" >操作</th>
+        </tr>
+        {php}$i=0;{/php}
+        {foreach $list as $v}
+            {foreach $v as $key=>$vv}
+            {php}$vv = json_decode($vv, true);{/php}
+            <tr>
+                <td>{$i+1}</td>
+                <td style="text-align: center;"><font color="#005aff">{$vv.config.class}->{$vv.config.function}</font></td>
+                <td style="text-align: center;">{$vv.config.ip}</td>
+                <td style="text-align: center;">{$vv.config.port}</td>
+                <td style="text-align: center;">{if (isset($vv['config']['task']) && $vv.config.task==1)}<font color="red">是</font>{else /}否{/if}</td>
+                <td style="text-align: center;">{$vv.config.callback|default=''}</td>
+                <td style="text-align: center;">{$vv.config.callback_type|default=''}</td>
+                <td style="text-align: center;">{$vv.config.date|default=''}</td>
+                <td style="text-align: center;">
+                    <input type="hidden" id="{$i}_{$key}_head" value='{:json_encode($vv['config']['headers'], JSON_UNESCAPED_UNICODE)}'>
+                    <input type="hidden" id="{$i}_{$key}_param" value='{:json_encode($vv['config']['param'], JSON_UNESCAPED_UNICODE)}'>
+                    <input type="hidden" id="{$i}_{$key}_ret" value='{:json_encode($vv['return'], JSON_UNESCAPED_UNICODE)}'>
+
+                    <button type="button" class="button" onclick="heads('{$i}_{$key}_head')">请求头</button>
+                    <button type="button" class="button" onclick="param('{$i}_{$key}_param')">请求参数</button>
+                    <button type="button" class="button" onclick="ret('{$i}_{$key}_ret')">执行结果</button>
+                </td>
+            </tr>
+            {/foreach}
+        {/foreach}
+    </table>
+</div>
+
+</body>
+</html>
+<script>
+function heads(id) {
+    iframe.createIframe('请求头', '<pre>'+$('#'+id).val()+'</pre>', {
+        'height':'500px',
+        'footer':'none',
+        'type':2
+    })
+}
+function param(id) {
+    iframe.createIframe('请求参数', '<pre>'+$('#'+id).val()+'</pre>', {
+        'height':'500px',
+        'footer':'none',
+        'type':2
+    })
+}
+function ret(id) {
+    iframe.createIframe('返回值', '<pre>'+$('#'+id).val()+'</pre>', {
+        'height':'500px',
+        'footer':'none',
+        'type':2
+    })
+}
+
+var fresh;
+var stop = false;
+$("#autoReflush").click(function(){
+    if(!stop){
+        $('#ms').html('每5秒自动刷新一次 ');
+        //指定5秒刷新一次
+        fresh = setInterval(function(){
+            window.location.href='?reload=1';
+        },5000); 
+        $(this).text("关闭自动刷新");
+        stop=true;
+    }else{
+        clearInterval(fresh);
+        $(this).text("开启自动刷新");
+        $('#ms').html('');
+        stop = false;
+    }
+});
+{if (!empty($param['reload']))}
+$("#autoReflush").click();
+{/if}
+</script>

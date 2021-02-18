@@ -159,9 +159,9 @@ class Session
      * @return void
     */
     private static function config() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         self::$session_id = $Request->cookie['PHPSESSID'];
-        self::$session_prefix = \x\Config::run()->get('app.session_prefix');
-        self::$session_outtime = \x\Config::run()->get('app.session_outtime');
+        self::$session_prefix = \x\Config::get('app.session_prefix');
+        self::$session_outtime = \x\Config::get('app.session_outtime');
     }
 }

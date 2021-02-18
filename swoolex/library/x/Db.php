@@ -87,7 +87,7 @@ class Db
             return false;
         }
 
-        $this->debug = \x\Config::run()->get('app.de_bug');
+        $this->debug = \x\Config::get('app.de_bug');
 
         $this->pool = $pool;
     }

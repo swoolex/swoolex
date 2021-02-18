@@ -34,4 +34,15 @@ return [
     'layout_name'  => 'layout',
     // 布局模板的内容替换标识
     'layout_item'  => '{__CONTENT__}',
+    // 分页配置参数
+    'paginate'     => [
+        // 分页样式类
+        'type'     => '\x\page\Bootstrap',
+        // 分页变量参数
+        'var_page' => 'page',
+        // 分页URL参数
+        'query'    => [],
+        // 分页锚点参数
+        'fragment' => '',
+    ],
 ];

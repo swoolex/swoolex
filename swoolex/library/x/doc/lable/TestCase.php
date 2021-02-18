@@ -74,7 +74,7 @@ class TestCase extends Basics
             } else if (!empty($param['SwooleXTestCase']) && $param['SwooleXTestCase'] == 2) {
                 $obj = new $param['SwooleXTestCaseClass'];
                 // 写入测试用例给DB
-                \x\Container::getInstance()->set('testcase', $obj);
+                \x\Container::set('testcase', $obj);
             }
         }
 
@@ -96,7 +96,7 @@ class TestCase extends Basics
     */
     private function http_test_case($request_uri, $route, $data=[], $headers=[]) {
         $type = strtolower($route['method']);
-        $url = '127.0.0.1:'.\x\Config::run()->get('server.port').'/'.ltrim($request_uri);
+        $url = '127.0.0.1:'.\x\Config::get('server.port').'/'.ltrim($request_uri);
         $data['SwooleXTestCase'] = 2;
 
         if ($type == 'get') {
@@ -141,7 +141,7 @@ class TestCase extends Basics
      * @return void
     */
     protected function testcase_callback($tips) {
-        $obj = new \lifecycle\testcase_callback();
+        $obj = new \other\lifecycle\testcase_callback();
         $obj->run($tips);
         return false;
     }

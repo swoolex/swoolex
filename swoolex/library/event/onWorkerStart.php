@@ -35,7 +35,7 @@ class onWorkerStart
         // 初始化路由表
         \x\doc\Table::run()->start();
 
-        $config = \x\Config::run()->get('server');
+        $config = \x\Config::get('server');
         /*
         可以将公用的，不易变的php文件放置到onWorkerStart之前。
         这样虽然不能重载入代码，
@@ -62,14 +62,14 @@ class onWorkerStart
         // 启动Redis连接池
         $this->start_redis($workerId);
 
-        // 初始化微服务
-        if (\x\Config::run()->get('rpc.http_rpc_is') == true) {
-            \x\Rpc::run()->start();
-        }
-        
         // 自动载入所有定时任务
         if ($workerId == 0) {
-            $crontab_list = \x\Config::run()->get('crontab');
+            // 初始化微服务
+            if (\x\Config::get('rpc.http_rpc_is') == true) {
+                \x\Rpc::run()->start();
+            }
+
+            $crontab_list = \x\Config::get('crontab');
             foreach($crontab_list as $app=>$fun){
                 // 载入定时器
                 $obj = new $app();
@@ -110,7 +110,7 @@ class onWorkerStart
      * @return void
     */
     private function start_redis($workerId) {
-        if (\x\Config::run()->get('redis.status')) {
+        if (\x\Config::get('redis.status')) {
             // 启动数据库连接池
             \x\redis\Redis2Pool::run()->init();
             // 启动连接池检测定时器

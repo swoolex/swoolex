@@ -34,8 +34,8 @@ class onMessage
             $this->server = $server;
             
             // 请求注入容器
-            \x\Container::getInstance()->set('websocket_server', $server);
-            \x\Container::getInstance()->set('websocket_frame', $frame);
+            \x\Container::set('websocket_server', $server);
+            \x\Container::set('websocket_frame', $frame);
 
             # 开始转发路由
             $obj = new \x\Route();
@@ -46,7 +46,7 @@ class onMessage
             $on->run();
 
             // 销毁整个请求级容器
-            \x\Container::getInstance()->clear();
+            \x\Container::clear();
         } catch (\Throwable $throwable) {
             return \x\Error::run()->halt($throwable);
         }

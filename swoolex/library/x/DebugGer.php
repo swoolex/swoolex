@@ -146,10 +146,10 @@ class DebugGer
      * @return void
     */
     private function set_tab1() {
-        $http_start_time = \x\Container::getInstance()->get('http_start_time');
+        $http_start_time = \x\Container::get('http_start_time');
         $http_end_time = microtime(true);
         $time = $http_end_time-$http_start_time;
-        $upu = (memory_get_usage() - \x\Container::getInstance()->get('http_start_cpu')) / 1024;
+        $upu = (memory_get_usage() - \x\Container::get('http_start_cpu')) / 1024;
 
         $this->html .= '<div style="width: 100%;height: 100%;overflow-y: auto;display: block;" id="swoole_div1">';
         $this->html .= '<div class="swoole_div">开始时间：'.date('Y-m-d H:i:s', $http_start_time).'</div>';
@@ -213,7 +213,7 @@ class DebugGer
     */
     private function set_tab4() {
         $this->html .= '<div style="width: 100%;height: 100%;overflow-y: auto;display: none;" id="swoole_div4">';
-        $array = \x\Container::getInstance()->get('http_sql_log');
+        $array = \x\Container::get('http_sql_log');
         if ($array) {
             foreach ($array as $val) {
                 $this->html .= '<div class="swoole_div" style="height: auto;line-height: 20px;">';
@@ -235,7 +235,7 @@ class DebugGer
      * @return void
     */
     public function run() {
-        if (!\x\Config::run()->get('app.de_bug')) {
+        if (!\x\Config::get('app.de_bug')) {
             return '';
         }
         # 获得文件加载数

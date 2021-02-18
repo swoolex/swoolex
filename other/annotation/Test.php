@@ -9,7 +9,7 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-namespace annotation;
+namespace other\annotation;
 use \x\doc\lable\Basics;
 
 class Test extends Basics

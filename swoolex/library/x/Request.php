@@ -23,7 +23,7 @@ class Request
      * @return array
     */
     public static function request() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         if (!$Request) return false;
         return $Request;
     }
@@ -38,13 +38,13 @@ class Request
      * @return array
     */
     public static function header() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         if (!$Request) return false;
         return $Request->header;
     }
 
     /**
-     * 获取raw参数
+     * 获取raw数据流
      * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
@@ -53,7 +53,7 @@ class Request
      * @return void
     */
     public static function raw() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         if (!$Request) return false;
         return $Request->rawContent();
     }
@@ -68,7 +68,7 @@ class Request
      * @return void
     */
     public static function get() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         if (!$Request) return false;
         return $Request->get;
     }
@@ -83,7 +83,7 @@ class Request
      * @return void
     */
     public static function post() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         if (!$Request) return false;
         return $Request->post;
     }
@@ -98,7 +98,7 @@ class Request
      * @return void
     */
     public static function is_get() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         if (!$Request) return false;
         if ($Request->server['request_method'] == 'GET') return true;
         return false;
@@ -114,7 +114,7 @@ class Request
      * @return void
     */
     public static function is_post() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         if (!$Request) return false;
         if ($Request->server['request_method'] == 'POST') return true;
         return false;
@@ -130,7 +130,7 @@ class Request
      * @return void
     */
     public static function is_ajax() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         if (!$Request) return false;
         if (isset($Request->header['x-requested-with']) && $Request->header['x-requested-with'] == 'XMLHttpRequest') {
             return true;
@@ -148,7 +148,7 @@ class Request
      * @return bool
     */
     public static function is_ssl() {
-        if (\x\Config::run()->get('server.ssl_cert_file') && \x\Config::run()->get('server.ssl_key_file')) return true;
+        if (\x\Config::get('server.ssl_cert_file') && \x\Config::get('server.ssl_key_file')) return true;
         return false;
     }
 
@@ -162,7 +162,7 @@ class Request
      * @return string|false
     */
     public static function ip() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
 
         if (!empty($Request->header['x-real-ip'])) {
             return $Request->header['x-real-ip'];
@@ -187,7 +187,7 @@ class Request
         if (self::is_ssl()) {
             $ret = 'https';
         }
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         return $ret.'://'.$Request->header['host'];
     }
 
@@ -201,7 +201,7 @@ class Request
      * @return void
     */
     public static function route() {
-        $Request = \x\Container::getInstance()->get('request');
+        $Request = \x\Container::get('request');
         if (!empty($Request->server['path_info'])) {
             return $Request->server['path_info'];
         }
@@ -246,8 +246,8 @@ class Request
         }
         $ret .= self::route();
         
-        $Request = \x\Container::getInstance()->get('request');
-        if (!empty($Request->server['query_string'])) {
+        $Request = \x\Container::get('request');
+        if ($status == true && !empty($Request->server['query_string'])) {
             $ret .= '?'.$Request->server['query_string'];
         }
         

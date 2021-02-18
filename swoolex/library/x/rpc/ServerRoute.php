@@ -52,12 +52,16 @@ class ServerRoute
 
         // 记录主动错误日志
         if (isset($obj->rpc_error) && $obj->rpc_error == true) {
+            // 主动抛出错误日志内容
+            if (isset($obj->rpc_msg)) {
+                $return = $obj->rpc_msg;
+            }
             $this->create_rpc_error_log($data, $return);
         }
 
         return $ServerCurrency->returnJson($server, $fd, '200', 'SUCCESS', $return);
     }
-    
+
     /**
      * 记录主动错误日志到Redis
      * @todo 无
@@ -70,7 +74,7 @@ class ServerRoute
      * @return void
     */
     private function create_rpc_error_log($data, $return) {
-        $max = \x\Config::run()->get('rpc.rpc_error_max');
+        $max = \x\Config::get('rpc.rpc_error_max');
 
         $key = 'err_'.str_replace('/', '_', $data['class']).'|'.$data['function'];
         $redis = new \x\Redis();
@@ -84,10 +88,10 @@ class ServerRoute
         // 写入错误日志
         $ip = swoole_get_local_ip();
         $data['ip'] = current($ip);
-        $data['port'] = \x\Config::run()->get('server.port');
+        $data['port'] = \x\Config::get('server.port');
         $data['date'] = date('Y-m-d H:i:s', time());
         $length = $redis->lpush($key, json_encode(['config'=>$data, 'return' => $return], JSON_UNESCAPED_UNICODE));
-        if ($length > $max) {
+        if ($length >= $max) {
             $redis->ltrim($key, 0, $max);
         }
 

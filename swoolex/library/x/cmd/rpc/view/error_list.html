@@ -43,6 +43,8 @@
     .modal-content{width: 600px;}
     .modal-title{ position: absolute;}
     .button{font-size: 13px;padding: 2px 10px;}
+    .blue{border-color: #00c292; background: #00c292; color: #fff;}
+    .orange{border-color: orange; background: orange; color: #fff;}
     pre{
         word-break: break-all; 
         word-wrap:break-word;
@@ -62,7 +64,7 @@
         <div id="ms" style="width: auto;float: right;font-size: 13px;margin: 6px;"></div>
     </div>
     <form action="/HttpRpc/error_list">
-        <div>
+        <div style="padding: 5px 10px;">
             服务路由：
             <input type="text" name="class" style="width: 450px;" value="{$param.class|default=''}">
             服务方法：
@@ -103,8 +105,13 @@
                     <button type="button" class="button" onclick="heads('{$i}_{$key}_head')">请求头</button>
                     <button type="button" class="button" onclick="param('{$i}_{$key}_param')">请求参数</button>
                     <button type="button" class="button" onclick="ret('{$i}_{$key}_ret')">执行结果</button>
+
+                    <button type="button" class="button blue" onclick="repeat('{$vv.config.class}', '{$vv.config.function}', '{$i}_{$key}')">重发</button>
+                    <button type="button" class="button orange" onclick="deletes('{$vv.config.class}', '{$vv.config.function}', '{$key}')">删除</button>
+
                 </td>
             </tr>
+            {php} $i++; {/php}
             {/foreach}
         {/foreach}
     </table>
@@ -113,6 +120,53 @@
 </body>
 </html>
 <script>
+
+function repeat(cla, func, id) {
+    if (confirm('重发并不会在该错误节点下执行！你确定测试【重发】？')) {
+        $.ajax({
+            type: 'post',
+            data: {
+                'class':cla,
+                'function':func,
+                'header':$('#'+id+'_head').val(),
+                'param':$('#'+id+'_param').val(),
+                'task':$('#'+id+'_task').html(),
+                'callback':$('#'+id+'_callback').html(),
+                'callback_type':$('#'+id+'_callback_type').html(),
+            },
+            url: "/HttpRpc/repeat",
+            success: function(data) {
+                iframe.createIframe('返回值', data, {
+                    'height':'500px',
+                    'footer':'none',
+                    'type':2
+                })
+            }
+        });
+    }
+}
+function deletes(cla, func, redis_index) {
+    if (confirm('你确定删除该条记录？')) {
+        $.ajax({
+            type: 'post',
+            data: {
+                'class':cla,
+                'function':func,
+                'redis_index':redis_index,
+            },
+            url: "/HttpRpc/error_delete",
+            success: function(data) {
+                var array = eval('('+data+')');
+                if (array['code'] == '00') {
+                    window.location.reload();
+                } else {
+                    alert(array['msg']);
+                }
+            }
+        });
+    }
+}
+
 function heads(id) {
     iframe.createIframe('请求头', '<pre>'+$('#'+id).val()+'</pre>', {
         'height':'500px',

@@ -24,8 +24,8 @@ class Cookie
      * @return bool
     */
     public static function has($key) {
-        $Request = \x\Container::getInstance()->get('request');
-        $key = \x\Config::run()->get('app.cookies_prefix').$key;
+        $Request = \x\Container::get('request');
+        $key = \x\Config::get('app.cookies_prefix').$key;
         if (isset($Request->cookie[$key])) return true;
         
         return false;
@@ -42,8 +42,8 @@ class Cookie
      * @return mixed
     */
     public static function get($key) {
-        $Request = \x\Container::getInstance()->get('request');
-        $key = \x\Config::run()->get('app.cookies_prefix').$key;
+        $Request = \x\Container::get('request');
+        $key = \x\Config::get('app.cookies_prefix').$key;
         if (isset($Request->cookie[$key]) == false) return false;
         return $Request->cookie[$key];
     }
@@ -61,13 +61,13 @@ class Cookie
      * @return bool
     */
     public static function set($key,$val,$time=null) {
-        $config = \x\Config::run()->get('app');
+        $config = \x\Config::get('app');
         $key = $config['cookies_prefix'].$key;
         if (empty($time)) {
             $time = $config['cookies_outtime'];
         }
         $time += time();
-        $Response = \x\Container::getInstance()->get('response');
+        $Response = \x\Container::get('response');
         return $Response->cookie($key, $val, $time, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
     }
 
@@ -82,11 +82,11 @@ class Cookie
      * @return bool
     */
     public static function delete($key) {
-        $config = \x\Config::run()->get('app');
+        $config = \x\Config::get('app');
         $key = $config['cookies_prefix'].$key;
               
-        $Request = \x\Container::getInstance()->get('request');
-        $Response = \x\Container::getInstance()->get('response');
+        $Request = \x\Container::get('request');
+        $Response = \x\Container::get('response');
         if (isset($Request->cookie[$key]) == false) return false;
         
         return $Response->cookie($key, null, -1, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
@@ -102,9 +102,9 @@ class Cookie
      * @return bool
     */
     public static function clear() {
-        $config = \x\Config::run()->get('app');
-        $Request = \x\Container::getInstance()->get('request');
-        $Response = \x\Container::getInstance()->get('response');
+        $config = \x\Config::get('app');
+        $Request = \x\Container::get('request');
+        $Response = \x\Container::get('response');
 
         if (isset($Request->cookie) == false) return false;
 

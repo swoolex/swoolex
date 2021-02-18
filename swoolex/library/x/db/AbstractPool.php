@@ -101,7 +101,7 @@ abstract class AbstractPool {
     */
     private function __construct() {
         // 读取配置类
-        $config = \x\Config::run()->get('mysql');
+        $config = \x\Config::get('mysql');
         # 读
         $this->read = $config['pool_read'];
         $this->read_database = $config['pool_read_database'];

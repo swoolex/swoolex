@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | 路由扫描完成时，系统回调处理的生命周期
+// | 统一门面
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -9,22 +9,23 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-namespace lifecycle;
+namespace x;
 
-class route_start
+class Facade
 {
     /**
-     * 接受回调处理
+     * 单例注入
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.5 + 2020.07.15
+     * @version v1.0.1 + 2020.05.29
      * @deprecated 暂不启用
      * @global 无
-     * @param array $list 整张路由表
-     * @return bool
+     * @return void
     */
-    public function run($list) {
-
-        return true;
+    public static function __callStatic($name, $arguments=[]) {
+        if (empty($name)) return false;
+        
+        $class = "\x\\entity\\".str_replace('x\\', '', get_called_class());
+        return call_user_func_array([$class::run(), $name], $arguments);
     }
 }

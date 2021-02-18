@@ -52,7 +52,7 @@ class onRequest
     public function run($request, $response) {
         try {
             // 根目录
-            $dir_root = \x\Config::run()->get('server.http_monitor_dir_root');
+            $dir_root = \x\Config::get('server.http_monitor_dir_root');
             // 存储目录
             $dir_date = $dir_root.date('Y_m_d').'/';
             // 记录日志详情
@@ -85,15 +85,15 @@ class onRequest
             }
 
             // 请求注入容器
-            \x\Container::getInstance()->set('request', $request);
-            \x\Container::getInstance()->set('response', $response);
+            \x\Container::set('request', $request);
+            \x\Container::set('response', $response);
 
             // 注入调试内容
-            if (\x\Config::run()->get('app.de_bug')) {
+            if (\x\Config::get('app.de_bug')) {
                 // 请求开始时间
-                \x\Container::getInstance()->set('http_start_time', microtime(true));
+                \x\Container::set('http_start_time', microtime(true));
                 // 请求开始内容消耗
-                \x\Container::getInstance()->set('http_start_cpu', memory_get_usage());
+                \x\Container::set('http_start_cpu', memory_get_usage());
             }
             
             # 开始转发路由
@@ -103,9 +103,9 @@ class onRequest
             // 调用二次转发，不做重载
             $on = new \app\event\onRequest($this->server, $this->config);
             $on->run();
-            
+
             // 销毁整个请求级容器
-            \x\Container::getInstance()->clear();
+            \x\Container::clear();
 
             // 结束监控日志
             $this->monitor_end($dir_log, $dir_close, $dir_open, $dir_route, $request_process);
@@ -126,7 +126,7 @@ class onRequest
      * @return void
     */
     private function monitor_file_create($dir_root, $dir_date, $dir_log, $dir_close, $dir_open, $dir_route) {
-        if (\x\Config::run()->get('server.http_monitor_status') == false) {
+        if (\x\Config::get('server.http_monitor_status') == false) {
             return false;
         } 
 
@@ -155,7 +155,7 @@ class onRequest
      * @return void
     */
     private function monitor_start($dir_log, $dir_close, $dir_open, $dir_route, $request_process, $request) {
-        if (\x\Config::run()->get('server.http_monitor_status') == false) {
+        if (\x\Config::get('server.http_monitor_status') == false) {
             return false;
         } 
         // 写入日志记录
@@ -197,7 +197,7 @@ class onRequest
      * @return void
     */
     private function monitor_end($dir_log, $dir_close, $dir_open, $dir_route, $request_process, $throwable=null) {
-        if (\x\Config::run()->get('server.http_monitor_status') == false) {
+        if (\x\Config::get('server.http_monitor_status') == false) {
             return false;
         } 
         // 销毁标记开始文件

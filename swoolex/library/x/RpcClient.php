@@ -62,6 +62,10 @@ class RpcClient
     */
     private $param = [];
     /**
+     * 失败时，使用最大节点次数
+    */
+    private $num = 1;
+    /**
      * 开始请求时间
     */
     private $start_ms;
@@ -77,8 +81,7 @@ class RpcClient
      * 异步回调请求类型
     */
     private $callback_type = 'post';
-
-
+    
     /**
      * 标记开始时间
      * @todo 无
@@ -91,9 +94,9 @@ class RpcClient
     public function __construct() {
         $this->start_time = time();
         $this->start_ms = microtime(true);
-        $this->out_time = \x\Config::run()->get('rpc.out_time');
+        $this->out_time = \x\Config::get('rpc.out_time');
     }
-    
+
     /**
      * 判断单个请求延迟
      * @todo 无
@@ -140,6 +143,113 @@ class RpcClient
     */
     public function set($key, $val) {
         $this->$key = $val;
+        return $this;
+    }
+
+    /**
+     * 设置路由地址
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $class 请求路由
+     * @return void
+    */
+    public function route($class) {
+        $this->class = $class;
+        return $this;
+    }
+
+    /**
+     * 设置请求方法
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $function 请求方法
+     * @return void
+    */
+    public function func($function) {
+        $this->function = $function;
+        return $this;
+    }
+
+    /**
+     * 设置为异步任务
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function task() {
+        $this->task = true;
+        return $this;
+    }
+    
+    /**
+     * 设置请求头
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array $header 请求头
+     * @return void
+    */
+    public function header($header) {
+        $this->headers = $header;
+        return $this;
+    }
+
+    /**
+     * 设置请求参数
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array $param 参数
+     * @return void
+    */
+    public function param($param) {
+        $this->param = $param;
+        return $this;
+    }
+
+    /**
+     * 设置最大请求次数
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $num 次数
+     * @return void
+    */
+    public function max($num) {
+        $this->num = $num;
+        return $this;
+    }
+
+    /**
+     * 设置异步任务的回调通知地址
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.24 + 2021.1.9
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $url
+     * @param string $type
+     * @return void
+    */
+    public function callback($url, $type='post') {
+        $this->callback = $url;
+        $this->callback_type = strtolower($type);
+        return $this;
     }
 
     /**
@@ -149,79 +259,63 @@ class RpcClient
      * @version v1.2.24 + 2021.1.9
      * @deprecated 暂不启用
      * @global 无
-     * @param string $class 请求路由
-     * @param string $function 请求方法
-     * @param array $headers 请求头
-     * @param array $param 请求参数
-     * @param int $num 请求次数
-     * @param bool $task 是否异步执行
-     * @param string $callback 异步任务回调地址
-     * @param string $callback_type 异步任务回调类型
      * @return mixed
     */
-    public function run($class, $function, $param=[], $headers=[], $num=1, $task=false, $callback=false, $callback_type='post') {
-        $this->class = $class;
-        $this->function = $function;
-        $this->param = $param;
-        $this->headers = $headers;
-        $this->task = $task;
-        $this->callback = $callback;
-        $this->callback_type = $callback_type;
-
+    public function send() {
         if ((time()-$this->start_time) >= $this->out_time) {
             $this->msg = "rpc request timeout";
             $this->code = '408';
             return false;
         }
 
-        $list = Rpc::run()->get($class);
-        if (empty($list[$function])) {
-            $this->msg = "rpc service 【".$class." ".$function."】 not registered";
+        $list = Rpc::run()->get($this->class, $this->function);
+        if (empty($list)) {
+            $this->msg = "rpc service 【".$this->class." ".$this->function."】 not registered";
             return false;
         }
 
-        // 权重获取
-        $list = $list[$function];
         // 递归到最后一个节点了
-        if ($num < $this->send_num) {
+        if ($this->num < $this->send_num) {
             return false;
         }
+        // 权重获取
         $config = $this->weightConfig($list);
         if ($config == false) {
             $this->msg = "rpc The service has been completely stopped";
-            Rpc::run()->ping_error($class, $function, $list, 3);
+            Rpc::run()->ping_error(['class'=>$this->class, 'function'=>$this->function], 3);
             return false;
         }
 
         // 发送请求
-        $res = $this->send($config, $class, $function, $headers, $param);
+        $res = $this->run($config);
         if ($res === false) {
-            return $this->run($class, $function, $param, $headers, $num, $task, $callback, $callback_type);
+            $this->num++;
+            return $this->send();
         }
 
         return $res;
     }
 
     // 发送微服务请求
-    private function send($config, $class, $function, $headers=[], $param=[]) {
+    private function run($config) {
         $this->config = $config;
         $this->send_num++;
 
         // 更新当前请求数
         $config['request_num'] = isset($config['request_num']) ? ($config['request_num']+1) : 1;
-        Rpc::run()->setOne($class, $function, $config);
+        Rpc::run()->set($config);
 
         $data = json_encode([
-            'class' => $class,
-            'function' => $function,
-            'headers' => $headers,
-            'param' => $param,
+            'class' => $this->class,
+            'function' => $this->function,
+            'headers' => $this->headers,
+            'param' => $this->param,
             'task' => $this->task,
             'callback' => $this->callback,
             'callback_type' => $this->callback_type,
         ], JSON_UNESCAPED_UNICODE);
 
-        $rpc = \x\Config::run()->get('rpc');
+        $rpc = \x\Config::get('rpc');
         // 数据加密
         if ($rpc['aes_status'] == true) {
             $Currency = new \x\rpc\Currency();
@@ -243,8 +337,8 @@ class RpcClient
             // 这里理应关闭该连接，标记is_fault
             $config['is_fault'] = 1;
             $config['request_num'] -= 1;
-            \x\Rpc::run()->setOne($class, $function, $config);
-            \x\Rpc::run()->ping_error($class, $function, $config, 4);
+            \x\Rpc::run()->set($config);
+            \x\Rpc::run()->ping_error($config, 4);
             $this->msg = 'connect failed. Error: '.$client->errCode;
             $client->close();
             return false;
@@ -252,19 +346,20 @@ class RpcClient
         $client->send($data);
         $body = $client->recv();
         $client->close();
+
         if (!$body) {
             // 这里理应关闭该连接，标记is_fault
             $config['is_fault'] = 1;
             $config['request_num'] -= 1;
-            \x\Rpc::run()->setOne($class, $function, $config);
-            \x\Rpc::run()->ping_error($class, $function, $config, 5);
+            \x\Rpc::run()->set($config);
+            \x\Rpc::run()->ping_error($config, 5);
             $this->msg = 'connect return body Error';
             return false;
         }
 
         // 请求数-1
         $config['request_num'] -= 1;
-        \x\Rpc::run()->setOne($class, $function, $config);
+        \x\Rpc::run()->set($config);
 
         // 数据解密
         if ($rpc['aes_status'] == true) {
@@ -292,10 +387,14 @@ class RpcClient
     // 权重获取
     private function weightConfig($list) {
         // 检测是不是刚初始化SW-X的时候
-        if (empty($list[0]['ping_ms']) && empty($list[0]['is_fault'])) return $list[0];
+        if (empty($list[0]['ping_ms']) && empty($list[0]['is_fault'])) {
+            $list[0]['redis_index'] = 0;
+            return $list[0];
+        }
         // 先删除已经不行的代码
         $yes_list = [];
         foreach ($list as $k=>$v) {
+            $v['redis_index'] = $k;
             if (isset($v['is_fault']) && $v['is_fault'] == 0) {
                 $yes_list[] = $v;
             } else if (empty($v['is_fault']) && empty($v['status'])) {

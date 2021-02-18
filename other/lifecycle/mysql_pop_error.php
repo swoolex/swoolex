@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | 单元测试注解的回调处理
+// | 当应用层捕捉到Mysql连接数小于等于0时，会回调至此
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -9,9 +9,9 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-namespace lifecycle;
+namespace other\lifecycle;
 
-class testcase_callback
+class mysql_pop_error
 {
     /**
      * 接受回调处理
@@ -20,22 +20,12 @@ class testcase_callback
      * @version v1.1.5 + 2020.07.15
      * @deprecated 暂不启用
      * @global 无
-     * @param string $tips 内容
+     * @param string $type 连接池类型：read、write、log
      * @return bool
     */
-    public function run($tips) {
-
-        $type = \x\Config::run()->get('server.sw_service_type');
-        // HTTP请求
-        if ($type == 'http') {
-            $obj = new \x\Controller();
-            $obj->fetch($tips);
-        // websocket请求
-        } else if($type == 'websocket') {
-            $obj = new \x\WebSocket();
-            $obj->fetch('route_error', 'error', $tips);
-        }
-        unset($obj);
+    public function run($type) {
+        // 此处可自行实现消息通知
+        echo $type.' Mysql 连接数不足！'.PHP_EOL;
         return true;
     }
 }

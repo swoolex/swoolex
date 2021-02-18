@@ -34,7 +34,7 @@ class onTask
         try {
             $this->server = $server;
             // 微服务
-            if (\x\Config::run()->get('server.sw_service_type') == 'rpc') {
+            if (\x\Config::get('server.sw_service_type') == 'rpc') {
                 $this->rpc($server, $task);
             } else {
                 $this->server($server, $task);
@@ -43,7 +43,7 @@ class onTask
             return \x\Error::run()->halt($throwable);
         }
     }
-
+    
     /**
      * 微服务TCP服务
      * @todo 无
@@ -69,7 +69,7 @@ class onTask
         $task->finish(json_encode($array, JSON_UNESCAPED_UNICODE));
 
         // 销毁整个请求级容器
-        \x\Container::getInstance()->clear();
+        \x\Container::clear();
     }
 
     /**

@@ -76,7 +76,7 @@
         <tr>
             <td>{$k+1}</td>
             <td style="text-align: center;">
-                {if (isset($v['status']) && $v.status==2)}关闭[<font color="red" style="cursor: pointer;" onclick="tab('{$v.class}', '{$v.function}', '{$v.title}', 0)">启用</font>]{else /}启用[<font color="red" style="cursor: pointer;" onclick="tab('{$v.class}', '{$v.function}', '{$v.title}', 2)">关闭</font>]{/if}
+                {if (isset($v['status']) && $v.status==2)}关闭[<font color="red" style="cursor: pointer;" onclick="tab('{$v.class}', '{$v.function}', '{$v.redis_index}', 0)">启用</font>]{else /}启用[<font color="red" style="cursor: pointer;" onclick="tab('{$v.class}', '{$v.function}', '{$v.redis_index}', 2)">关闭</font>]{/if}
             </td>
             <td style="text-align: center;"><font color="#005aff">{$v.url}</font></td>
             <td style="text-align: center;">{$v.title}</td>
@@ -87,9 +87,9 @@
             <td style="text-align: center;">{$v.ping_ms|default='0'}ms</td>
             <td style="text-align: center;">{$v.max_ms|default='0'}ms</td>
             <td style="text-align: center;">
-                <button type="button" class="button" onclick="add('{$v.class}', '{$v.function}', '{$v.title}')">复制</button>
-                <button type="button" class="button" onclick="update('{$v.class}', '{$v.function}', '{$v.title}')">修改</button>
-                <button type="button" class="button" onclick="deletes('{$v.class}', '{$v.function}', '{$v.title}')">删除</button>
+                <button type="button" class="button" onclick="add('{$v.class}', '{$v.function}', '{$v.redis_index}')">复制</button>
+                <button type="button" class="button" onclick="update('{$v.class}', '{$v.function}', '{$v.redis_index}')">修改</button>
+                <button type="button" class="button" onclick="deletes('{$v.class}', '{$v.function}', '{$v.redis_index}')">删除</button>
             </td>
         </tr>
         {/foreach}
@@ -99,8 +99,8 @@
 </body>
 </html>
 <script>
-function add(clas, fun, title) {
-    iframe.createIframe('添加新节点', '/HttpRpc/create?class='+clas+'&function='+fun+'&title='+title, {
+function add(clas, fun, redis_index) {
+    iframe.createIframe('添加新节点', '/HttpRpc/create?class='+clas+'&function='+fun+'&redis_index='+redis_index, {
         'width':'600px',
         'height':'450px',
         'function':'ajaxs'
@@ -114,8 +114,8 @@ function ajaxs() {
         window.location.reload();
     }
 }
-function update(clas, fun, title) {
-    iframe.createIframe('编辑节点', '/HttpRpc/update?class='+clas+'&function='+fun+'&title='+title, {
+function update(clas, fun, redis_index) {
+    iframe.createIframe('编辑节点', '/HttpRpc/update?class='+clas+'&function='+fun+'&redis_index='+redis_index, {
         'width':'600px',
         'height':'450px',
         'function':'ajaxs'
@@ -139,14 +139,14 @@ function out() {
         });
     }
 }
-function tab(clas, fun, title, status) {
+function tab(clas, fun, redis_index, status) {
     if (confirm('你确认切换该节点状态吗?')) {
         $.ajax({
             type: 'post',
             data: {
                 class:clas,
                 function:fun,
-                title:title,
+                redis_index:redis_index,
                 status:status,
             },
             url: "/HttpRpc/update_status",
@@ -161,14 +161,14 @@ function tab(clas, fun, title, status) {
         });
     }
 }
-function deletes(clas, fun, title) {
+function deletes(clas, fun, redis_index) {
     if (confirm('你确认删除该节点状态吗?')) {
         $.ajax({
             type: 'post',
             data: {
                 class:clas,
                 function:fun,
-                title:title,
+                redis_index:redis_index,
                 status:status,
             },
             url: "/HttpRpc/delete",

@@ -24,7 +24,7 @@ class Currency
      * @return void
     */
     public function aes_encrypt($data) {  
-        $config = \x\Config::run()->get('rpc');
+        $config = \x\Config::get('rpc');
         return openssl_encrypt($data, $config['aes_method'], $config['aes_key'], 0, $config['aes_iv']);  
     }  
   
@@ -39,7 +39,7 @@ class Currency
      * @return void
     */  
     public function aes_decrypt($data) {  
-        $config = \x\Config::run()->get('rpc');
+        $config = \x\Config::get('rpc');
         return openssl_decrypt($data, $config['aes_method'], $config['aes_key'], 0, $config['aes_iv']);  
     } 
 }

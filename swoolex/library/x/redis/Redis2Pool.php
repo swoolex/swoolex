@@ -50,7 +50,7 @@ class Redis2Pool{
     */
     private function __construct() {
         // 读取配置类
-        $config = \x\Config::run()->get('redis');
+        $config = \x\Config::get('redis');
         $this->max = $config['pool_max'];
         $this->config = [
             'host'               => $config['host'],
@@ -141,9 +141,9 @@ class Redis2Pool{
     */
     public function timing_recovery($workerId) {
         // 5秒更新一次当前Redis连接数
-        if (\x\Config::run()->get('redis.is_monitor')) {
+        if (\x\Config::get('redis.is_monitor')) {
             \Swoole\Timer::tick(5000, function () use($workerId) {
-                $path = ROOT_PATH.'/env/redis_pool_num.count';
+                $path = ROOT_PATH.'/other/env/redis_pool_num.count';
                 $json = \Swoole\Coroutine\System::readFile($path);
                 $array = [];
                 if ($json) {
@@ -201,7 +201,7 @@ class Redis2Pool{
      * @return void
     */
     protected function pop_error($type) {
-        $obj = new \lifecycle\redis_pop_error();
+        $obj = new \other\lifecycle\redis_pop_error();
         $obj->run($type);
         return false;
     }

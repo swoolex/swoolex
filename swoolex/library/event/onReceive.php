@@ -32,11 +32,10 @@ class onReceive
      * @return void
     */
     public function run($server, $fd, $reactorId, $data=null) {
-
         try {
             $this->server = $server;
             // 微服务
-            if (\x\Config::run()->get('server.sw_service_type') == 'rpc') {
+            if (\x\Config::get('server.sw_service_type') == 'rpc') {
                 $this->rpc($server, $fd, $reactorId, $data);
             } else {
                 $this->server($server, $fd, $reactorId, $data);
@@ -57,10 +56,10 @@ class onReceive
     */
     private function rpc($server, $fd, $reactorId, $data) {
         // 请求注入容器
-        \x\Container::getInstance()->set('server', $server);
-        \x\Container::getInstance()->set('reactorId', $reactorId);
+        \x\Container::set('server', $server);
+        \x\Container::set('reactorId', $reactorId);
         // 数据解密
-        if (\x\Config::run()->get('rpc.aes_status') == true) {
+        if (\x\Config::get('rpc.aes_status') == true) {
             $Currency = new \x\rpc\Currency();
             $data = $Currency->aes_decrypt($data);
             unset($Currency);
@@ -76,7 +75,7 @@ class onReceive
                 $ServerCurrency = new \x\rpc\ServerCurrency();
                 $ret = $ServerCurrency->returnJson($server, $fd, '200', 'SUCCESS', true);
                 // 销毁整个请求级容器
-                \x\Container::getInstance()->clear();
+                \x\Container::clear();
                 return $ret;
             }
         }
@@ -86,7 +85,7 @@ class onReceive
         $obj->start($server, $fd, $reactorId, $data);
 
         // 销毁整个请求级容器
-        \x\Container::getInstance()->clear();
+        \x\Container::clear();
     }
 
     /**

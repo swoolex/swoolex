@@ -25,14 +25,6 @@ class Index extends Controller
     }
 
     /**
-     * @RequestMapping(route="/rpc_test", method="get", title="测试RPC请求")
-    */
-    public function rpc_test() {
-        $obj = (new \x\RpcClient())->run('order/create', 'run');
-        return $this->fetch(dd($obj));
-    }
-
-    /**
      * @TestCase(class="/testcase/index/test", title="用例一")
      * @TestCase(class="/testcase/index/test", title="用例二")
      * @TestCase(class="/testcase/index/test", title="用例三")

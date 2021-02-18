@@ -9,7 +9,7 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-namespace lifecycle;
+namespace other\lifecycle;
 
 class websocket_push_error
 {

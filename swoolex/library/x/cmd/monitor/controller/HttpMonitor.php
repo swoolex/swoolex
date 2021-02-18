@@ -50,12 +50,12 @@ class HttpMonitor extends Controller
             return $this->fetch($res);
         }
 
-        if ($param['username'] != \x\Config::run()->get('server.http_monitor_username')) return $this->returnJson('01', '账号或密码错误');
-        if ($param['password'] != \x\Config::run()->get('server.http_monitor_password')) return $this->returnJson('01', '账号或密码错误'); 
+        if ($param['username'] != \x\Config::get('server.http_monitor_username')) return $this->returnJson('01', '账号或密码错误');
+        if ($param['password'] != \x\Config::get('server.http_monitor_password')) return $this->returnJson('01', '账号或密码错误'); 
 
-        if (is_dir(\x\Config::run()->get('server.http_monitor_dir_root')) == false) return $this->returnJson('01', '暂未生成任何监控文件');
+        if (is_dir(\x\Config::get('server.http_monitor_dir_root')) == false) return $this->returnJson('01', '暂未生成任何监控文件');
 
-        $url = '/HttpMonitor/index?username='.md5(\x\Config::run()->get('server.http_monitor_username')).'&password='.md5(\x\Config::run()->get('server.http_monitor_password')).'&ip='.\x\Request::ip();
+        $url = '/HttpMonitor/index?username='.md5(\x\Config::get('server.http_monitor_username')).'&password='.md5(\x\Config::get('server.http_monitor_password')).'&ip='.\x\Request::ip();
         return $this->returnJson('00', '登录成功', $url);
     }
 
@@ -67,15 +67,15 @@ class HttpMonitor extends Controller
         if (empty($param['username'])) return $this->display('HttpMonitor/error');
         if (empty($param['password'])) return $this->display('HttpMonitor/error');
         if (empty($param['ip'])) return $this->display('HttpMonitor/error');
-        if ($param['username'] != md5(\x\Config::run()->get('server.http_monitor_username'))) return $this->display('HttpMonitor/error');
-        if ($param['password'] != md5(\x\Config::run()->get('server.http_monitor_password'))) return $this->display('HttpMonitor/error'); 
+        if ($param['username'] != md5(\x\Config::get('server.http_monitor_username'))) return $this->display('HttpMonitor/error');
+        if ($param['password'] != md5(\x\Config::get('server.http_monitor_password'))) return $this->display('HttpMonitor/error'); 
         if ($param['ip'] != \x\Request::ip()) return $this->display('HttpMonitor/error'); 
         // 查询日期
         $param['date'] = $param['date'] ?? date('Y-m-d');
         // 当前分页数
         $page = $param['page'] ?? 1;
         
-        $root = \x\Config::run()->get('server.http_monitor_dir_root').date('Y_m_d', strtotime($param['date'])).'/';
+        $root = \x\Config::get('server.http_monitor_dir_root').date('Y_m_d', strtotime($param['date'])).'/';
         // 记录长度
         if (!empty($param['status'])) {
             if ($param['status'] == 1) {
@@ -109,7 +109,7 @@ class HttpMonitor extends Controller
     */
     public function details() {
         $param = \x\Request::get();
-        $file = \x\Config::run()->get('server.http_monitor_dir_root').$param['file'];
+        $file = \x\Config::get('server.http_monitor_dir_root').$param['file'];
         $array = json_decode(\Swoole\Coroutine\System::readFile($file), true);
         
         $this->assign('file', $file);
@@ -201,7 +201,7 @@ class HttpMonitor extends Controller
             if (!empty($list[$key])) $arr[] = $root.'log/'.$list[$key];
         }
 
-        $root = \x\Config::run()->get('server.http_monitor_dir_root');
+        $root = \x\Config::get('server.http_monitor_dir_root');
         $list = [];
         sort($arr);
         foreach ($arr as $v) {

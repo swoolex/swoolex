@@ -101,7 +101,7 @@ class Verify {
 	*/
 	private static function construct($type=null) {
 		# 先合并配置文件中的常规配置
-		self::$_TYPE = array_merge(self::$_TYPE, \x\Config::run()->get('app.verify'));
+		self::$_TYPE = array_merge(self::$_TYPE, \x\Config::get('app.verify'));
 		# 设置验证码常规配置
 		if (is_array($type)) {
 			self::$_TYPE = array_merge(self::$_TYPE, $type);

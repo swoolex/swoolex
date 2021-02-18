@@ -9,7 +9,7 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-namespace lifecycle;
+namespace other\lifecycle;
 
 class controller_error
 {
@@ -26,11 +26,11 @@ class controller_error
      * @return bool
     */
     public function run($e, $error, $source) {
-        $type = \x\Config::run()->get('server.sw_service_type');
+        $type = \x\Config::get('server.sw_service_type');
         // HTTP请求
         if ($type == 'http') {
             // 开启调试模式则记录错误日志
-            if (\x\Config::run()->get('app.de_bug') == true) {
+            if (\x\Config::get('app.de_bug') == true) {
                 # 引入详细报错页面
                 $exceptionFile = ROOT_PATH.'/swoolex/tpl/error_test.php';
             } else {

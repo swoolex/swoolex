@@ -13,7 +13,7 @@ namespace x;
 
 class WebSocket
 {
-    
+
     /**
      * 利用析构函数，自动回收归还连接池
      * @todo 无
@@ -34,14 +34,14 @@ class WebSocket
             }
         }
     }
-    
+
     /** 
      * AES加密方法，对数据进行加密，返回加密后的数据 
      * @param string $data 要加密的数据 
      * @return string 
      */  
     private static function encrypt($data) {  
-        $config = \x\Config::run()->get('websocket');
+        $config = \x\Config::get('websocket');
         return openssl_encrypt($data, $config['aes_type'], $config['aes_key'], 0, $config['aes_iv']);  
     }  
   
@@ -51,7 +51,7 @@ class WebSocket
      * @return string 
      */  
     private static function decrypt($data) {  
-        $config = \x\Config::run()->get('websocket');
+        $config = \x\Config::get('websocket');
         return openssl_decrypt($data, $config['aes_type'], $config['aes_key'], 0, $config['aes_iv']);  
     } 
 
@@ -79,9 +79,9 @@ class WebSocket
      * @return void
     */
     public final function get_data() {
-        $websocket_frame = \x\Container::getInstance()->get('websocket_frame');
+        $websocket_frame = \x\Container::get('websocket_frame');
         $data = $websocket_frame->data;
-        $config = \x\Config::run()->get('websocket');
+        $config = \x\Config::get('websocket');
         // 启用加密方式
         if ($config['aes_key']) {
             $data = self::decrypt($data);
@@ -106,13 +106,13 @@ class WebSocket
      * @return void
     */
     public final function fetch($action, $msg='success', $data=[], $fd=null, $websocket_server=null) {
-        if (!$websocket_server) $websocket_server = \x\Container::getInstance()->get('websocket_server');
+        if (!$websocket_server) $websocket_server = \x\Container::get('websocket_server');
 
         if (!$fd) {
-            $websocket_frame = \x\Container::getInstance()->get('websocket_frame');
+            $websocket_frame = \x\Container::get('websocket_frame');
             $fd = $websocket_frame->fd;
         }
-        $config = \x\Config::run()->get('websocket');
+        $config = \x\Config::get('websocket');
         $array = [
             'action' => $action,
             'msg' => $msg,
@@ -147,7 +147,7 @@ class WebSocket
      * @return void
     */
     private function callback($server, $content, $fd) {
-        $obj = new \lifecycle\websocket_push_error();
+        $obj = new \other\lifecycle\websocket_push_error();
         $obj->run($server, $content, $fd);
 
         return false;

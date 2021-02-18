@@ -39,7 +39,7 @@ class onClose
             $on->run($server, $fd, $reactorId);
 
             // 销毁整个请求级容器
-            \x\Container::getInstance()->clear();
+            \x\Container::clear();
         } catch (\Throwable $throwable) {
             return \x\Error::run()->halt($throwable);
         }

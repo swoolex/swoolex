@@ -51,8 +51,8 @@ class onRequest
     */
     public function run() {
         // 请求注入容器
-        $request = \x\Container::getInstance()->get('request');
-        $response = \x\Container::getInstance()->get('response');
+        $request = \x\Container::get('request');
+        $response = \x\Container::get('response');
     }
 }
 

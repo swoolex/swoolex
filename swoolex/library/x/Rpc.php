@@ -40,11 +40,43 @@ class Rpc
         $file = ROOT_PATH.'/rpc/map.php';
         $config = require_once $file;
 
-        $redis_key = \x\Config::run()->get('rpc.redis_key');
+        $redis_key = \x\Config::get('rpc.redis_key');
         $redis = new \x\Redis();
-        $redis->set($redis_key, json_encode($config, JSON_UNESCAPED_UNICODE));
-        $redis->return();
 
+        // 先清空服务
+        // A、节点名称隐射表
+        $redis->del($redis_key);
+        // B、所有节点
+        $service_name = [];
+        foreach ($config as $k => $v) {
+            foreach ($v as $kk => $vv) {
+                $table = md5($k.$kk);
+                $key = $redis_key.'_'.$table;
+                $redis->del($key);
+                $service_name[] = $table;
+            }
+        }
+
+        // 重新设置服务节点
+        $redis->set($redis_key, json_encode($service_name, JSON_UNESCAPED_UNICODE));
+        
+        // 批量设置服务
+        foreach ($config as $k => $v) {
+            foreach ($v as $kk => $vv) {
+                foreach ($vv as $key => $val) {
+                    $table = md5($k.$kk);
+                    $key = $redis_key.'_'.$table;
+
+                    $data = $val;
+                    $data['class'] = $k;
+                    $data['function'] = $kk;
+                    
+                    $redis->lpush($key, json_encode($data, JSON_UNESCAPED_UNICODE));
+                }
+            }
+        }
+
+        $redis->return();
         self::ping();
     }
 
@@ -58,68 +90,80 @@ class Rpc
      * @return void
     */
     private static function ping() {
-        \Swoole\Timer::tick(3000, function ($timer_id) {
-            $redis_key = \x\Config::run()->get('rpc.redis_key');
+        \Swoole\Timer::tick(20000, function ($timer_id) {
+            $redis_key = \x\Config::get('rpc.redis_key');
             $redis = new \x\Redis();
-            $config = $redis->get($redis_key);
-            $redis->return();
-            $config = $config ? json_decode($config, true) : [];
 
-            foreach ($config as $k => $v) {
-                foreach ($v as $kk => $vv) {
-                    foreach ($vv as $key => $val) {
-                        // 手动关闭的节点不需要检测
-                        if (!empty($val['status'])) continue;
+            // 读取全部服务
+            $json = $redis->get($redis_key);
+            $list = $json ? json_decode($json, true) : [];
 
-                        $shell = 'ping  -c 1 '.$val['ip'];
-                        $arr = \Swoole\Coroutine\System::exec($shell);
-                        if ($arr == false) {
-                            self::ping_error($k, $kk, $val, 1);
-                        } else {
-                            $str = $arr['output'];
-                            if (stripos($str, 'time=') !== false) {
-                                $shell = 'netstat -anp|grep '.$val['port'];
-                                $arr = \Swoole\Coroutine\System::exec($shell);
-                                if (empty($arr['output'])) {
-                                    $config[$k][$kk][$key]['is_fault'] = 1;
-                                    $config[$k][$kk][$key]['ping_ms'] = 999;
-                                    self::ping_error($k, $kk, $val, 2);
-                                } else {
-                                    $config[$k][$kk][$key]['is_fault'] = 0;
-                                    $arr = explode('time=', $str);
-                                    $arr = explode(' ms', $arr[1]);
+            foreach ($list as $key) {
+                // 服务检测
+                $key = $redis_key.'_'.$key;
+                $index = $redis->llen($key);
+                for ($i=0; $i<$index; $i++) {
+                    $json = $redis->lindex($key, $i);
+                    $val = $json ? json_decode($json, true) : [];
 
-                                    $score = isset($val['score']) ? $val['score'] : 100;
-                                    $ms = $arr[0];
-                                    if ($ms > 460) {
-                                        $score -= 50;
-                                    } else if ($ms > 400 && $ms <= 460) {
-                                        $score -= 40;
-                                    } else if ($ms > 300 && $ms <= 400) {
-                                        $score -= 30;
-                                    } else if ($ms > 200 && $ms <= 300) {
-                                        $score -= 20;
-                                    } else if ($ms > 100 && $ms <= 200) {
-                                        $score -= 10;
-                                    } else if ($ms <= 100 && $score < 100) {
-                                        $score += 5;
-                                    }
-                                    if ($score > 100) $score = 100;
-                                    $config[$k][$kk][$key]['score'] = $score;
-                                    $config[$k][$kk][$key]['ping_ms'] = $ms;
-                                }
-                            } else {
-                                $config[$k][$kk][$key]['is_fault'] = 1;
-                                $config[$k][$kk][$key]['ping_ms'] = 999;
-                                self::ping_error($k, $kk, $val, 2);
+                    // 手动关闭的节点不需要检测
+                    if (!empty($val['status'])) continue;
+
+                    // 先Ping检测
+                    $shell = 'ping  -c 1 '.$val['ip'];
+                    $arr = \Swoole\Coroutine\System::exec($shell);
+                    if ($arr == false) {
+                        self::ping_error($val, 1);
+                        continue;
+                    }
+                    $str = $arr['output'];
+                    if (stripos($str, 'time=') !== false) {
+                        // 检测是否内网IP
+                        $vif = filter_var($val['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
+                        if ($vif === false) {
+                            // 再查看端口是否挂了
+                            $shell = 'netstat -anp|grep '.$val['port'];
+                            $arr = \Swoole\Coroutine\System::exec($shell);
+                            if (empty($arr['output'])) {
+                                $val['is_fault'] = 1;
+                                $val['ping_ms'] = 999;
+                                $redis->lset($key, $i, json_encode($val, JSON_UNESCAPED_UNICODE));
+                                self::ping_error($val, 2);
+                                continue;
                             }
+
+                            $val['is_fault'] = 0;
+                            $arr = explode('time=', $str);
+                            $arr = explode(' ms', $arr[1]);
+
+                            $score = isset($val['score']) ? $val['score'] : 100;
+                            $ms = $arr[0];
+                            if ($ms > 460) {
+                                $score -= 50;
+                            } else if ($ms > 400 && $ms <= 460) {
+                                $score -= 40;
+                            } else if ($ms > 300 && $ms <= 400) {
+                                $score -= 30;
+                            } else if ($ms > 200 && $ms <= 300) {
+                                $score -= 20;
+                            } else if ($ms > 100 && $ms <= 200) {
+                                $score -= 10;
+                            } else if ($ms <= 100 && $score < 100) {
+                                $score += 5;
+                            }
+                            if ($score > 100) $score = 100;
+                            $val['score'] = $score;
+                            $val['ping_ms'] = $ms;
+                            $redis->lset($key, $i, json_encode($val, JSON_UNESCAPED_UNICODE));
                         }
+                    } else {
+                        $val['is_fault'] = 1;
+                        $val['ping_ms'] = 999;
+                        $redis->lset($key, $i, json_encode($val, JSON_UNESCAPED_UNICODE));
+                        self::ping_error($val, 2);
                     }
                 }
             }
-
-            $redis = new \x\Redis();
-            $redis->set($redis_key, json_encode($config, JSON_UNESCAPED_UNICODE));
             $redis->return();
         });
     }
@@ -133,9 +177,9 @@ class Rpc
      * @global 无
      * @return void
     */
-    public static function ping_error($class, $function, $config, $status) {
-        $obj = new \lifecycle\rpc_error();
-        $obj->run($class, $function, $config, $status);
+    public static function ping_error($config, $status) {
+        $obj = new \other\lifecycle\rpc_error();
+        $obj->run($config['class'], $config['function'], $config, $status);
         return false;
     }
 
@@ -146,122 +190,42 @@ class Rpc
      * @version v1.2.24 + 2021.1.9
      * @deprecated 暂不启用
      * @global 无
-     * @param string $key 配置KEY
      * @return void
     */
-    public static function get($key=null) {
-        $redis_key = \x\Config::run()->get('rpc.redis_key');
+    public static function get($class, $function) {
+        $redis_key = \x\Config::get('rpc.redis_key').'_'.md5($class.$function);
         $redis = new \x\Redis();
-        $config = $redis->get($redis_key);
-        $redis->return();
-        $config = $config ? json_decode($config, true) : [];
-        
-        if ($key) {
-            if (isset($config[$key])) {
-                return $config[$key];
+
+        // 读取某个服务
+        $index = $redis->llen($redis_key);
+        $list = [];
+        for ($i=0; $i<$index; $i++) {
+            $json = $redis->lindex($redis_key, $i);
+            if ($json) {
+                $list[] = json_decode($json, true);
             }
-            return false;
         }
-        return $config;
+
+        $redis->return();
+        return $list;
     }
 
     /**
-     * 删除某个配置
+     * 更新单条配置
      * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
      * @deprecated 暂不启用
      * @global 无
-     * @param string $key 配置KEY
      * @return void
     */
-    public static function delete($key) {
-        $redis_key = \x\Config::run()->get('rpc.redis_key');
+    public static function set($config) {
+        $redis_index = $config['redis_index'];
+        unset($config['redis_index']);
+        $redis_key = \x\Config::get('rpc.redis_key').'_'.md5($config['class'].$config['function']);
         $redis = new \x\Redis();
-        $config = $redis->get($redis_key);
+        $res = $redis->lset($redis_key, $redis_index, json_encode($config, JSON_UNESCAPED_UNICODE));
         $redis->return();
-        $config = $config ? json_decode($config, true) : [];
-
-        if (isset($config[$key])) {
-            unset($config[$key]);
-
-            $redis = new \x\Redis();
-            $redis->set($redis_key, json_encode($config, JSON_UNESCAPED_UNICODE));
-            $redis->return();
-
-            return true;
-        }
-        
-        return false;
-    }
-
-    /**
-     * 更新某条配置
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $class 配置KEY
-     * @param string $function 配置KEY
-     * @param mixed $val 配置参数
-     * @return void
-    */
-    public static function setOne($class, $function, $val) {
-        $redis_key = \x\Config::run()->get('rpc.redis_key');
-        $redis = new \x\Redis();
-        $config = $redis->get($redis_key);
-        $redis->return();
-        $config = $config ? json_decode($config, true) : [];
-
-        if (isset($config[$class][$function])) {
-            $list = $config[$class][$function];
-            foreach ($list as $k=>$v) {
-                if ($v['title'] == $val['title']) {
-                    $config[$class][$function][$k] = $val;
-
-                    $redis = new \x\Redis();
-                    $redis->set($redis_key, json_encode($config, JSON_UNESCAPED_UNICODE));
-                    $redis->return();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 删除某条配置
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $class 配置KEY
-     * @param string $function 配置KEY
-     * @param mixed $val 配置参数
-     * @return void
-    */
-    public static function deleteOne($class, $function, $val) {
-        $redis_key = \x\Config::run()->get('rpc.redis_key');
-        $redis = new \x\Redis();
-        $config = $redis->get($redis_key);
-        $redis->return();
-        $config = $config ? json_decode($config, true) : [];
-
-        if (isset($config[$class][$function])) {
-            $list = $config[$class][$function];
-            foreach ($list as $k=>$v) {
-                if ($v['title'] == $val['title']) {
-                    unset($config[$class][$function][$k]);
-
-                    $redis = new \x\Redis();
-                    $redis->set($redis_key, json_encode($config, JSON_UNESCAPED_UNICODE));
-                    $redis->return();
-                    return true;
-                }
-            }
-        }
-        return false;
+        return $res;
     }
 }

@@ -118,9 +118,7 @@ class Loader
             'event' => dirname(__DIR__).'/event/',
             'app' => ROOT_PATH.'/app/',
             'extend' => ROOT_PATH.'/extend/',
-            'lifecycle' => ROOT_PATH.'/lifecycle/',
-            'annotation' => ROOT_PATH.'/annotation/',
-            'testcase' => ROOT_PATH.'/testcase/',
+            'other' => ROOT_PATH.'/other/',
         ]);
         // 加载类库映射文件
         if (is_file($rootPath . 'config' . DIRECTORY_SEPARATOR . 'classmap.php')) {

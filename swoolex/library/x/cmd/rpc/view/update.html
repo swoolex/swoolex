@@ -47,6 +47,10 @@
 <div>
     <form id="myForm">
         <input type="hidden" name="title" value="{$info.title}">
+        <input type="hidden" name="redis_index" value="{$info.redis_index}">
+        <input type="hidden" name="start_class" value="{$info.class}">
+        <input type="hidden" name="start_function" value="{$info.function}">
+
         <div class="form-group col-md-12">
             <label>路由：</label>
             <input type="text" style="width: 340px;" name="class" value="{$info.class}">
@@ -57,7 +61,7 @@
         </div>
         <div class="form-group col-md-12">
             <label>节点名称：</label>
-            <input type="text" style="width: 340px;" disabled value="{$info.title}">
+            <input type="text" style="width: 340px;" name="title" value="{$info.title}">
         </div>
         <div class="form-group col-md-12">
             <label>TCP-IP：</label>

@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | 当应用层捕捉到Mysql连接数小于等于0时，会回调至此
+// | 当客户端微服务失败时，回调的处理函数
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -9,9 +9,9 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-namespace lifecycle;
+namespace other\lifecycle;
 
-class mysql_pop_error
+class rpc_error
 {
     /**
      * 接受回调处理
@@ -20,12 +20,18 @@ class mysql_pop_error
      * @version v1.1.5 + 2020.07.15
      * @deprecated 暂不启用
      * @global 无
-     * @param string $type 连接池类型：read、write、log
+     * @param string $class 请求地址 
+     * @param string $function 请求方法
+     * @param array $config 错误的微服务配置 
+     * @param int $status 错误类型 
+     *            1.ping的linux指令不能正常使用
+     *            2.ping不通
      * @return bool
     */
-    public function run($type) {
+    public function run($class, $function, $config, $status) {
+        
         // 此处可自行实现消息通知
-        echo $type.' Mysql 连接数不足！'.PHP_EOL;
+        echo '微服务：'.$class.' '.$function.' 错误，事件编号：'.$status.PHP_EOL;
         return true;
     }
 }

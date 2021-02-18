@@ -58,7 +58,7 @@ class Controller
             }
         }
     }
-    
+
     /**
      * 输出内容到页面
      * @todo 无
@@ -72,15 +72,15 @@ class Controller
     */
     public final function fetch($string, $status=200) {
         // 防止二次推送
-        if (\x\Container::getInstance()->has('response_status')) {
+        if (\x\Container::has('response_status')) {
             return false;
         }
         
-        $Response = \x\Container::getInstance()->get('response');
+        $Response = \x\Container::get('response');
         $Response->status($status);
         $status = $Response->end($string);
 
-        \x\Container::getInstance()->set('response_status', $status);
+        \x\Container::set('response_status', $status);
         return $status;
     }
 
@@ -136,7 +136,7 @@ class Controller
     {
         $this->is_view();
         $content = $this->view->display($content, $vars, $config);
-        $Response = \x\Container::getInstance()->get('response');
+        $Response = \x\Container::get('response');
         
         $DebugGer = new DebugGer();
         $debug_html = $DebugGer->run();
@@ -191,7 +191,7 @@ class Controller
     */
     public final function redirect($url, $status=302, $data=[]) {
         $url = $this->get_url($url, $data);
-        $Response = \x\Container::getInstance()->get('response');
+        $Response = \x\Container::get('response');
         return $Response->redirect($url, $status);
     }
 
@@ -237,7 +237,7 @@ class Controller
      * @return void
     */
     public final function move($path=null, $name=null) {
-        $config = \x\Config::run()->get('app.file');
+        $config = \x\Config::get('app.file');
         $config = array_merge($config, $this->file_config);
 
         if ($path) {
@@ -246,7 +246,7 @@ class Controller
 
         $file_data = $this->file;
         if (is_array($this->file) == false) {
-            $Request = \x\Container::getInstance()->get('request');
+            $Request = \x\Container::get('request');
             if (isset($Request->files[$this->file]) == false) {
                 $this->file_error = 'Form does not exist';
                 return false;
@@ -382,7 +382,7 @@ class Controller
 	 * @return bool
 	*/
 	public final function verify($num=1, $session=null, $type=null) {
-        $Response = \x\Container::getInstance()->get('response');
+        $Response = \x\Container::get('response');
         \x\Verify::entry($num, $session, $type, $Response);
     }
 
@@ -416,7 +416,7 @@ class Controller
         if (strpos($url, '//') === false) {
             $url = '/'.ltrim($url, '/');
             if ($url != '/') {
-                $url .= \x\Config::run()->get('route.suffix');
+                $url .= \x\Config::get('route.suffix');
             }
             $url = \x\Request::domain().$url;
         }
@@ -431,7 +431,7 @@ class Controller
     */
     private function is_view(){
         if (empty($this->view)) {
-            $this->view = new \x\View(\x\Config::run()->get('view'));
+            $this->view = new \x\View(\x\Config::get('view'));
         }
     }
 }

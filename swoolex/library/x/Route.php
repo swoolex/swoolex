@@ -29,9 +29,9 @@ class Route
     */
     public function start(){
         // 获取容器
-        $request = \x\Container::getInstance()->get('request');
+        $request = \x\Container::get('request');
         if ($request) {
-            $pattern = Config::run()->get('route.pattern');
+            $pattern = \x\Config::get('route.pattern');
             $request_uri = $this->format($request->server['request_uri']);
             // 先匹配出路由
             $route = \x\doc\Table::run()->get($request_uri, 'http');
@@ -48,10 +48,10 @@ class Route
             if ($request) {
                 // 实例化基类控制器
                 $controller = new \x\Controller();
-                $class = \x\Config::run()->get('route.error_class');
+                $class = \x\Config::get('route.error_class');
                 // 系统404
-                if (\x\Config::run()->get('route.404') == false || empty($class)) {
-                    $controller->fetch(\x\Lang::run()->get('route path error'), '404');
+                if (\x\Config::get('route.404') == false || empty($class)) {
+                    $controller->fetch(\x\Lang::get('route path error'), '404');
                 } else {
                 // 自定义404
                     new $class($controller);
@@ -81,19 +81,19 @@ class Route
     */
     private function session() {
         // 获取容器
-        $request = \x\Container::getInstance()->get('request');
-        $response = \x\Container::getInstance()->get('response');
+        $request = \x\Container::get('request');
+        $response = \x\Container::get('response');
 
         if (!isset($request->cookie[$this->session_name])) {
-            $config = \x\Config::run()->get('app');
+            $config = \x\Config::get('app');
             $session_id = session_create_id();
             $request->cookie[$this->session_name] = $session_id;
             $response->cookie($this->session_name, $session_id, 0, $config['cookies_path'], $config['cookies_domain'], $config['cookies_secure'], $config['cookies_httponly']);
         }
 
         // 更新容器
-        \x\Container::getInstance()->set('request', $request);
-        \x\Container::getInstance()->set('response', $response);
+        \x\Container::set('request', $request);
+        \x\Container::set('response', $response);
     }
 
     /**
@@ -110,8 +110,8 @@ class Route
     private function ico_injection($route, $request_uri) {
         // 实例化控制器
         $reflection = new \ReflectionClass($route['n']);
-        \x\Container::getInstance()->set('controller_instance', $reflection->newInstance());
-        \x\Container::getInstance()->set('controller_method', $reflection->getmethod($route['name']));
+        \x\Container::set('controller_instance', $reflection->newInstance());
+        \x\Container::set('controller_method', $reflection->getmethod($route['name']));
         // 注册注解类
 
         // 参数过滤
@@ -176,10 +176,10 @@ class Route
         foreach ($route['father'] as $k=>$v) {
             if (in_array($k, $arr) == false) {
                 // 自定义注解类地址
-                $file = ROOT_PATH.'/annotation/'.$k.'.php';
+                $file = ROOT_PATH.'/other/annotation/'.$k.'.php';
                 // 存在则载入
                 if (file_exists($file)) {
-                    $class = '\annotation\\'.$k;
+                    $class = '\other\annotation\\'.$k;
                     $obj = new $class;
                     $ret = $obj->run($v, 1);
                     if ($ret !== true) return $ret;
@@ -190,10 +190,10 @@ class Route
         foreach ($route['own'] as $k=>$v) {
             if (in_array($k, $arr) == false) {
                 // 自定义注解类地址
-                $file = ROOT_PATH.'/annotation/'.$k.'.php';
+                $file = ROOT_PATH.'/other/annotation/'.$k.'.php';
                 // 存在则载入
                 if (file_exists($file)) {
-                    $class = '\annotation\\'.$k;
+                    $class = '\other\annotation\\'.$k;
                     $obj = new $class;
                     $ret = $obj->run($v, 2);
                     if ($ret !== true) return $ret;
@@ -215,7 +215,7 @@ class Route
      * @return string
     */
     private function format($request_uri) {
-        $array = explode(\x\Config::run()->get('route.suffix'), $request_uri);
+        $array = explode(\x\Config::get('route.suffix'), $request_uri);
         $url = ltrim(strtolower($array[0]), '/');
         $filter = [
             'index',

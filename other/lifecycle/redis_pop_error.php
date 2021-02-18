@@ -1,6 +1,6 @@
 <?php
 // +----------------------------------------------------------------------
-// | Test自定义注解-所有注解类都应该继承Basics基类，并实现run接口
+// | 当应用层捕捉到Redis连接数小于等于0时，会回调至此
 // +----------------------------------------------------------------------
 // | Copyright (c) 2018 https://blog.junphp.com All rights reserved.
 // +----------------------------------------------------------------------
@@ -9,28 +9,23 @@
 // | Author: 小黄牛 <1731223728@qq.com>
 // +----------------------------------------------------------------------
 
-namespace testcase\index;
-// 必须继承至单元测试抽象类
-use \x\doc\lable\TestBasics;
+namespace other\lifecycle;
 
-class test extends TestBasics
+class redis_pop_error
 {
     /**
-     * A1-数据库DB
+     * 接受回调处理
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.15
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $type 连接池类型：write
+     * @return bool
     */
-    public $A1 = [
-        'name' => '1',
-    ];
-
-    // 返回请求数据结构
-    public function getData() : array 
-    {
-        return [];
-    } 
-
-    // 返回请求头
-    public function getHeaders() : array 
-    {
-        return [];
+    public function run($type) {
+        // 此处可自行实现消息通知
+        echo $type.' Redis 连接数不足！'.PHP_EOL;
+        return true;
     }
 }

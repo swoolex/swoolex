@@ -16,6 +16,12 @@ class Error {
     private function __construct(){} // 私有化构造函数，防止外部调用
     private function __clone(){}     // 私有化克隆函数，防止外部克隆对象
 
+     // 数据库检测异常的内容跳过
+     protected $breakStr = [
+        'PDO::getAttribute(): send of',
+        'Error while sending STATISTICS packet. PID=',
+    ];
+
     /**
      * 实例化对象方法，供外部获得唯一的对象
     */
@@ -71,7 +77,6 @@ class Error {
                 $error['line'] = $errline;
                 break;
         }
-
         if (strpos($error['message'], 'MySQL server has gone away')===false){
             $this->halt2($error);
         }
@@ -136,6 +141,13 @@ class Error {
         $data         = explode('in '.$error['file'], $error['message']);
         $e['message'] = $data[0];
         $e['trace']   = debug_backtrace();
+        # 数据库重连异常的跳过记录
+        foreach ($this->breakStr as $msg) {
+            if (stripos($e['message'], $msg) !== false) {
+                return true;
+            }
+        }
+
         # 获得错误上下文内容
         $source       = $this->getSourceCode($e['file'], $e['line']);
 
@@ -143,13 +155,13 @@ class Error {
         $txt .= '行， 原因：'.nl2br(htmlentities($e['message']));
 
 		# 开启调试模式则记录错误日志
-        if (\x\Config::run()->get('app.error_log_status') == true) {
+        if (\x\Config::get('app.error_log_status') == true) {
             # 第一次异常才写入日志
-            \x\Log::run($txt); 
+            \x\entity\Log::run($txt); 
         }
         # 错误处理的生命周期回调 - 普通异常才回调，错误异常已经跳出协程底层了
         if (!isset($error['deadlyError'])) {
-            $obj = new \lifecycle\controller_error();
+            $obj = new \other\lifecycle\controller_error();
             $obj->run($e, $txt, $source);
             unset($obj);
         }
@@ -171,19 +183,26 @@ class Error {
         $e['line']    = $throwable->getLine();
         $e['message'] = $throwable->getMessage();
         $e['trace']   = $trace;
+        # 数据库重连异常的跳过记录
+        foreach ($this->breakStr as $msg) {
+            if (stripos($e['message'], $msg) !== false) {
+                return true;
+            }
+        }
+        
         # 获得错误上下文内容
         $source       = isset($start['file']) ? $this->getSourceCode($e['file'], $e['line']) : ['first'=>'', 'source'=>[]];
 
         $txt  = 'ThrowableError in：'.$e['file'].'，Line：'. $e['line'];
         $txt .= '行， 原因：'.nl2br(htmlentities($e['message']));
-        
+
 		# 开启调试模式则记录错误日志
-        if (\x\Config::run()->get('app.error_log_status') == true) {
+        if (\x\Config::get('app.error_log_status') == true) {
             # 第一次异常才写入日志
-            \x\Log::run($txt); 
+            \x\entity\Log::run($txt); 
         }
         # 错误处理的生命周期回调
-        $obj = new \lifecycle\controller_error();
+        $obj = new \other\lifecycle\controller_error();
         $obj->run($e, $txt, $source);
         unset($obj);
 

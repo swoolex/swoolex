@@ -167,7 +167,7 @@ class Param extends Basics
             // WebSocket的参数赋值比较特殊
             if ($is_websocket) {
                 // 启用加密方式
-                if (\x\Config::run()->get('websocket.aes_key')) {
+                if (\x\Config::get('websocket.aes_key')) {
                     $this->websocket_frame->data = \x\WebSocket::encrypt($websocket_list);
                 } else {
                     $this->websocket_frame->data = json_encode($websocket_list, JSON_UNESCAPED_UNICODE);

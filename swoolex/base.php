@@ -12,7 +12,7 @@
 namespace x;
 
 // 框架当前版本
-define('VERSION', 'v1.2.31');
+define('VERSION', 'v2.0.1');
 // 项目根地址
 define('ROOT_PATH', dirname(__DIR__));
 // 缓存 && 日志根地址
@@ -22,7 +22,7 @@ define('RUNTIME_PATH', ROOT_PATH.'/runtime/');
 require_once __DIR__.'/library/x/Loader.php';
 
 // 注册自动加载
-Loader::register();
+\x\Loader::register();
 
 // 引入系统助手函数
 require_once __DIR__.'/helper.php';
@@ -30,10 +30,10 @@ require_once __DIR__.'/helper.php';
 require_once ROOT_PATH.'/common/common.php';
 
 // 注册错误和异常处理机制
-Error::run()->register();
+\x\Error::run()->register();
 
 // 配置文件加载
-Config::run();
+\x\entity\Config::run();
 
 // 日志模块初始化
-Log::run()->start();
+\x\Log::start();

@@ -31,7 +31,7 @@ class onManagerStart
     public function run($server) {
         $this->server = $server;
 
-        $config = \x\Config::run()->get('server');
+        $config = \x\Config::get('server');
         swoole_set_process_name($config['manager']);
 
         // 调用二次转发，不做重载

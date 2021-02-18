@@ -31,8 +31,8 @@ class onMessage
     */
     public function run() {
 
-        $server = \x\Container::getInstance()->get('websocket_server');
-        $frame = \x\Container::getInstance()->get('websocket_frame');
+        $server = \x\Container::get('websocket_server');
+        $frame = \x\Container::get('websocket_frame');
 
         $this->server = $server;
 

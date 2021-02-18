@@ -182,103 +182,10 @@ class MysqlPool extends AbstractPool {
      * @return void
     */
     public function timing_recovery($workerId) {
-        // 15分钟检测一次连接是否存活
-        $outtime = 900*1000;
-        \Swoole\Timer::tick($outtime, function () use($workerId) {
-            # 堵塞循环
-            $list = [];
-            $num = 0;
-            $max = ceil($this->read_count / 2);
-            for ($i=0; $i<$max; $i++) {
-                $obj = $this->read_connections->get();
-                if ($obj) {
-                    try {
-                        $obj->getAttribute(\PDO::ATTR_SERVER_INFO);
-                    } catch (\Exception $e) {
-                        if ($e->getCode() == 'HY000') {
-                            $num++;
-                            continue;
-                        }
-                    }
-                    array_push($list, $obj);
-                } else {
-                    break;
-                }
-            }
-            foreach ($list as $item) {
-                $this->read_connections->put($item);
-            }
-            // 补充连接池
-            for ($i=0; $i<$num; $i++) {
-                $this->read_connections->put(null);
-            }
-            $this->read_count = $this->read_count-$num;
-            unset($list);
-
-            # 堵塞循环
-            $list = [];
-            $num = 0;
-            $max = ceil($this->write_count / 2);
-            for ($i=0; $i<$max; $i++) {
-                $obj = $this->write_connections->get();
-                if ($obj) {
-                    try {
-                        $obj->getAttribute(\PDO::ATTR_SERVER_INFO);
-                    } catch (\Exception $e) {
-                        if ($e->getCode() == 'HY000') {
-                            $num++;
-                            continue;
-                        }
-                    }
-                    array_push($list, $obj);
-                } else {
-                    break;
-                }
-            }
-            foreach ($list as $item) {
-                $this->write_connections->put($item);
-            }
-            // 补充连接池
-            for ($i=0; $i<$num; $i++) {
-                $this->write_connections->put(null);
-            }
-            $this->write_count = $this->write_count-$num;
-            unset($list);
-            
-            # 堵塞循环
-            $list = [];
-            $num = 0;
-            $max = ceil($this->log_count / 2);
-            for ($i=0; $i<$max; $i++) {
-                $obj = $this->log_connections->get();
-                if ($obj) {
-                    try {
-                        $obj->getAttribute(\PDO::ATTR_SERVER_INFO);
-                    } catch (\Exception $e) {
-                        if ($e->getCode() == 'HY000') {
-                            $num++;
-                            continue;
-                        }
-                    }
-                    array_push($list, $obj);
-                } else {
-                    break;
-                }
-            }
-            foreach ($list as $item) {
-                $this->log_connections->put($item);
-            }
-            // 补充连接池
-            for ($i=0; $i<$num; $i++) {
-                $this->log_count->put(null);
-            }
-            $this->log_count = $this->log_count-$num;
-            unset($list);
-        });
         // 5秒更新一次当前数据库连接数
-        if (\x\Config::run()->get('mysql.is_monitor')) {
+        if (\x\Config::get('mysql.is_monitor')) {
             \Swoole\Timer::tick(5000, function () use($workerId) {
-                $path = ROOT_PATH.'/env/mysql_pool_num.count';
+                $path = ROOT_PATH.'/other/env/mysql_pool_num.count';
                 $json = \Swoole\Coroutine\System::readFile($path);
                 $array = [];
                 if ($json) {
@@ -348,7 +255,7 @@ class MysqlPool extends AbstractPool {
      * @return void
     */
     protected function pop_error($type) {
-        $obj = new \lifecycle\mysql_pop_error();
+        $obj = new \other\lifecycle\mysql_pop_error();
         $obj->run($type);
         return false;
     }

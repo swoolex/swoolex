@@ -27,7 +27,7 @@ return [
     // 设置 worker 进程的最大任务数
     'max_request' => 0,
     // 最大允许的连接数
-    'max_conn' => false,
+    'max_connection' => false,
     // 配置 Task 进程的数量，不配置则不启动
     'task_worker_num' => 1,
     // 设置 Task 进程与 Worker 进程之间通信的方式
@@ -52,12 +52,20 @@ return [
     'log_level' => 0,
     // 是否自动检测死链接
     'open_tcp_keepalive' => 0,
+    // (*)S没有数据传输就进行检测
+    'tcp_keepidle' => 4, 
+    // (*)S探测一次
+    'tcp_keepinterval' => 1,
+    // 探测的次数，超过5次后还没回包close此连接
+    'tcp_keepcount' => 5, 
     // 是否启用心跳检测
     'heartbeat_check_interval' => false,
     // 最大允许的空闲时间(S)
     'heartbeat_idle_time' => 120,
     // 设置最大数据包尺寸，单位为字节(该参数关系HTTP文件上传的最大文件大小)
     'package_max_length' => 1024*1024*2,
+    // 启用 MQTT 协议
+    'open_mqtt_protocol' => false,
 
     // +-----------------------------
     // | Swoole 各个进程的进程别名
@@ -73,13 +81,13 @@ return [
     // +-----------------------------
 
     // 记录master和manager的进程id
-    'pid_file' => ROOT_PATH.'/env/sw-x.pid', 
+    'pid_file' => ROOT_PATH.'/other/env/sw-x.pid', 
     // 记录worker的进程id
-    'worker_pid_file' => ROOT_PATH.'/env/worker.pid', 
+    'worker_pid_file' => ROOT_PATH.'/other/env/worker.pid', 
     // 记录tasker的进程id
-    'tasker_pid_file' => ROOT_PATH.'/env/tasker.pid', 
+    'tasker_pid_file' => ROOT_PATH.'/other/env/tasker.pid', 
     // 记录路由的文件
-    'route_file' => ROOT_PATH.'/env/route_file.env', 
+    'route_file' => ROOT_PATH.'/other/env/route_file.env', 
 
     // +-----------------------------
     // | WebSocket 服务的独立配置

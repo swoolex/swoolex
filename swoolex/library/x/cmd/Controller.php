@@ -38,7 +38,7 @@ class Controller
             
         $route_url = rtrim(ltrim($argv[3], '/'), '/');
 
-        $config = \x\Config::run()->get('server');
+        $config = \x\Config::get('server');
         $array = json_decode(file_get_contents($config['route_file']), true);
         $route_list = $array[$argv[2]];
         if (isset($route_list[$route_url])) die('SwooleX-ERROR：sw-x controller Route already exists！'.PHP_EOL);

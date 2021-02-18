@@ -47,7 +47,7 @@ class Table
      * @return void
     */
     public function start() {
-        $cutting = \x\Config::run()->get('route.cutting');
+        $cutting = \x\Config::get('route.cutting');
 
         // http路由
         $list = $this->every_file(ROOT_PATH.'/app/controller');
@@ -59,11 +59,11 @@ class Table
 
         // 新增生命周期回调事件
         $route = $this->route();
-        $obj = new \lifecycle\route_start();
+        $obj = new \other\lifecycle\route_start();
         $obj->run($route);
 
         // 写入路由缓存
-        $route_file = \x\Config::run()->get('server.route_file');
+        $route_file = \x\Config::get('server.route_file');
         $json = json_encode($route, JSON_UNESCAPED_UNICODE);
         file_put_contents($route_file, $json);
     }

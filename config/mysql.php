@@ -11,7 +11,7 @@
 
 return [
     // 数据库表前缀
-    'prefix'     => 'tp_',
+    'prefix'     => 'sw_',
     // SQL防注入过滤函数
     'function'   => ['addslashes'],
     // 是否开启连接数监控

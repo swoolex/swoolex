@@ -34,7 +34,7 @@ class ServerCurrency
             'data' => $data
         ], JSON_UNESCAPED_UNICODE);
 
-        if (\x\Config::run()->get('rpc.aes_status') == true) {
+        if (\x\Config::get('rpc.aes_status') == true) {
             $Currency = new Currency();
             $json = $Currency->aes_encrypt($json);
             unset($Currency);
@@ -60,7 +60,6 @@ class ServerCurrency
             }
             return $data;
         }
-
         return $server->send($fd, $json);
     }
 }

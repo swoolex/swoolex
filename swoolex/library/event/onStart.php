@@ -36,7 +36,7 @@ class onStart
         try {
             $this->server = $server;
 
-            $config = \x\Config::run()->get('server');
+            $config = \x\Config::get('server');
             //如果是以Daemon形式开启的服务，记录master和manager的进程id
             if ($config['daemonize'] === true) {
                 file_put_contents($config['pid_file'], json_encode([
@@ -52,7 +52,7 @@ class onStart
             // 自动载入所有定时任务
             if ($this->status) {
                 $this->status = false;
-                $crontab_list = \x\Config::run()->get('crontab');
+                $crontab_list = \x\Config::get('crontab');
                 foreach($crontab_list as $app=>$fun){
                     // 载入定时器
                     $obj = new $app();

@@ -34,7 +34,7 @@ class onFinish
         try {
             $this->server = $server;
             // 微服务
-            if (\x\Config::run()->get('server.sw_service_type') == 'rpc') {
+            if (\x\Config::get('server.sw_service_type') == 'rpc') {
                 $this->rpc($server, $task_id, $data);
             } else {
                 $this->server($server, $task_id, $data);
@@ -43,7 +43,6 @@ class onFinish
             return \x\Error::run()->halt($throwable);
         }
     }
-
     
     /**
      * 微服务TCP服务

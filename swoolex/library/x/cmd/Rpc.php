@@ -33,7 +33,7 @@ class Rpc
         if (empty($argv[2])) die('SwooleX-ERROR：sw-x rpc missing parameter 1！'.PHP_EOL);
         if ($argv[2] != 'start') die('SwooleX-ERROR：Correct writing sw-x rpc start'.PHP_EOL);
 
-        if (\x\Config::run()->get('rpc.http_rpc_is') != true) {
+        if (\x\Config::get('rpc.http_rpc_is') != true) {
             die('SwooleX-ERROR：sw-x rpc WEB组件，只允许设置为服务中心的应用，才能部署安装。请在/config/rpc.php 文件中进行设置'.PHP_EOL);
         }
 

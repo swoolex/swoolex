@@ -137,7 +137,7 @@ class Template
         if ($template) {
             $cacheFile = $this->config['cache_path'] . $this->config['cache_prefix'] . md5($this->config['layout_on'] . $this->config['layout_name'] . $template) . '.' . ltrim($this->config['cache_suffix'], '.');
 
-            if (!$this->checkCache($cacheFile) || \x\Config::run()->get('app.de_bug') == true) {
+            if (!$this->checkCache($cacheFile) || \x\Config::get('app.de_bug') == true) {
                 // 缓存无效 重新模板编译
                 $content = file_get_contents($template);
                 $this->compiler($content, $cacheFile);
@@ -179,7 +179,7 @@ class Template
         if ($template) {
             $cacheFile = $this->config['cache_path'] . $this->config['cache_prefix'] . md5($this->config['layout_on'] . $this->config['layout_name'] . $template) . '.' . ltrim($this->config['cache_suffix'], '.');
 
-            if (!$this->checkCache($cacheFile) || \x\Config::run()->get('app.de_bug') == true) {
+            if (!$this->checkCache($cacheFile) || \x\Config::get('app.de_bug') == true) {
                 // 缓存无效 重新模板编译
                 $content = file_get_contents($template);
                 $this->compiler($content, $cacheFile);
@@ -1010,7 +1010,7 @@ class Template
     private function parseTemplateFile($template)
     {
         if ($template == '') {
-            $template = str_replace(\x\Config::run()->get('route.suffix'), '', \x\Request::route());
+            $template = str_replace(\x\Config::get('route.suffix'), '', \x\Request::route());
             if ($template == '/') {
                 $template = '/index/index';
             }

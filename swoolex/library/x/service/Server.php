@@ -35,9 +35,9 @@ class Server
     */
     public function start($server, $option) {
         if ($option == '-d') {
-            \x\Config::run()->set('server.daemonize', true);
+            \x\Config::set('server.daemonize', true);
         }
-        $config = \x\Config::run()->get('server');
+        $config = \x\Config::get('server');
 
         # WSS配置
         $wss = SWOOLE_SOCK_TCP;
@@ -55,14 +55,22 @@ class Server
             'heartbeat_check_interval' => $config['heartbeat_check_interval'],
             'heartbeat_idle_time' => $config['heartbeat_idle_time'],
             'package_max_length' => $config['package_max_length'],
+            'open_mqtt_protocol' => $config['open_mqtt_protocol'],
         ];
         if ($config['backlog']) $set['backlog'] = $config['backlog'];
         if ($config['reactor_num']) $set['reactor_num'] = $config['reactor_num'];
         if ($config['worker_num']) $set['worker_num'] = $config['worker_num'];
         if ($config['max_request']) $set['max_request'] = $config['max_request'];
-        if ($config['max_conn']) $set['max_conn'] = $config['max_conn'];
+        if ($config['max_connection']) $set['max_connection'] = $config['max_connection'];
         if ($config['task_tmpdir']) $set['task_tmpdir'] = $config['task_tmpdir'];
         if ($config['log_file']) $set['log_file'] = $config['log_file'];
+
+        if ($config['open_tcp_keepalive']) {
+            $set['tcp_keepidle'] = $config['tcp_keepidle'];
+            $set['tcp_keepinterval'] = $config['tcp_keepinterval'];
+            $set['tcp_keepcount'] = $config['tcp_keepcount'];
+        }
+
         // 配置HTTPS
         if ($config['ssl_cert_file'] && $config['ssl_key_file']) {
             $set['ssl_cert_file'] = $config['ssl_cert_file'];
@@ -82,7 +90,7 @@ class Server
             break;
         }
         // 启动类型写入配置项
-        \x\Config::run()->set('server.sw_service_type', $server);
+        \x\Config::set('server.sw_service_type', $server);
 
         $this->config = $config;
         // 注入配置

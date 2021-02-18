@@ -73,6 +73,22 @@ class Sql extends AbstractSql {
      * 统计的别名
     */
     public $ploy_alias = 'swoolex';
+    /**
+     * 缓存状态
+    */
+    public $cache_status = false;
+    /**
+     * 缓存标识前缀
+    */
+    public $cache_prefix = 'DB_';
+    /**
+     * 缓存标识符
+    */
+    public $cache_key = null;
+    /**
+     * 缓存有效期(S)
+    */
+    public $expire_time = 3600;
 
     /**
      * 注入Db
@@ -442,7 +458,108 @@ class Sql extends AbstractSql {
         ];
         return $this;
     }
+    /**
+     * 缓存组件
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.1 + 2021.2.5
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $key 缓存标识
+     * @return void
+    */
+    public function cache($key=null) {
+        $this->cache_status = true;
+        $this->cache_key = $key;
+        return $this;
+    }
 
+    /**
+     * 单独设置缓存有效期
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.1 + 2021.2.5
+     * @deprecated 暂不启用
+     * @global 无
+     * @param mixed $expire_time 过期时间，0为永久
+     * @return void
+    */
+    public function expire($expire_time) {
+        $this->expire_time = $expire_time;
+        return $this;
+    }
+
+    /**
+     * 终结方法-分页查询
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.1 + 2021.2.5
+     * @deprecated 暂不启用
+     * @global 无
+     * @param int $size 每页数
+     * @param array $query 分页配置参数
+     * @return void
+    */
+    public function paginate($size, $query=null) {
+        $test = $this->testcase();
+        if ($test != 'SwooleXTestCase') return $test;
+
+        // 分页配置
+        if (empty($query)) {
+            $options = \x\Config::get('view.paginate');
+        } else {
+            $options = array_merge(\x\Config::get('view.paginate'), $query);
+        }
+
+        $field = $options['var_page'];
+        $param = \x\Request::get();
+        $page = 1;
+        if (!empty($param[$field])) {
+            $page = $param[$field];
+        }
+
+        // 分页查询的SQL
+        $this->page($page, $size);
+        $select_sql = $this->select_sql(false);
+        // 总数查询的SQL
+        $this->page = null;
+        $this->field = 'COUNT(*) AS '.$this->ploy_alias;
+        $total_sql = $this->select_sql(false);
+
+        if ($this->debug==false) {
+            $start_time = microtime(true);
+
+            // 查出总记录数
+            $res = $this->Db->query($total_sql);
+            if ($res === false) return false;
+            $info = $res->fetch(\PDO::FETCH_NAMED);
+            if (empty($info)) return false;
+            $total = $info[$this->ploy_alias];
+
+            // 查询缓存
+            $cache = $this->select_cache($select_sql);
+            if ($cache['status'] == true) {
+                $list = json_decode($cache['data'], true);
+            } else {
+                $res = $this->Db->query($select_sql);
+                $this->clean_up();
+                $end_time = microtime(true);
+                $this->record($select_sql, $start_time, $end_time);
+                if ($res === false) return false;
+
+                $list = $res->fetchAll(\PDO::FETCH_NAMED);
+                if (empty($list)) $list = [];
+                
+                // 写入缓存
+                $this->create_cache($select_sql, $list);
+            }
+            
+            $class = $options['type'];
+            return new $class($list, $size, $page, $total, $options);
+        }
+
+        return $select_sql;
+    }
     /**
      * 终结方法-查询
      * @todo 无
@@ -460,6 +577,12 @@ class Sql extends AbstractSql {
         $sql = $this->select_sql(false);
 
         if ($status && $this->debug==false) {
+            // 查询缓存
+            $cache = $this->select_cache($sql);
+            if ($cache['status'] == true) {
+                return json_decode($cache['data'], true);
+            }
+            
             $start_time = microtime(true);
             $this->clean_up();
             $res = $this->Db->query($sql);
@@ -467,7 +590,11 @@ class Sql extends AbstractSql {
             $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
             $list = $res->fetchAll(\PDO::FETCH_NAMED);
-            if (empty($list)) return [];
+            if (empty($list)) $list = [];
+            
+            // 写入缓存
+            $this->create_cache($sql, $list);
+
             return $list;
         }
 
@@ -490,6 +617,12 @@ class Sql extends AbstractSql {
         $sql = $this->select_sql(true);
 
         if ($status && $this->debug==false) {
+            // 查询缓存
+            $cache = $this->select_cache($sql);
+            if ($cache['status'] == true) {
+                return json_decode($cache['data'], true);
+            }
+
             $start_time = microtime(true);
             $this->clean_up();
             $res = $this->Db->query($sql);
@@ -498,6 +631,10 @@ class Sql extends AbstractSql {
             if ($res === false) return false;
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
+            
+            // 写入缓存
+            $this->create_cache($sql, $info);
+            
             return $info;
         }
 
@@ -780,7 +917,13 @@ class Sql extends AbstractSql {
 
         if ($this->debug==false) {
             $this->clean_up();
-            
+
+            // 查询缓存
+            $cache = $this->select_cache($sql);
+            if ($cache['status'] == true) {
+                return $cache['data'];
+            }
+
             $start_time = microtime(true);
             $res = $this->Db->query($sql);
             $end_time = microtime(true);
@@ -789,6 +932,9 @@ class Sql extends AbstractSql {
 
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
+            
+            // 写入缓存
+            $this->create_cache($sql, $info[$this->ploy_alias]);
             
             return $info[$this->ploy_alias];
         }
@@ -816,6 +962,12 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             
+            // 查询缓存
+            $cache = $this->select_cache($sql);
+            if ($cache['status'] == true) {
+                return $cache['data'];
+            }
+
             $start_time = microtime(true);
             $res = $this->Db->query($sql);
             $end_time = microtime(true);
@@ -824,6 +976,9 @@ class Sql extends AbstractSql {
 
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
+
+            // 写入缓存
+            $this->create_cache($sql, $info[$this->ploy_alias]);
 
             return $info[$this->ploy_alias];
         }
@@ -851,6 +1006,12 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
             
+            // 查询缓存
+            $cache = $this->select_cache($sql);
+            if ($cache['status'] == true) {
+                return $cache['data'];
+            }
+
             $start_time = microtime(true);
             $res = $this->Db->query($sql);
             $end_time = microtime(true);
@@ -859,6 +1020,9 @@ class Sql extends AbstractSql {
 
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
+
+            // 写入缓存
+            $this->create_cache($sql, $info[$this->ploy_alias]);
 
             return $info[$this->ploy_alias];
         }
@@ -886,6 +1050,12 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
 
+            // 查询缓存
+            $cache = $this->select_cache($sql);
+            if ($cache['status'] == true) {
+                return $cache['data'];
+            }
+
             $start_time = microtime(true);
             $res = $this->Db->query($sql);
             $end_time = microtime(true);
@@ -894,6 +1064,9 @@ class Sql extends AbstractSql {
 
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
+
+            // 写入缓存
+            $this->create_cache($sql, $info[$this->ploy_alias]);
 
             return $info[$this->ploy_alias];
         }
@@ -921,6 +1094,12 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
 
+            // 查询缓存
+            $cache = $this->select_cache($sql);
+            if ($cache['status'] == true) {
+                return $cache['data'];
+            }
+
             $start_time = microtime(true);
             $res = $this->Db->query($sql);
             $end_time = microtime(true);
@@ -929,6 +1108,9 @@ class Sql extends AbstractSql {
 
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
+
+            // 写入缓存
+            $this->create_cache($sql, $info[$this->ploy_alias]);
 
             return $info[$this->ploy_alias];
         }
@@ -956,6 +1138,12 @@ class Sql extends AbstractSql {
         if ($this->debug==false) {
             $this->clean_up();
 
+            // 查询缓存
+            $cache = $this->select_cache($sql);
+            if ($cache['status'] == true) {
+                return $cache['data'];
+            }
+
             $start_time = microtime(true);
             $res = $this->Db->query($sql);
             $end_time = microtime(true);
@@ -964,6 +1152,9 @@ class Sql extends AbstractSql {
             
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
+
+            // 写入缓存
+            $this->create_cache($sql, $info[$field]);
 
             return $info[$field];
         }
@@ -1200,8 +1391,8 @@ class Sql extends AbstractSql {
      * @return void
     */
     private function testcase() {
-        if (\x\Container::getInstance()->has('testcase')) {
-            $obj = \x\Container::getInstance()->get('testcase');
+        if (\x\Container::has('testcase')) {
+            $obj = \x\Container::get('testcase');
             $name = $this->test_case;
             if (isset($obj->$name)) {
                 return $obj->$name;
@@ -1235,15 +1426,82 @@ class Sql extends AbstractSql {
             // 计算调用时间
             $time = number_format(($end_time-$start_time), 7);
             // 写入记录
-            $array = \x\Container::getInstance()->get('http_sql_log');
+            $array = \x\Container::get('http_sql_log');
             if (!$array) $array = [];
             $array[] = [
                 'sql' => $sql,
                 'file' => $file,
                 'time' => $time
             ];
-            \x\Container::getInstance()->set('http_sql_log', $array);
+            \x\Container::set('http_sql_log', $array);
         }
+    }
+
+    /**
+     * 读取缓存
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.1 + 2021.2.5
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $sql SQL语句
+     * @return void
+    */
+    private function select_cache($sql=null) {
+        if ($this->cache_status == false) return ['status'=>false];
+        $key = $this->cache_prefix;
+        if ($this->cache_key) {
+            $key .= $this->cache_key;
+        } else {
+            $key .= md5($sql);
+        }
+        $Redis = new \x\Redis();
+        $res = $Redis->get($key);
+        $Redis->return();
+
+        if (!$res) return ['status'=>false];
+
+        return [
+            'status' => true,
+            'data' => $res,
+        ];
+    }
+
+    /**
+     * 更新缓存
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.1 + 2021.2.5
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $sql SQL语句
+     * @param mixed $data 缓存内容
+     * @return void
+    */
+    private function create_cache($sql, $data) {
+        if ($this->cache_status == false) return false;
+        
+        $key = $this->cache_prefix;
+        if ($this->cache_key) {
+            $key .= $this->cache_key;
+        } else {
+            $key .= md5($sql);
+        }
+
+        if (is_array($data)) $data = json_encode($data, JSON_UNESCAPED_UNICODE);
+
+        $Redis = new \x\Redis();
+        $Redis->set($key, $data);
+        if ($this->expire_time) {
+            $Redis->expire($key, $this->expire_time);
+        } 
+        $Redis->return();
+        
+        // 清空缓存标识
+        $this->cache_status = false;
+        $this->cache_key = null;
+        $this->expire_time = 3600;
+        return true;
     }
 
     /**
@@ -1269,4 +1527,5 @@ class Sql extends AbstractSql {
         $this->debug = false;
         $this->test_case = null;
     }
+
 }

@@ -63,7 +63,7 @@ class App
      * @return void
     */
     public function start() {
-        $this->config = \x\Config::run()->get('server');
+        $this->config = \x\Config::get('server');
 
         global $argc, $argv;
 
@@ -91,7 +91,7 @@ class App
                     $this->echo_swoolex_error('sw-x start daemonize error，support only：-d');
                 }
                 // 设置默认时区
-                date_default_timezone_set(\x\Config::run()->get('app.default_timezone'));
+                date_default_timezone_set(\x\Config::get('app.default_timezone'));
                 // 清空初始化文件
                 file_put_contents($this->config['worker_pid_file'], '');
                 file_put_contents($this->config['tasker_pid_file'], '');
@@ -228,7 +228,7 @@ class App
     */
     private function http_test_case($url, $route) {
         $type = strtolower($route['method']);
-        $url = '127.0.0.1:'.\x\Config::run()->get('server.port').'/'.ltrim($url, '/');
+        $url = '127.0.0.1:'.\x\Config::get('server.port').'/'.ltrim($url, '/');
         if ($type == 'get') {
             $url .= '?SwooleXTestCase=1';
         }
@@ -361,7 +361,7 @@ class App
             }
         }
         echo "Memory_get_usage：".$this->memory().PHP_EOL;
-        echo "Container_count：".\x\Container::getInstance()->sum().PHP_EOL;
+        echo "Container_count：".\x\Container::sum().PHP_EOL;
 
         echo "Mysql_connect_count（5S）：".$this->create_mysql_pool_log(false).PHP_EOL;
         echo "Redis_connect_count（5S）：".$this->create_redis_pool_log(false).PHP_EOL;
@@ -408,7 +408,7 @@ class App
     */
     private function create_mysql_pool_log($status=true) {
         // MYSQL连接数
-        $path = ROOT_PATH.'/env/mysql_pool_num.count';
+        $path = ROOT_PATH.'/other/env/mysql_pool_num.count';
         // 清空并创建
         if ($status) {
             return file_put_contents($path, '{}');
@@ -437,7 +437,7 @@ class App
     */
     private function create_redis_pool_log($status=true) {
         //Redis连接数
-        $path = ROOT_PATH.'/env/redis_pool_num.count';
+        $path = ROOT_PATH.'/other/env/redis_pool_num.count';
         // 清空并创建
         if ($status) {
             return file_put_contents($path, '{}');

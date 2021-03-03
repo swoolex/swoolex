@@ -17,10 +17,6 @@ class onStart
 	 * 启动实例
 	*/
     public $server;
-    /**
-     * 定时器启动状态
-    */
-    public $status = true;
     
     /**
      * 统一回调入口
@@ -47,17 +43,6 @@ class onStart
                 // tasker和worker进程的pid将会在workerstart回调中写入到文件中
                 touch($config['worker_pid_file']);
                 touch($config['tasker_pid_file']);
-            }
-
-            // 自动载入所有定时任务
-            if ($this->status) {
-                $this->status = false;
-                $crontab_list = \x\Config::get('crontab');
-                foreach($crontab_list as $app=>$fun){
-                    // 载入定时器
-                    $obj = new $app();
-                    $obj->$fun($server);
-                }
             }
             
             // 调用二次转发，不做重载

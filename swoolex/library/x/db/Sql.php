@@ -454,7 +454,7 @@ class Sql extends AbstractSql {
         $this->join[] = [
             'table' => $table, 
             'on' => $on,
-            'join' => strtoupper($join)
+            'join' => strtoupper($join),
         ];
         return $this;
     }
@@ -1295,16 +1295,20 @@ class Sql extends AbstractSql {
         }
         if ($this->join) {
             foreach ($this->join as $v) {
-                $array = explode(' ', $v['table']);
-                $table = '';
-                foreach ($array as $key=>$val) {
-                    if ($key == 0) {
-                        $table .= $val.' AS ';
-                    } else {
-                        $table .= $val.' ';
+                if (substr($v['table'] , 0 , 1) == '(') {
+                    $sql .= ' '.$v['join'].' JOIN '.$v['table'].' ON '.$v['on'];
+                } else {
+                    $array = explode(' ', $v['table']);
+                    $table = '';
+                    foreach ($array as $key=>$val) {
+                        if ($key == 0) {
+                            $table .= $val.' AS ';
+                        } else {
+                            $table .= $val.' ';
+                        }
                     }
+                    $sql .= ' '.$v['join'].' JOIN '.$table.'ON '.$v['on'];
                 }
-                $sql .= ' '.$v['join'].' JOIN '.$table.'ON '.$v['on'];
             }
         }
         $sql = $this->where_sql($sql);
@@ -1528,4 +1532,16 @@ class Sql extends AbstractSql {
         $this->test_case = null;
     }
 
+    /**
+     * Model类反转调用
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.0.1 + 2020.05.29
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function __call($name, $arguments=[]) {
+        return $this->Db->$name(...$arguments);
+    }
 }

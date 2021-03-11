@@ -37,6 +37,10 @@ class Controller
      * 视图实例
      */
     private $view;
+    /**
+     * 模板变量
+    */
+    private $assign = [];
 
     /**
      * 利用析构函数，自动回收归还连接池
@@ -68,16 +72,28 @@ class Controller
      * @global 无
      * @param string $string 输出内容
      * @param int $status 响应状态码
+     * @param string|array 响应头
      * @return void
     */
-    public final function fetch($string, $status=200) {
+    public final function fetch($string, $status=200, $headers=[]) {
         // 防止二次推送
         if (\x\Container::has('response_status')) {
             return false;
         }
-        
+
+        // 清空模板变量，防止大意的开发者
+        $this->assign = [];
+        if (!empty($this->view)) $this->view->delete_assign();
+
         $Response = \x\Container::get('response');
         $Response->status($status);
+
+        if (empty($headers)) {
+            $headers = \x\Config::get('view.http_response_headers');
+        }
+        foreach ($headers as $key=>$value) {
+            $Response->header($key, $value);
+        }
         $status = $Response->end($string);
 
         \x\Container::set('response_status', $status);
@@ -97,8 +113,7 @@ class Controller
     */
     public final function assign($name, $value = '')
     {
-        $this->is_view();
-        $this->view->assign($name, $value);
+        $this->assign[$name] = $value;
         return $this;
     }
 
@@ -117,7 +132,11 @@ class Controller
     public final function view($template = '', $vars = [], $config = [])
     {
         $this->is_view();
-        return $this->view->fetch($template, $vars, $config);
+        foreach ($this->assign as $name=>$value) {
+            $this->view->assign($name, $value);
+        }
+        $content = $this->view->fetch($template, $vars, $config);
+        return $content;
     }
 
     /**
@@ -135,12 +154,20 @@ class Controller
     public final function display($content = '', $vars = [], $config = [])
     {
         $this->is_view();
+        foreach ($this->assign as $name=>$value) {
+            $this->view->assign($name, $value);
+        }
         $content = $this->view->display($content, $vars, $config);
+        // 清空模板变量，防止大意的开发者
         $Response = \x\Container::get('response');
         
+        // 清空模板变量，防止大意的开发者
+        unset($vars);
+        $this->assign = [];
+        if (!empty($this->view)) $this->view->delete_assign();
+
         $DebugGer = new DebugGer();
         $debug_html = $DebugGer->run();
-
         return $Response->end($content.$debug_html);
     }
 

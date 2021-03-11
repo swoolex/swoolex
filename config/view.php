@@ -45,4 +45,8 @@ return [
         // 分页锚点参数
         'fragment' => '',
     ],
+    // HTTP控制器fetch时默认的响应headers
+    'http_response_headers' => [
+        'Content-type' => 'text/html; charset=utf-8'
+    ],
 ];

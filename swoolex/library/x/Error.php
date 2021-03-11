@@ -166,6 +166,9 @@ class Error {
             unset($obj);
         }
 
+        // 销毁整个请求级容器
+        \x\Container::clear();
+
         return true;
     }
 
@@ -205,6 +208,9 @@ class Error {
         $obj = new \other\lifecycle\controller_error();
         $obj->run($e, $txt, $source);
         unset($obj);
+
+        // 销毁整个请求级容器
+        \x\Container::clear();
 
         return true;
     }

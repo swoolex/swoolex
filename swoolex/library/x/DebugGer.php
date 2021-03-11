@@ -229,7 +229,7 @@ class DebugGer
      * 调用
      * @todo 无
      * @author 小黄牛
-     * @version v1.2.16 + 2020.10.27
+     * @version v2.0.3 + 2021.03.11
      * @deprecated 暂不启用
      * @global 无
      * @return void
@@ -247,6 +247,9 @@ class DebugGer
         $this->set_tab3();
         $this->set_tab4();
         $this->set_footer();
+        # 释放内存
+        unset($this->included);
+        unset($this->backtrace);
         return $this->html;
     }
 }

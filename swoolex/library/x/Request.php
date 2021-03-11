@@ -62,32 +62,68 @@ class Request
      * 获取get参数
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.29
+     * @version v2.0.3 + 2021.03.11
      * @deprecated 暂不启用
      * @global 无
+     * @param array $field 需要返回参数的key名，一维
      * @return void
     */
-    public static function get() {
+    public static function get($field=[]) {
         $Request = \x\Container::get('request');
         if (!$Request) return false;
-        return $Request->get;
+        return self::return_field($Request->get, $field);
     }
 
     /**
      * 获取post参数
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.29
+     * @version v2.0.3 + 2021.03.11
      * @deprecated 暂不启用
      * @global 无
+     * @param array $field 需要返回参数的key名，一维
      * @return void
     */
-    public static function post() {
+    public static function post($field=[]) {
         $Request = \x\Container::get('request');
         if (!$Request) return false;
-        return $Request->post;
+        return self::return_field($Request->post, $field);
     }
 
+    /**
+     * 获取get|post参数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.3 + 2021.03.11
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array $field 需要返回参数的key名，一维
+     * @return void
+    */
+    public static function param($field=[]) {
+        $Request = \x\Container::get('request');
+        if (!$Request) return false;
+
+        if (!empty($Request->post)) return self::return_field($Request->post, $field);
+        return self::return_field($Request->get, $field);
+    }
+
+    /**
+     * 获取files参数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.3 + 2021.03.11
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array $field 需要返回参数的key名，一维
+     * @return void
+    */
+    public static function file($field=[]) {
+        $Request = \x\Container::get('request');
+        if (!$Request) return false;
+        return self::return_field($Request->files, $field);
+    }
+    
     /**
      * 判断是否GET请求
      * @todo 无
@@ -254,5 +290,27 @@ class Request
         return $ret;
     }
 
+    /**
+     * 函数描述
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.3 + 2021.03.11
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array $param
+     * @param array $field
+     * @return false|array
+    */
+    private static function return_field($param, $field) {
+        if (!$param) return false;
+        if (empty($field)) return $param;
+
+        $list = [];
+        foreach ($field as $key) {
+            if (isset($param[$key])) $list[$key] = $param[$key];
+        }
+
+        return $list;
+    }
 
 }

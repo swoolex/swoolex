@@ -139,7 +139,7 @@ class Template
 
             if (!$this->checkCache($cacheFile) || \x\Config::get('app.de_bug') == true) {
                 // 缓存无效 重新模板编译
-                $content = file_get_contents($template);
+                $content = \Swoole\Coroutine\System::readFile($template);
                 $this->compiler($content, $cacheFile);
             }
 
@@ -155,6 +155,7 @@ class Template
 
             echo $content;
         }
+        $this->data = [];
     }
     
     /**
@@ -175,19 +176,20 @@ class Template
         if ($config) $this->config($config);
 
         $template = $this->parseTemplateFile($template);
-
         if ($template) {
             $cacheFile = $this->config['cache_path'] . $this->config['cache_prefix'] . md5($this->config['layout_on'] . $this->config['layout_name'] . $template) . '.' . ltrim($this->config['cache_suffix'], '.');
 
             if (!$this->checkCache($cacheFile) || \x\Config::get('app.de_bug') == true) {
                 // 缓存无效 重新模板编译
-                $content = file_get_contents($template);
+                $content = \Swoole\Coroutine\System::readFile($template);
                 $this->compiler($content, $cacheFile);
             }
         }
 
         // 读取编译存储
-        return $this->storage->read($cacheFile, $this->data);
+        $content = $this->storage->read($cacheFile, $this->data);
+        $this->data = [];
+        return $content;
     }
 
     /**
@@ -214,7 +216,7 @@ class Template
 
                 if ($layoutFile) {
                     // 替换布局的主体内容
-                    $content = str_replace($this->config['layout_item'], $content, file_get_contents($layoutFile));
+                    $content = str_replace($this->config['layout_item'], $content, \Swoole\Coroutine\System::readFile($layoutFile));
                 }
             }
         } else {
@@ -397,7 +399,7 @@ class Template
                 if ($layoutFile) {
                     $replace = isset($array['replace']) ? $array['replace'] : $this->config['layout_item'];
                     // 替换布局的主体内容
-                    $content = str_replace($replace, $content, file_get_contents($layoutFile));
+                    $content = str_replace($replace, $content, \Swoole\Coroutine\System::readFile($layoutFile));
                 }
             }
         } else {
@@ -994,7 +996,7 @@ class Template
 
             if ($template) {
                 // 获取模板文件内容
-                $parseStr .= file_get_contents($template);
+                $parseStr .= \Swoole\Coroutine\System::readFile($template);
             }
         }
 
@@ -1016,17 +1018,17 @@ class Template
             }
         }
 
-        $template = $this->config['view_path'] .'/'. str_replace(['/', ':'], $this->config['view_depr'], ltrim($template, '/')) . '.' . ltrim($this->config['view_suffix'], '.');
+        $template = $this->config['view_path'] .'/'. str_replace('/', $this->config['view_depr'], ltrim($template, '/')) . '.' . ltrim($this->config['view_suffix'], '.');
 
         if (is_file($template)) {
             // 记录模板文件的更新时间
             $this->includeFile[$template] = filemtime($template);
             return $template;
-        } else {
-            echo 'template not exists:' . $template;
         }
         
-        new \Exception('template not exists:' . $template); 
+        $this->data = [];
+        throw new \Exception('template not exists:' . $template); 
+        return false;
     }
 
     /**
@@ -1194,5 +1196,4 @@ class Template
         // 检查编译存储是否有效
         return $this->storage->check($cacheFile, $this->config['cache_time']);
     }
-
 }

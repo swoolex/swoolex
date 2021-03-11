@@ -96,6 +96,15 @@ class View
     }
 
     /**
+     * 模板变量清空
+     * @access public
+     * @return $this
+     */
+    public function delete_assign() {
+        $this->data = [];
+    }
+
+    /**
      * 设置当前模板解析的引擎
      * @access public
      * @param  array|string $options 引擎参数
@@ -159,7 +168,7 @@ class View
     {
         // 模板变量
         $vars = array_merge(self::$var, $this->data, $vars);
-
+        $this->data = [];
         // 页面缓存
         ob_start();
         ob_implicit_flush(0);
@@ -179,7 +188,6 @@ class View
         if ($this->filter) {
             $content = call_user_func_array($this->filter, [$content]);
         }
-
         return $content;
     }
 

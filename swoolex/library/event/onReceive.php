@@ -34,6 +34,7 @@ class onReceive
     public function run($server, $fd, $reactorId, $data=null) {
         try {
             $this->server = $server;
+            
             // 微服务
             if (\x\Config::get('server.sw_service_type') == 'rpc') {
                 $this->rpc($server, $fd, $reactorId, $data);

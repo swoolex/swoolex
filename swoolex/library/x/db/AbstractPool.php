@@ -13,58 +13,9 @@ namespace x\db;
 abstract class AbstractPool {
     //--------------------------------------- 读取数据库连接 ----------------------------------------
     /**
-     * 连接数
+     * DB配置项
     */
-    protected $read;
-    /**
-     * 当前连接数
-    */
-    protected $read_count;
-    /**
-     * 连接池组
-    */
-    protected $read_connections;
-    /**
-     * 数据库配置
-    */
-    protected $read_database;
-
-    //--------------------------------------- 写入数据库连接 ----------------------------------------
-    /**
-     * 连接数
-    */
-    protected $write;
-    /**
-     * 当前连接数
-    */
-    protected $write_count;
-    /**
-     * 连接池组
-    */
-    protected $write_connections;
-    /**
-     * 数据库配置
-    */
-    protected $write_database;
-
-    //--------------------------------------- 日志数据库连接 ----------------------------------------
-    /**
-     * 连接数
-    */
-    protected $log;
-    /**
-     * 当前连接数
-    */
-    protected $log_count;
-    /**
-     * 连接池组
-    */
-    protected $log_connections;
-    /**
-     * 数据库配置
-    */
-    protected $log_database;
-
+    protected $config;
 
     /**
      * 创建静态对象变量,用于存储唯一的对象实例  
@@ -80,12 +31,8 @@ abstract class AbstractPool {
      * 必须要实现的抽象
     */
     public abstract function init();
-    public abstract function read_pop();
-    public abstract function read_free($obj);
-    public abstract function write_pop();
-    public abstract function write_free($obj);
-    public abstract function log_pop();
-    public abstract function log_free($obj);
+    public abstract function pop($key);
+    public abstract function free($key, $obj);
     protected abstract function createDb($database, $size);
 
     /**
@@ -101,16 +48,7 @@ abstract class AbstractPool {
     */
     private function __construct() {
         // 读取配置类
-        $config = \x\Config::get('mysql');
-        # 读
-        $this->read = $config['pool_read'];
-        $this->read_database = $config['pool_read_database'];
-        # 写
-        $this->write = $config['pool_write'];
-        $this->write_database = $config['pool_write_database'];
-        # 日志
-        $this->log = $config['pool_log'];
-        $this->log_database = $config['pool_log_database'];
+        $this->config = \x\Config::get('mysql.pool_list');
     }
 
     /**

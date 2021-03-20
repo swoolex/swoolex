@@ -28,20 +28,14 @@ class MysqlPool extends AbstractPool {
      * @return $this|null
     */
     public function init() {
-        # 读 - 连接
-        $this->read_connections = $this->createDb($this->read_database, $this->read);
-        $this->read_count = $this->read;
-        # 写 - 连接
-        $this->write_connections = $this->createDb($this->write_database, $this->write);
-        $this->write_count = $this->write;
-        # 日志 - 连接
-        $this->log_connections = $this->createDb($this->log_database, $this->log);
-        $this->log_count = $this->log;
+        foreach ($this->config as $key=>$value) {
+            $this->config[$key]['connections'] = $this->createDb($value, $value['pool_num']);
+        }
         return $this;
     }
 
     /**
-     * 读-获取一个连接
+     * 获取一个连接
      * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.29
@@ -49,28 +43,30 @@ class MysqlPool extends AbstractPool {
      * @global 无
      * @return obj
     */
-    public function read_pop() {
-        if ($this->read_count <= 0) {
-            $this->pop_error('read');
-            throw new \Exception("Dao Read Pop <= 0");
+    public function pop($key) {
+        if (!isset($this->config[$key])) return false;
+
+        if ($this->config[$key]['pool_num'] <= 0) {
+            $this->pop_error($key);
+            throw new \Exception("Dao ".$key." Pop <= 0");
             return false;
         }
-        $this->read_count--;
-        if (!$this->read_connections) return false;
+        $this->config[$key]['pool_num']--;
+        if (!$this->config[$key]['connections']) return false;
         
-        $pool = $this->read_connections->get();
+        $pool = $this->config[$key]['connections']->get();
 
         $res = $pool->getAttribute(\PDO::ATTR_SERVER_INFO);
         if ($res === false) {
-            $this->read_free(null);
-            return $this->read_pop();
+            $this->free($key, null);
+            return $this->pop($key);
         }
 
         return $pool;
     }
 
     /**
-     * 读-归还一个连接
+     * 归还一个连接
      * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.29
@@ -79,99 +75,13 @@ class MysqlPool extends AbstractPool {
      * @param obj $obj 数据库连接实例
      * @return void
     */
-    public function read_free($obj) {
-        $this->read_count++;
-        if (!$this->read_connections) return false;
-        return $this->read_connections->put($obj);
+    public function free($key, $obj) {
+        $this->config[$key]['pool_num']++;
+        if (!$this->config[$key]['connections']) return false;
+
+        return $this->config[$key]['connections']->put($obj);
     }
     
-    /**
-     * 写-获取一个连接
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return obj
-    */
-    public function write_pop() {
-        if ($this->write_count <= 0) {
-            $this->pop_error('write');
-            throw new \Exception("Dao Write Pop <= 0");
-            return false;
-        }
-        $this->write_count--;
-        if (!$this->write_connections) return false;
-        $pool = $this->write_connections->get();
-
-        $res = $pool->getAttribute(\PDO::ATTR_SERVER_INFO);
-        if ($res === false) {
-            $this->write_free(null);
-            return $this->write_pop();
-        }
-
-        return $pool;
-    }
-
-    /**
-     * 写-归还一个连接
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @param obj $obj 数据库连接实例
-     * @return void
-    */
-    public function write_free($obj) {
-        $this->write_count++;
-        if (!$this->write_connections) return false;
-        return $this->write_connections->put($obj);
-    }
-
-    /**
-     * 日志-获取一个连接
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return obj
-    */
-    public function log_pop() {
-        if ($this->log_count <= 0) {
-            $this->pop_error('log');
-            throw new \Exception("Dao Log Pop <= 0");
-            return false;
-        }
-        $this->log_count--;
-        if (!$this->log_connections) return false;
-        $pool = $this->log_connections->get();
-
-        $res = $pool->getAttribute(\PDO::ATTR_SERVER_INFO);
-        if ($res === false) {
-            $this->log_free(null);
-            return $this->log_pop();
-        }
-
-        return $pool;
-    }
-    /**
-     * 日志-归还一个连接
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @param obj $obj 数据库连接实例
-     * @return void
-    */
-    public function log_free($obj) {
-        $this->log_count++;
-        if (!$this->log_connections) return false;
-        return $this->log_connections->put($obj);
-    }
-
     /**
      * 定时统计连接
      * @todo 无
@@ -191,7 +101,11 @@ class MysqlPool extends AbstractPool {
                 if ($json) {
                     $array = json_decode($json, true);
                 }
-                $array[$workerId] = $this->read_count+$this->write_count+$this->log_count;
+                $num = 0;
+                foreach ($this->config as $key=>$value) {
+                    $num += $value['pool_num'];
+                }
+                $array[$workerId] = $num;
                 \Swoole\Coroutine\System::writeFile($path, json_encode($array));
                 unset($json);
                 unset($array);
@@ -210,15 +124,10 @@ class MysqlPool extends AbstractPool {
      * @return void
     */
     public function clean() {
-        # 读 - 连接
-        $this->read_count = 0;
-        $this->read_connections->close();
-        # 写 - 连接
-        $this->write_count = 0;
-        $this->write_connections->close();
-        # 日志 - 连接
-        $this->log_count = 0;
-        $this->log_connections->close();
+        foreach ($this->config as $key=>$value) {
+            $value['connections']->close();
+            $this->config[$key]['pool_num'] = 0;
+        }
     }
 
     /**

@@ -279,11 +279,6 @@ class Container
                 $this->name[$CoroutineId][$abstract] = $concrete;
                 return $this->make($concrete, $vars, $newInstance);
             }
-        } else {
-            // 进程级容器查找
-            if (\x\ContainerProcess::has($abstract)) {
-                return \x\ContainerProcess::make($abstract, $vars, $newInstance);
-            }
         }
         return false;
     }
@@ -358,7 +353,21 @@ class Container
     {
         // 协程ID
         $CoroutineId = $this->getCoroutineId();
-        return count($this->instances[$CoroutineId]);
+        return isset($this->instances[$CoroutineId]) ? count($this->instances[$CoroutineId]) : 0;
+    }
+
+    /**
+     * 获取容器中进程的对象长度
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.1 + 2020.07.17
+     * @deprecated 暂不启用
+     * @global 无
+     * @return int
+    */
+    public function showlist()
+    {
+        return $this->instances;
     }
     
     /**

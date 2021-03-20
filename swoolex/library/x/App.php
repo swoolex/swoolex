@@ -65,6 +65,11 @@ class App
     public function start() {
         $this->config = \x\Config::get('server');
 
+        $memory_limit = \x\Config::get('app.memory_limit');
+        if ($memory_limit) {
+            ini_set('memory_limit', $memory_limit);
+        }
+        
         global $argc, $argv;
 
 		if ($argc <= 1 || $argc > 6 ) {

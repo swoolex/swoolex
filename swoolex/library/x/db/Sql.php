@@ -144,7 +144,7 @@ class Sql extends AbstractSql {
     public function name($table) {
         $this->clean_up();
         # 获取数据表前缀
-        $this->prefix = \x\Config::run()->get('mysql.prefix');
+        $this->prefix = $this->Db->prefix;
         $this->table = $this->prefix.$table;
         return $this;
     }
@@ -162,7 +162,7 @@ class Sql extends AbstractSql {
     public function table($table) {
         $this->clean_up();
         # 获取数据表前缀
-        $this->prefix = \x\Config::run()->get('mysql.prefix');
+        $this->prefix = $this->Db->prefix;
         $this->table = $table;
         return $this;
     }
@@ -1395,7 +1395,7 @@ class Sql extends AbstractSql {
      * @return void
     */
     private function testcase() {
-        if (\x\Container::has('testcase')) {
+        if (\x\Container::has('testcase') && \x\Container::count() > 0) {
             $obj = \x\Container::get('testcase');
             $name = $this->test_case;
             if (isset($obj->$name)) {
@@ -1420,7 +1420,7 @@ class Sql extends AbstractSql {
     */
     private function record($sql, $start_time, $end_time) {
         // 注入调试内容
-        if (\x\Config::run()->get('app.sql_log_status')) {
+        if (\x\Config::run()->get('app.sql_log_status') && \x\Container::count() > 0) {
             $debug = debug_backtrace();
             $file = '';
             // 获得调用来源

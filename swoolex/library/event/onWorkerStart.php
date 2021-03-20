@@ -110,12 +110,10 @@ class onWorkerStart
      * @return void
     */
     private function start_redis($workerId) {
-        if (\x\Config::get('redis.status')) {
-            // 启动数据库连接池
-            \x\redis\Redis2Pool::run()->init();
-            // 启动连接池检测定时器
-            \x\redis\Redis2Pool::run()->timing_recovery($workerId);
-        }
+        // 启动数据库连接池
+        \x\redis\Redis2Pool::run()->init();
+        // 启动连接池检测定时器
+        \x\redis\Redis2Pool::run()->timing_recovery($workerId);
     }
 }
 

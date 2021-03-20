@@ -20,7 +20,9 @@ return [
     'error_log_status' => true,
     // SQL日志写入
     'sql_log_status' => true,
-    
+    // 设置PHP最大内存上线，测试阶段建议开小，false表示不使用该项目配置
+    'memory_limit' => '128M',
+
     // +-----------------------------
     // | Cookies
     // +-----------------------------

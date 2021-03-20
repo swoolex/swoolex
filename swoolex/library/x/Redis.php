@@ -23,6 +23,10 @@ class Redis
     */
     private $sql_ref;
     /**
+     * 连接池类型
+    */
+    public $type;
+    /**
      * 前缀
     */
     private $prefix;
@@ -38,11 +42,18 @@ class Redis
      * @version v1.0.1 + 2020.05.29
      * @deprecated 暂不启用
      * @global 无
+     * @param string $data 连接池标识，不传默认第一个标识
      * @return void
     */
-    public function __construct() {
-        $this->pool = \x\redis\Redis2Pool::run()->pop();
-        $this->prefix = \x\Config::run()->get('redis.table');
+    public function __construct($data=null) {
+        $arr = \x\Config::run()->get('redis.pool_list');
+        if (empty($data)) {
+            $data = array_key_first($arr);
+        }
+        $this->type = $data;
+        # 获取前缀
+        $this->prefix = $arr[$this->type]['table'];
+        $this->pool = \x\redis\Redis2Pool::run()->pop($data);
     }
 
     /**
@@ -71,7 +82,7 @@ class Redis
     */
     public function return() {
         $this->return_status = true;
-        return \x\redis\Redis2Pool::run()->free($this->pool);
+        return \x\redis\Redis2Pool::run()->free($this->type, $this->pool);
     }
     
     /**
@@ -109,10 +120,10 @@ class Redis
         // 加上前缀
 		if ($name == 'rawCommand') {
 			if (isset($arguments[1])) {
-				$arguments[1] = $this->prefix.$arguments[1];
+                if ($arguments[0] != 'select') $arguments[1] = $this->prefix.$arguments[1];
 			}
 		} else {
-			if (isset($arguments[0])) {
+			if (isset($arguments[0]) && $name != 'select') {
                 if (!is_array($arguments[0])) {
                     $arguments[0] = $this->prefix.$arguments[0];
                 }

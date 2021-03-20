@@ -22,6 +22,10 @@ class Db
     */
     private $type;
     /**
+     * 表前缀
+    */
+    public $prefix;
+    /**
      * SQL构造器反射类
     */
     private $sql_ref;
@@ -49,7 +53,7 @@ class Db
      * @version v1.2.8 + 2020.07.29
      * @deprecated 暂不启用
      * @global 无
-     * @param string $data 连接池类型select或者log，为空则为写入
+     * @param string $data 连接池标识，不传默认第一个标识
      * @return void
     */
     public function __construct($data=null) {
@@ -61,25 +65,17 @@ class Db
             } catch (\PDOException $e) {
                 return false;
             }
+            $this->prefix = $data['prefix'] ?? '';
             $this->is_pool = false;
         } else {
-            if (empty($data)) $data = 'create';
-            $this->type = $data;
-    
-            switch ($this->type) {
-                case 'create':
-                    $pool = \x\db\MysqlPool::run()->write_pop();
-                break;
-                case 'select':
-                    $pool = \x\db\MysqlPool::run()->read_pop();
-                break;
-                case 'log':
-                    $pool = \x\db\MysqlPool::run()->log_pop();
-                break;
-                default:
-                    return false;
-                break;
+            $arr = \x\Config::run()->get('mysql.pool_list');
+            if (empty($data)) {
+                $data = array_key_first($arr);
             }
+            $this->type = $data;
+            # 获取数据表前缀
+            $this->prefix = $arr[$this->type]['prefix'];
+            $pool = \x\db\MysqlPool::run()->pop($data);
             $this->is_pool = true;
         }
 
@@ -122,20 +118,7 @@ class Db
         }
         if ($this->is_pool) {
             $this->return_status = true;
-            switch ($this->type) {
-                case 'create':
-                    return \x\db\MysqlPool::run()->write_free($this->pool);
-                break;
-                case 'select':
-                    return \x\db\MysqlPool::run()->read_free($this->pool);
-                break;
-                case 'log':
-                    return \x\db\MysqlPool::run()->log_free($this->pool);
-                break;
-                default:
-                    return false;
-                break;
-            }
+            return \x\db\MysqlPool::run()->free($this->type, $this->pool);
         } else {
             $this->pool = null;
             $this->return_status = true;

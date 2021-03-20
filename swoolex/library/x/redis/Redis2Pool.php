@@ -14,18 +14,6 @@ use Swoole\Database\RedisPool;
 
 class Redis2Pool{
     /**
-     * 最大连接数
-    */
-    protected $max;
-    /**
-     * 当前连接数
-    */
-    protected $count;
-    /**
-     * 连接池组
-    */
-    protected $connections;
-    /**
      * 配置项
     */
     protected $config;
@@ -50,15 +38,7 @@ class Redis2Pool{
     */
     private function __construct() {
         // 读取配置类
-        $config = \x\Config::get('redis');
-        $this->max = $config['pool_max'];
-        $this->config = [
-            'host'               => $config['host'],
-            'port'               => $config['port'],
-            'pwd'                => $config['pwd'],
-            'timeout'            => $config['timeout'],
-            'dbindex'            => $config['dbindex'],
-        ];
+        $this->config = \x\Config::get('redis.pool_list');
     }
 
     /**
@@ -90,8 +70,10 @@ class Redis2Pool{
      * @return $this|null
     */
     public function init() {
-        $this->createRedis();
-        $this->count = $this->max;
+        foreach ($this->config as $key=>$value) {
+            $this->config[$key]['connections'] = $this->createRedis($value, $value['pool_num']);
+        }
+        return $this;
     }
     
     /**
@@ -103,15 +85,20 @@ class Redis2Pool{
      * @global 无
      * @return obj
     */
-    public function pop() {
-        if ($this->count <= 0) {
-            $this->pop_error('write');
-            throw new \Exception("Redis Pop <= 0");
+    public function pop($key) {
+        if (!isset($this->config[$key])) return false;
+
+        if ($this->config[$key]['pool_num'] <= 0) {
+            $this->pop_error($key);
+            throw new \Exception("Redis ".$key." Pop <= 0");
             return false;
         }
-        $this->count--;
-        if (!$this->connections) return false;
-        return $this->connections->get();
+
+        $this->config[$key]['pool_num']--;
+        
+        if (!$this->config[$key]['connections']) return false;
+
+        return $this->config[$key]['connections']->get();
     }
 
     /**
@@ -124,10 +111,11 @@ class Redis2Pool{
      * @param obj $obj 数据库连接实例
      * @return void
     */
-    public function free($obj) {
-        $this->count++;
-        if (!$this->connections) return false;
-        return $this->connections->put($obj);
+    public function free($key, $obj) {
+        $this->config[$key]['pool_num']++;
+        if (!$this->config[$key]['connections']) return false;
+
+        return $this->config[$key]['connections']->put($obj);
     }
     
     /**
@@ -149,7 +137,11 @@ class Redis2Pool{
                 if ($json) {
                     $array = json_decode($json, true);
                 }
-                $array[$workerId] = $this->count;
+                $num = 0;
+                foreach ($this->config as $key=>$value) {
+                    $num += $value['pool_num'];
+                }
+                $array[$workerId] = $num;
                 \Swoole\Coroutine\System::writeFile($path, json_encode($array));
                 unset($json);
                 unset($array);
@@ -168,7 +160,10 @@ class Redis2Pool{
      * @return void
     */
     public function clean() {
-        
+        foreach ($this->config as $key=>$value) {
+            $value['connections']->close();
+            $this->config[$key]['pool_num'] = 0;
+        }
     }
 
     /**
@@ -177,17 +172,18 @@ class Redis2Pool{
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
      * @deprecated 暂不启用
-     * @global 无
+     * @param array $database 连接配置
+     * @param int $szie 连接池长度
      * @return swoole_redis
     */
-    protected function createRedis() {
-        $this->connections = new RedisPool((new RedisConfig)
-            ->withHost($this->config['host'])
-            ->withPort($this->config['port'])
-            ->withAuth($this->config['pwd'])
-            ->withDbIndex($this->config['dbindex'])
-            ->withTimeout($this->config['timeout'])
-        , $this->max);
+    protected function createRedis($database, $size) {
+        return new RedisPool((new RedisConfig)
+            ->withHost($database['host'])
+            ->withPort($database['port'])
+            ->withAuth($database['pwd'])
+            ->withDbIndex($database['dbindex'])
+            ->withTimeout($database['timeout'])
+        , $size);
     }
 
     /**

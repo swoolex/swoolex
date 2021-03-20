@@ -86,6 +86,8 @@ class Controller
         if (!empty($this->view)) $this->view->delete_assign();
 
         $Response = \x\Container::get('response');
+        if (!$Response) return false;
+
         $Response->status($status);
 
         if (empty($headers)) {

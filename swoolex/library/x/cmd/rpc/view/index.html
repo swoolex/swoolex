@@ -15,7 +15,6 @@
     .table th{padding: .75em 1.25em;}
     .header td{padding: 2px 5px;}
     .content td, .content th{text-align: left;}
-    .content td{background:#fff}
     .badge-complete {background: #00c292;}
     .badge {display: inline-block;padding: 10PX;font-size:13px; line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;border-radius: .25rem;text-decoration: none;}
     select,input,button{padding: 5px 7px; border: 1px solid #ccc;border-radius: 5px;background: #fff;}
@@ -38,11 +37,12 @@
     <script src="https://blog.junphp.com/public/js/jquery.min.js"></script>
     <link href="https://blog.junphp.com/public/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="https://blog.junphp.com/public/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="https://blog.junphp.com/public/js/iframe.js" type="text/javascript"></script>
+    <script src="https://blog.junphp.com/public/js/iframe.js?v=3" type="text/javascript"></script>
     <style>
     .modal-content{width: 600px;}
     .modal-title{ position: absolute;}
     .button{font-size: 13px;padding: 2px 10px;}
+    .table tr:hover{background: #f3f3f3;cursor: pointer;}
     </style>
 </head>
 
@@ -73,7 +73,7 @@
             <th style="text-align: center;" >操作</th>
         </tr>
         {foreach $arr as $k=>$v}
-        <tr>
+        <tr title="{$v.title}">
             <td>{$k+1}</td>
             <td style="text-align: center;">
                 {if (isset($v['status']) && $v.status==2)}关闭[<font color="red" style="cursor: pointer;" onclick="tab('{$v.class}', '{$v.function}', '{$v.redis_index}', 0)">启用</font>]{else /}启用[<font color="red" style="cursor: pointer;" onclick="tab('{$v.class}', '{$v.function}', '{$v.redis_index}', 2)">关闭</font>]{/if}
@@ -87,6 +87,7 @@
             <td style="text-align: center;">{$v.ping_ms|default='0'}ms</td>
             <td style="text-align: center;">{$v.max_ms|default='0'}ms</td>
             <td style="text-align: center;">
+                <button type="button" class="button" onclick="debug('{$v.class}', '{$v.function}', '{$v.redis_index}')">调试</button>
                 <button type="button" class="button" onclick="add('{$v.class}', '{$v.function}', '{$v.redis_index}')">复制</button>
                 <button type="button" class="button" onclick="update('{$v.class}', '{$v.function}', '{$v.redis_index}')">修改</button>
                 <button type="button" class="button" onclick="deletes('{$v.class}', '{$v.function}', '{$v.redis_index}')">删除</button>
@@ -99,6 +100,13 @@
 </body>
 </html>
 <script>
+function debug(clas, fun, redis_index) {
+    iframe.createIframe('调试节点', '/HttpRpc/debug?class='+clas+'&function='+fun+'&redis_index='+redis_index, {
+        'width':'100%',
+        'height':'',
+        'footer':'none'
+    })
+}
 function add(clas, fun, redis_index) {
     iframe.createIframe('添加新节点', '/HttpRpc/create?class='+clas+'&function='+fun+'&redis_index='+redis_index, {
         'width':'600px',

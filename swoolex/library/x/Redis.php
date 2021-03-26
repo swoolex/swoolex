@@ -54,6 +54,8 @@ class Redis
         # 获取前缀
         $this->prefix = $arr[$this->type]['table'];
         $this->pool = \x\redis\Redis2Pool::run()->pop($data);
+        // 选择默认数据库
+        $this->select($arr[$this->type]['dbindex']);
     }
 
     /**

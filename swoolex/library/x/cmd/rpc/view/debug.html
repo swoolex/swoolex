@@ -1,0 +1,332 @@
+<!doctype html>
+<html>
+<head>
+    <meta content="webkit" name="renderer" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>HTTP-RPC控制台 - SW-X</title>
+    <style>
+    body,html{margin:0;padding:0;background: #f1f2f7; font-family: "微软雅黑";font-size: 16px;}
+    .card-header {padding: .75rem 1.25rem;margin-bottom: 0;background-color: #fff;border-bottom: 1px solid rgba(0,0,0,.125);width:98%;}
+    .card-title {margin-bottom: .75rem;}
+    .table {width: 100%;margin-bottom: 1rem;background-color: transparent;}
+    .table td {color: #343a40;font-size: 14px;font-weight: 600;vertical-align: middle;}
+    .table th, .table td {border: none;border-bottom: 1px solid #e8e9ef;color: #868e96;font-size: 12px;font-weight: normal;padding: .25em 1.25em;}
+    .table th{padding: .75em 1.25em;}
+    .header td{padding: 2px 5px;}
+    .content td, .content th{text-align: left;}
+    .content td{background:#fff}
+    .badge-complete {background: #00c292;}
+    .badge {display: inline-block;padding: 10PX;font-size:13px; line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;border-radius: .25rem;text-decoration: none;}
+    select,input,button{padding: 5px 7px; border: 1px solid #ccc;border-radius: 5px;background: #fff;}
+
+    ul,li{list-style: none;margin: 0;padding: 0;float: left;}
+    ul{padding: 5px 10px; background: #fff; width: 99%;}
+    ul li{margin: 0 10px;}
+    ul li a{    color: #fff;
+    border: 1px solid #00c292;
+    text-decoration: none;
+    padding: 2px 10px;
+    border-radius: 5px;
+    background: #00c292;
+    font-family: '微软雅黑';
+    font-size: 14px;}
+    ul .current a{color: #333;background: #fff;border: 1px solid #00c292;}
+    </style>
+    <!--依赖JQ-->
+    <script src="https://blog.junphp.com/public/js/jquery.min.js"></script>
+    <style>
+    body{font-size: 13.5px;color: #333;padding: 0 10px;}
+    .form-group{padding: 3px 0;}
+    .col-md-12{width: 100%;}
+    label{width: 130px;text-align: right;display: block;float: left;}
+    .w45{float: left;width: 100%; margin: 10px 0;background: #fff;border-radius: 10px;box-shadow: 1px 1px 5px #c3c3c3;}
+    font{background: #0376f3;color: #fff;border-radius: 5px;padding: 0 10px;}
+    h3{margin: 5px 0 15px 15px;}
+    .table th, .table td{padding: .25em .25em;}
+    .del_btn{margin-left: 5px;}
+    .btn-success{background: #0376f3;border-color: #0376f3; color: #fff;}
+    .table-bordered input{width:-webkit-calc(100% - 14px); width:-moz-calc(100% - 14px); width:calc(100% - 14px);}
+    #content div{margin: 5px 15px;}
+    #content div span:nth-child(1){color: red;margin-right: 10px;font-weight: 600;}
+    #tab{width: 14px;padding: 5px;background: #0376f3;color: #fff;border-radius: 5px;cursor: pointer;margin-left: -25px;position: absolute;}
+    </style>
+</head>
+
+<body>
+    
+<div class="w45">
+    <form id="myForm">
+        <input type="hidden" name="class" value="{$info.class|default=''}">
+        <input type="hidden" name="function" value="{$info.function|default=''}">
+        <input type="hidden" name="title" value="{$info.title|default=''}">
+        <input type="hidden" name="ip" value="{$info.ip|default=''}">
+        <input type="hidden" name="port" value="{$info.port|default=''}">
+
+        <div class="form-group col-md-12"><h3>节点信息</h3></div>
+
+        <div class="form-group col-md-12">
+            <label>节点名称：</label>
+            <font>{$info.title}</font>
+        </div>
+        <div class="form-group col-md-12">
+            <label>请求地址：</label>
+            <font>{$info.class}->{$info.function}()</font>
+        </div>
+        <div class="form-group col-md-12">
+            <label>IP端口：</label>
+            <font>{$info.ip}:{$info.port}</font>
+        </div>
+
+        <div class="form-group col-md-12" style="display: flex;"><h3>请求参数：</h3><button type="button" onclick="hides('param_div', this);" class="btn btn-primary btn-sm del_btn" style="padding-top: 0;padding-bottom: 0;height: 30px;">隐藏</button></div>
+        <div class="form-group col-md-12" id="param_div">
+            <div style="display: block;" id="single_parameter" class="form-group params">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                      <tr style="background: #0376f3;">
+                          <th style="width: 20%;color: #fff;">参数名称</th>
+                          <th style="width: 30%;color: #fff;">参数值</th>
+                          <th style="width: 5%;color: #fff;">必传</th>
+                          <th style="width: 45%;color: #fff;">说明</th>
+                      </tr>
+                  </thead>
+                  <tbody class="param" id="param">
+                        {foreach $param as $k=>$v}
+                        <tr>
+                            <td><input value="{$v.keys}" name="param[{$k}][keys]" class="form-control" type="text" maxlength="500" placeholder="参数名称"></td>
+                            <td>
+                                <input value="{$v.values}" name="param[{$k}][values]" class="form-control" type="text" maxlength="12000" placeholder="参数数值">
+                            </td>
+                            <td style="text-align: center;">
+                                <input value="1" {if (!empty($v.pass))}checked{/if} name="param[{$k}][pass]" class="form-control" type="checkbox">
+                            </td>
+                            <td>
+                                <input value="{$v.txt}" name="param[{$k}][txt]" class="form-control" type="text" maxlength="12000" style="width: 53%; float: left;" placeholder="说明">
+                                <button type="button" onclick="adds(this, 'param', {$k});" class="btn btn-primary btn-sm del_btn">添加参数</button>
+                                <button type="button" onclick="del(this);" class="btn btn-primary btn-sm del_btn">删除参数</button>
+                            </td>
+                        </tr>
+                            {if (!empty($v.list))}
+                            {foreach $v.list as $kk=>$vv}
+                            <tr class="div_{$k}">
+                                <td><input value="{$vv.keys}" name="param[{$k}][list][{$kk}][keys]" class="form-control" type="text" maxlength="500"  placeholder="参数名称" style="width: 70%;float: right;"></td>
+                                <td>
+                                    <input value="{$vv.values}" name="param[{$k}][list][{$kk}][values]" class="form-control" type="text" maxlength="12000" placeholder="参数数值">
+                                </td>
+                                <td style="text-align: center;">
+                                    <input value="1" {if (!empty($vv.pass))}checked{/if} name="param[{$k}][list][{$kk}][pass]" class="form-control" type="checkbox">
+                                </td>
+                                <td>
+                                    <input value="{$vv.txt}" name="param[{$k}][list][{$kk}][txt]" class="form-control" type="text" maxlength="12000" style="width: 70%; float: left;" placeholder="说明">
+                                    <button type="button" onclick="del(this);" class="btn btn-primary btn-sm del_btn">删除参数</button>
+                                </td>
+                            </tr>
+                            {/foreach}
+                            {/if}
+                        {/foreach}
+                  </tbody>
+                  <tbody>
+                    <tr>
+                        <td colspan="4">
+                            <button type="button" onclick="add_url_parameter(this,'param');" class="btn btn-success addParamenter">添加参数</button>
+                        </td>
+                    </tr>
+                  </tbody>
+              </table>
+            </div>
+        </div>
+
+        <div class="form-group col-md-12" style="display: flex;"><h3>请求头：</h3><button type="button" onclick="hides('headers_div', this);" class="btn btn-primary btn-sm del_btn" style="padding-top: 0;padding-bottom: 0;height: 30px;">隐藏</button></div>
+        <div class="form-group col-md-12" id="headers_div">
+            <div style="display: block;" id="single_parameter" class="form-group params">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr style="background: #0376f3;">
+                            <th style="width: 20%;color: #fff;">参数名称</th>
+                            <th style="width: 30%;color: #fff;">参数值</th>
+                            <th style="width: 5%;color: #fff;">必传</th>
+                            <th style="width: 45%;color: #fff;">说明</th>
+                        </tr>
+                    </thead>
+                    <tbody class="headers">
+                        {foreach $headers as $k=>$v}
+                        <tr>
+                            <td><input value="{$v.keys}" name="headers[{$k}][keys]" class="form-control" type="text" maxlength="500" placeholder="参数名称"></td>
+                            <td>
+                                <input value="{$v.values}" name="headers[{$k}][values]" class="form-control" type="text" maxlength="12000" placeholder="参数数值">
+                            </td>
+                            <td style="text-align: center;">
+                                <input value="1" {if (!empty($v.pass))}checked{/if} name="headers[{$k}][pass]" class="form-control" type="checkbox">
+                            </td>
+                            <td>
+                                <input value="{$v.txt}" name="headers[{$k}][txt]" class="form-control" type="text" maxlength="12000" style="width: 70%; float: left;" placeholder="说明">
+                                <button type="button" onclick="del(this);" class="btn btn-primary btn-sm del_btn">删除参数</button>
+                            </td>
+                        </tr>
+                        {/foreach}
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td colspan="4">
+                                <button type="button" onclick="add_url_parameter(this,'headers');" class="btn btn-success addParamenter">添加参数</button>
+                            </td>
+                        </tr>
+                    </tbody>
+              </table>
+            </div>
+        </div>
+
+        <div class="form-group col-md-12">
+            <button type="button" class="btn btn-success" onclick="save()" style="float:left;margin: 0 10px 20px 5px;">保存参数</button>
+            <button type="button" class="btn btn-success" onclick="send()" style="float:left;margin: 0 0px 20px 0;background: #00c292;border-color: #00c292;">发送调试</button>
+        </div>
+
+    </form>
+</div>
+
+<div class="w45" id="debug" style="position: fixed;width: 50%;top: 0;right: -50%;z-index:999;height: calc(100vh);">
+    <div id="tab">打开窗口</div>
+    <div class="form-group col-md-12"><h3>返回结果：</h3></div>
+    <div class="form-group col-md-12" id="content" style="height: calc(88vh);;overflow: hidden;overflow-y: auto;">
+
+    </div>
+</div>
+
+</body>
+</html>
+
+<script>
+// 点击打开调试器
+$('#tab').click(function(){
+    if ($(this).html() == '关闭窗口') {
+        $('#debug').animate({right:"-50%"},{duration:300});  
+        $(this).html('打开窗口')
+    } else {
+        $('#debug').animate({right:"0"},{duration:300}); 
+        $(this).html('关闭窗口')
+    }
+})
+// 发送调试
+function send() {
+    if ($('#tab').html() == '打开窗口') {
+        $('#tab').click();
+    }
+    add('发送中.......', 1);
+    var data = new FormData($("#myForm")[0]);
+    var res = _ajax("/HttpRpc/debug_send", data, false);
+    if (res['code'] == '00') {
+        add(res['msg'], 2);
+        add(res['data']['time'], 3);
+        add('结果集：'+res['data']['data'], 2);
+    }
+}
+// 保存参数
+function save() {
+    add('保存中.......', 1);
+    var data = new FormData($("#myForm")[0]);
+    var res = _ajax("/HttpRpc/debug_save", data, false);
+    if (res['code'] == '00') {
+        add(res['msg'], 2);
+    }
+}
+function hides(id, _this) {
+    if ($(_this).html() == '隐藏') {
+        $(_this).html('显示')
+        $('#'+id).hide();
+    } else {
+        $(_this).html('隐藏')
+        $('#'+id).show();
+    }
+}
+function add(html, type) {
+    var date=new Date();
+    var year=date.getFullYear(); //获取当前年份
+    var mon=date.getMonth()+1; //获取当前月份
+    var da=date.getDate(); //获取当前日
+    var h=date.getHours(); //获取小时
+    var m=date.getMinutes(); //获取分钟
+    var s=date.getSeconds(); //获取秒
+    if (type == 1) {
+        var color = "red";
+    } else if (type == 2) {
+        var color = "#0376f3";
+    } else if (type == 3) {
+        var color = "#00c292";
+    }
+    var time = year+'-'+mon+'-'+da+' '+h+':'+m+':'+s;
+    $('#content').append('<div><span style="color:'+color+'">'+time+'</span><span>'+html+'</span></div>');
+    $('#content').scrollTop( $('#content')[0].scrollHeight );
+}
+function add_url_parameter(_this, keys) {
+    var key_i = $('.'+keys+' tr').length;
+    var is_param = '';
+    var w = '70'
+    if (keys == 'param') {
+        is_param = '<button type="button" onclick="adds(this, \''+keys+'\', '+key_i+');" class="btn btn-primary btn-sm del_btn">添加参数</button>';
+        w = '53'
+    }
+    $('.'+keys).append(`<tr>
+                              <td><input value="" name="`+keys+`[`+key_i+`][keys]" class="form-control" type="text" maxlength="500"  placeholder="参数名称"></td>
+                              <td>
+                                  <input value="" name="`+keys+`[`+key_i+`][values]" class="form-control" type="text" maxlength="12000" placeholder="参数数值">
+                              </td>
+                              <td style="text-align: center;">
+                                  <input value="1" name="`+keys+`[`+key_i+`][pass]" class="form-control" type="checkbox">
+                              </td>
+                              <td>
+                                  <input value="" name="`+keys+`[`+key_i+`][txt]" class="form-control" type="text" maxlength="12000" style="width: `+w+`%; float: left;" placeholder="说明">
+                                  `+is_param+`
+                                  <button type="button" onclick="del(this);" class="btn btn-primary btn-sm del_btn">删除参数</button>
+                              </td>
+                          </tr>`);
+}
+
+function adds(_this, keys, k) {
+    var key_i = $('.div_'+k).length;
+    var _ts = $(_this).parent().parent();
+    $(_ts).after(`<tr class="div_`+k+`">
+                              <td><input value="" name="`+keys+`[`+k+`][list][`+key_i+`][keys]" class="form-control" type="text" maxlength="500"  placeholder="参数名称" style="width: 70%;float: right;"></td>
+                              <td>
+                                  <input value="" name="`+keys+`[`+k+`][list][`+key_i+`][values]" class="form-control" type="text" maxlength="12000" placeholder="参数数值">
+                              </td>
+                              <td style="text-align: center;">
+                                  <input value="1" name="`+keys+`[`+k+`][list][`+key_i+`][pass]" class="form-control" type="checkbox">
+                              </td>
+                              <td>
+                                  <input value="" name="`+keys+`[`+k+`][list][`+key_i+`][txt]" class="form-control" type="text" maxlength="12000" style="width: 70%; float: left;" placeholder="说明">
+                                  <button type="button" onclick="del(this);" class="btn btn-primary btn-sm del_btn">删除参数</button>
+                              </td>
+                          </tr>`); 
+}
+function del(_this) {
+    $(_this).parent().parent().remove();
+}
+
+function _ajax(url, data, type) {
+    var res;
+    var process = false;
+    var content = false;
+    if (type == true) {
+        var process = true;
+        var content = true;
+    }
+    $.ajax({
+        type: 'post',
+        data: data,
+        async: false,
+        processData: process,
+        contentType: content,
+        url: url,
+        success: function(data) {
+            var array = eval('('+data+')');
+            res = array;
+            if (array['code'] == '01') {
+                alert(array['msg']);
+                res = false;
+            }
+        }
+    });
+
+    return res;
+}    
+</script>

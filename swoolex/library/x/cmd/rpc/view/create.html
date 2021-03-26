@@ -105,7 +105,7 @@ function _ajax(url, data, type) {
         success: function(data) {
             var array = eval('('+data+')');
             res = array;
-            if (array['status'] == '01') {
+            if (array['code'] == '01') {
                 alert(array['msg']);
                 res = false;
             }

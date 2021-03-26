@@ -23,6 +23,105 @@ class HttpRpc extends Controller
     public function login() {
         return $this->display();
     }
+
+    /**
+     * @RequestMapping(route="/debug_send", method="post", title="HTTP-RPC调试发送")
+    */
+    public function debug_send() {
+        if (!\x\Session::get('httprpc')) {
+            return $this->display('HttpRpc/error'); 
+        }
+
+        $param = \x\Request::post();
+
+        $body = [];
+        $headers = [];
+        if (!empty($param['param'])) {
+            foreach ($param['param'] as $v) {
+                $body[$v['keys']] = $v['values'];
+                if (!empty($v['list'])) {
+                    $data = [];
+                    foreach ($v['list'] as $vv) {
+                        $data[$vv['keys']] = $vv['values'];
+                    }
+                    $body[$v['keys']] = $data;
+                }
+            }
+        }
+        if (!empty($param['headers'])) {
+            foreach ($param['headers'] as $v) {
+                $headers[$v['keys']] = $v['values'];
+            }
+        }
+
+        $stime = microtime(true);
+        $Rpc = new \x\RpcClient();
+        $res = $Rpc->route($param['class'])
+                ->func($param['function'])
+                ->header($headers)
+                ->param($body)
+                ->max(3)
+                ->send();
+        $etime = microtime(true);
+
+        return $this->returnJson('00', '请求完成', [
+            'time' => '耗时：'.number_format(($etime-$stime), 10, '.', '').' Seconds',
+            'data' => dd($res)
+        ]);
+    }
+
+    /**
+     * @RequestMapping(route="/debug_save", method="post", title="HTTP-RPC保存参数文档")
+    */
+    public function debug_save() {
+        if (!\x\Session::get('httprpc')) {
+            return $this->display('HttpRpc/error'); 
+        }
+
+        $param = \x\Request::post();
+
+        $redis_key = \x\Config::get('rpc.redis_key').'_doc_'.md5($param['class'].$param['function']);
+        $redis = new \x\Redis();
+        $data = [
+            'param' => $param['param']??[],
+            'headers' => $param['headers']??[],
+        ];
+        $redis->set($redis_key, json_encode($data, JSON_UNESCAPED_UNICODE));
+        $redis->return();
+        
+        return $this->returnJson('00', '保存成功');
+    }
+
+    /**
+     * @RequestMapping(route="/debug", method="get", title="HTTP-RPC调试节点")
+    */
+    public function debug() {
+        if (!\x\Session::get('httprpc')) {
+            return $this->display('HttpRpc/error'); 
+        }
+
+        $param = \x\Request::get();
+
+        $redis_key = \x\Config::get('rpc.redis_key').'_'.md5($param['class'].$param['function']);
+        $redis = new \x\Redis();
+        $json = $redis->lindex($redis_key, $param['redis_index']);
+        $info = json_decode($json, true);
+        $this->assign('info', $info);
+
+        $redis_key = \x\Config::get('rpc.redis_key').'_doc_'.md5($param['class'].$param['function']);
+        $json = $redis->get($redis_key);
+        if ($json) {
+            $info = json_decode($json, true);
+            $this->assign('param', $info['param']);
+            $this->assign('headers', $info['headers']);
+        } else {
+            $this->assign('param', []);
+            $this->assign('headers', []);
+        }
+
+        $redis->return();
+        return $this->display();
+    }
     
     /**
      * @RequestMapping(route="/create", method="get", title="HTTP-RPC添加节点")

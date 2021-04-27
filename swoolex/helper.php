@@ -31,7 +31,7 @@ if (!function_exists('dd')) {
     }
 }
 
-if (!function_exists('token')) {
+if (!function_exists('csrf')) {
     /**
      * 生成csrf命令牌
      * @todo 无
@@ -41,7 +41,7 @@ if (!function_exists('token')) {
      * @global 无
      * @return string
     */
-    function token() {
+    function csrf() {
         $csrf = new \x\Csrf();
         return $csrf->create_token();
     }

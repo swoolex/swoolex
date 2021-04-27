@@ -530,7 +530,7 @@ class Sql extends AbstractSql {
             $start_time = microtime(true);
 
             // 查出总记录数
-            $res = $this->Db->query($total_sql);
+            $res = $this->Db->query($total_sql, false);
             if ($res === false) return false;
             $info = $res->fetch(\PDO::FETCH_NAMED);
             if (empty($info)) return false;
@@ -541,7 +541,7 @@ class Sql extends AbstractSql {
             if ($cache['status'] == true) {
                 $list = json_decode($cache['data'], true);
             } else {
-                $res = $this->Db->query($select_sql);
+                $res = $this->Db->query($select_sql, false);
                 $this->clean_up();
                 $end_time = microtime(true);
                 $this->record($select_sql, $start_time, $end_time);
@@ -585,7 +585,7 @@ class Sql extends AbstractSql {
             
             $start_time = microtime(true);
             $this->clean_up();
-            $res = $this->Db->query($sql);
+            $res = $this->Db->query($sql, false);
             $end_time = microtime(true);
             $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
@@ -625,7 +625,7 @@ class Sql extends AbstractSql {
 
             $start_time = microtime(true);
             $this->clean_up();
-            $res = $this->Db->query($sql);
+            $res = $this->Db->query($sql, false);
             $end_time = microtime(true);
             $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
@@ -823,7 +823,7 @@ class Sql extends AbstractSql {
 
             $sql = 'SELECT LAST_INSERT_ID() as num;';
             $start_time = microtime(true);
-            $res = $this->Db->query($sql);
+            $res = $this->Db->query($sql, false);
             $end_time = microtime(true);
             $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
@@ -925,7 +925,7 @@ class Sql extends AbstractSql {
             }
 
             $start_time = microtime(true);
-            $res = $this->Db->query($sql);
+            $res = $this->Db->query($sql, false);
             $end_time = microtime(true);
             $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
@@ -969,7 +969,7 @@ class Sql extends AbstractSql {
             }
 
             $start_time = microtime(true);
-            $res = $this->Db->query($sql);
+            $res = $this->Db->query($sql, false);
             $end_time = microtime(true);
             $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
@@ -1013,7 +1013,7 @@ class Sql extends AbstractSql {
             }
 
             $start_time = microtime(true);
-            $res = $this->Db->query($sql);
+            $res = $this->Db->query($sql, false);
             $end_time = microtime(true);
             $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
@@ -1057,7 +1057,7 @@ class Sql extends AbstractSql {
             }
 
             $start_time = microtime(true);
-            $res = $this->Db->query($sql);
+            $res = $this->Db->query($sql, false);
             $end_time = microtime(true);
             $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
@@ -1101,7 +1101,7 @@ class Sql extends AbstractSql {
             }
 
             $start_time = microtime(true);
-            $res = $this->Db->query($sql);
+            $res = $this->Db->query($sql, false);
             $end_time = microtime(true);
             $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
@@ -1145,7 +1145,7 @@ class Sql extends AbstractSql {
             }
 
             $start_time = microtime(true);
-            $res = $this->Db->query($sql);
+            $res = $this->Db->query($sql, false);
             $end_time = microtime(true);
             $this->record($sql, $start_time, $end_time);
             if ($res === false) return false;
@@ -1171,12 +1171,12 @@ class Sql extends AbstractSql {
      * @param string $sql 原生SQL
      * @return void
     */
-    public function query($sql) {
+    public function query($sql, $status=false) {
         $test = $this->testcase();
         if ($test != 'SwooleXTestCase') return $test;
 
         $start_time = microtime(true);
-        $res = $this->Db->query($sql);
+        $res = $this->Db->query($sql, $status);
         $end_time = microtime(true);
         $this->record($sql, $start_time, $end_time);
         $info = $res->fetchAll(\PDO::FETCH_NAMED);
@@ -1340,7 +1340,14 @@ class Sql extends AbstractSql {
                 }
             }
         } else {
-            $sql .= ' LIMIT 1';
+            if ($this->limit) {
+                $sql .= ' LIMIT '.$this->limit['left'];
+                if ($this->limit['right']) {
+                    $sql .= ','.$this->limit['right'];
+                }
+            } else {
+                $sql .= ' LIMIT 1';
+            }
         }
         $sql .= ';';
 
@@ -1359,6 +1366,8 @@ class Sql extends AbstractSql {
     */
     private function int_string($string) {
         if (is_float($string) || is_int($string)) return $string;
+        if (is_null($string)) return 'null';
+        
         # 判断是怕查询内容里带单双引号
         if (stripos($string, '"') !== false) {
             return '\''.$this->anti($string).'\'';

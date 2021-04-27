@@ -70,7 +70,7 @@ class Db
         } else {
             $arr = \x\Config::run()->get('mysql.pool_list');
             if (empty($data)) {
-                $data = array_key_first($arr);
+                $data = key($arr);
             }
             $this->type = $data;
             # 获取数据表前缀
@@ -176,12 +176,18 @@ class Db
      * @global 无
      * @return void
     */
-    public function query($sql) {
+    public function query($sql, $status=true) {
         // 开启调试模式，则记录SQL语句
         if ($this->debug) {
             \x\Log::run()->sql($sql);
         }
-        return $this->pool->query($sql);
+        $res = $this->pool->query($sql);
+        if ($status !== true) return $res;
+
+        if ($res === false) return false;
+        $list = $res->fetchAll(\PDO::FETCH_NAMED);
+        if (empty($list)) $list = [];
+        return $list;
     }
 
     /**

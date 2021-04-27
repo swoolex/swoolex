@@ -48,7 +48,7 @@ class Redis
     public function __construct($data=null) {
         $arr = \x\Config::run()->get('redis.pool_list');
         if (empty($data)) {
-            $data = array_key_first($arr);
+            $data = key($arr);
         }
         $this->type = $data;
         # 获取前缀

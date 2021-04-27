@@ -100,7 +100,7 @@ class Route
      * 容器注入
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.8 + 2020.07.6
+     * @version v2.0.6 + 2021.04.26
      * @deprecated 暂不启用
      * @global 无
      * @param array $route 被找到的路由
@@ -116,6 +116,12 @@ class Route
 
         // 参数过滤
         $ret = (new \x\doc\lable\Param())->run($route);
+        if ($ret !== true) return $ret;
+        // Csrf
+        $ret = (new \x\doc\lable\Csrf())->run($route);
+        if ($ret !== true) return $ret;
+        // Jwt
+        $ret = (new \x\doc\lable\Jwt())->run($route);
         if ($ret !== true) return $ret;
         // 容器
         $ret = (new \x\doc\lable\Ioc())->run($route);

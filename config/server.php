@@ -13,7 +13,7 @@ return [
     // host
     'host' => '0.0.0.0',
     // 端口
-    'port' => 9502,
+    'port' => 9501,
     // HTTPS证书
     'ssl_cert_file' => '',
     // HTTPS证书
@@ -66,6 +66,10 @@ return [
     'package_max_length' => 1024*1024*2,
     // 启用 MQTT 协议
     'open_mqtt_protocol' => false,
+    // 静态文件根目录 前缀使用ROOT_PATH常量衔接，末尾不带/符号
+    'document_root' => '',
+    // 是否启用异步风格服务器的协程支持
+    'enable_coroutine' => true,
 
     // +-----------------------------
     // | Swoole 各个进程的进程别名

@@ -26,7 +26,7 @@ class Server
      * 应用启动入口
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.1 + 2020.07.08
+     * @version v2.0.7 + 2020.04.28
      * @deprecated 暂不启用
      * @global 无
      * @param string $server 启动的服务类型
@@ -56,6 +56,7 @@ class Server
             'heartbeat_idle_time' => $config['heartbeat_idle_time'],
             'package_max_length' => $config['package_max_length'],
             'open_mqtt_protocol' => $config['open_mqtt_protocol'],
+            'enable_coroutine' => $config['enable_coroutine'],
         ];
         if ($config['backlog']) $set['backlog'] = $config['backlog'];
         if ($config['reactor_num']) $set['reactor_num'] = $config['reactor_num'];
@@ -64,7 +65,11 @@ class Server
         if ($config['max_connection']) $set['max_connection'] = $config['max_connection'];
         if ($config['task_tmpdir']) $set['task_tmpdir'] = $config['task_tmpdir'];
         if ($config['log_file']) $set['log_file'] = $config['log_file'];
-
+        if ($config['document_root']) {
+            $set['document_root'] = $config['document_root'];
+            $set['enable_static_handler'] = true;
+        }
+        
         if ($config['open_tcp_keepalive']) {
             $set['tcp_keepidle'] = $config['tcp_keepidle'];
             $set['tcp_keepinterval'] = $config['tcp_keepinterval'];

@@ -289,14 +289,9 @@ class Controller
         }
 
         $suffix_array = explode(',', str_replace(['.', ' '], '', $config['ext']));
-        $suffix = str_replace([
-            'image/',
-            'application/',
-            'video/',
-            'audio/',
-            'text/',
-        ], '', $file_data['type']);
-
+        $arr = explode('.', $file_data['name']);
+        $suffix = end($arr);
+        
         if (in_array($suffix, $suffix_array) == false) {
             $this->file_error = 'Upload file type error';
             return false;

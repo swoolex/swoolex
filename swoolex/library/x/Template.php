@@ -13,17 +13,13 @@
 
 namespace x;
 
-class Template
-{
+class Template {
     /**
      * 模板变量
-     * @var array
      */
     protected $data = [];
-
     /**
      * 模板配置参数
-     * @var array
      */
     protected $config = [
         'view_path'          => '', // 模板路径
@@ -54,19 +50,14 @@ class Template
 
     /**
      * 保留内容信息
-     * @var array
      */
     private $literal = [];
-
     /**
      * 模板包含信息
-     * @var array
      */
     private $includeFile = [];
-
     /**
      * 模板存储对象
-     * @var object
      */
     protected $storage;
 
@@ -80,8 +71,7 @@ class Template
      * @param  array $config
      * @return void
     */
-    public function __construct($config)
-    {
+    public function __construct($config) {
         $this->config['cache_path'] = ROOT_PATH.'/runtime/view/';
 
         $this->config               = array_merge($this->config, $config);
@@ -102,13 +92,16 @@ class Template
 
     /**
      * 模板变量赋值
-     * @access public
-     * @param  mixed $name
-     * @param  mixed $value
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param mixed $name
+     * @param mixed $value
      * @return void
-     */
-    public function assign($name, $value = '')
-    {
+    */
+    public function assign($name, $value = '') {
         if (is_array($name)) {
             $this->data = array_merge($this->data, $name);
         } else {
@@ -118,14 +111,17 @@ class Template
 
     /**
      * 渲染模板文件
-     * @access public
-     * @param  string    $template 模板文件
-     * @param  array     $vars 模板变量
-     * @param  array     $config 模板参数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $template 模板文件
+     * @param array $vars 模板变量
+     * @param array $config 模板参数
      * @return void
-     */
-    public function fetch($template, $vars = [], $config = [])
-    {
+    */
+    public function fetch($template, $vars = [], $config = []) {
         if ($vars) {
             $this->data = $vars;
         }
@@ -167,13 +163,12 @@ class Template
      * @version v1.2.6 + 2020.07.22
      * @deprecated 暂不启用
      * @global 无
-     * @param  string    $content 模板内容
-     * @param  array     $vars 模板变量
-     * @param  array     $config 模板参数
+     * @param string $content 模板内容
+     * @param array $vars 模板变量
+     * @param array $config 模板参数
      * @return void
     */
-    public function display($template, $vars = [], $config = [])
-    {
+    public function display($template, $vars = [], $config = []) {
         if ($vars) $this->data = $vars;
         if ($config) $this->config($config);
 
@@ -201,12 +196,11 @@ class Template
      * @version v1.2.6 + 2020.07.22
      * @deprecated 暂不启用
      * @global 无
-     * @param  string    $content 模板内容
-     * @param  string    $cacheFile 缓存文件名
+     * @param string $content 模板内容
+     * @param string $cacheFile 缓存文件名
      * @return void
     */
-    private function compiler(&$content, $cacheFile)
-    {
+    private function compiler(&$content, $cacheFile) {
         // 判断是否启用布局
         if ($this->config['layout_on']) {
             if (false !== strpos($content, '{__NOLAYOUT__}')) {
@@ -252,13 +246,16 @@ class Template
 
     /**
      * 设置布局
-     * @access public
-     * @param  mixed     $name 布局模板名称 false 则关闭布局
-     * @param  string    $replace 布局模板内容替换标识
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param mixed $name 布局模板名称 false 则关闭布局
+     * @param string $replace 布局模板内容替换标识
      * @return object
-     */
-    public function layout($name, $replace = '')
-    {
+    */
+    public function layout($name, $replace = '') {
         if (false === $name) {
             // 关闭布局
             $this->config['layout_on'] = false;
@@ -287,11 +284,10 @@ class Template
      * @version v1.2.6 + 2020.07.22
      * @deprecated 暂不启用
      * @global 无
-     * @param  string $content 要解析的模板内容
+     * @param string $content 要解析的模板内容
      * @return void
     */
-    public function parse(&$content)
-    {
+    public function parse(&$content) {
         // 内容为空不解析
         if (empty($content)) {
             return;
@@ -361,11 +357,10 @@ class Template
      * @version v1.2.6 + 2020.07.22
      * @deprecated 暂不启用
      * @global 无
-     * @param  string $content 要解析的模板内容
+     * @param string $content 要解析的模板内容
      * @return void
     */
-    private function parsePhp(&$content)
-    {
+    private function parsePhp(&$content) {
         // 短标签的情况要将<?标签用echo方式输出 否则无法正常输出xml标识
         $content = preg_replace('/(<\?(?!php|=|$))/i', '<?php echo \'\\1\'; ?>' . "\n", $content);
 
@@ -382,11 +377,10 @@ class Template
      * @version v1.2.6 + 2020.07.22
      * @deprecated 暂不启用
      * @global 无
-     * @param  string $content 要解析的模板内容
+     * @param string $content 要解析的模板内容
      * @return void
     */
-    private function parseLayout(&$content)
-    {
+    private function parseLayout(&$content) {
         // 读取模板中的布局标签
         if (preg_match($this->getRegex('layout'), $content, $matches)) {
             // 替换Layout标签
@@ -416,11 +410,10 @@ class Template
      * @version v1.2.6 + 2020.07.22
      * @deprecated 暂不启用
      * @global 无
-     * @param  string $content 要解析的模板内容
+     * @param string $content 要解析的模板内容
      * @return void
     */
-    private function parseInclude(&$content)
-    {
+    private function parseInclude(&$content) {
         $regex = $this->getRegex('include');
         $func  = function ($template) use (&$func, &$regex, &$content) {
             if (preg_match_all($regex, $template, $matches, PREG_SET_ORDER)) {
@@ -456,11 +449,10 @@ class Template
     /**
      * 解析模板中的extend标签
      * @access private
-     * @param  string $content 要解析的模板内容
+     * @param string $content 要解析的模板内容
      * @return void
      */
-    private function parseExtend(&$content)
-    {
+    private function parseExtend(&$content) {
         $regex  = $this->getRegex('extend');
         $array  = $blocks  = $baseBlocks  = [];
         $extend = '';
@@ -541,15 +533,18 @@ class Template
         }
     }
 
-     /**
+    /**
      * 替换页面中的literal标签
-     * @access private
-     * @param  string   $content 模板内容
-     * @param  boolean  $restore 是否为还原
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $content 模板内容
+     * @param boolean $restore 是否为还原
      * @return void
-     */
-    private function parseLiteral(&$content, $restore = false)
-    {
+    */
+    private function parseLiteral(&$content, $restore = false) {
         $regex = $this->getRegex($restore ? 'restoreliteral' : 'literal');
 
         if (preg_match_all($regex, $content, $matches, PREG_SET_ORDER)) {
@@ -578,13 +573,16 @@ class Template
 
     /**
      * 获取模板中的block标签
-     * @access private
-     * @param  string   $content 模板内容
-     * @param  boolean  $sort 是否排序
-     * @return array
-     */
-    private function parseBlock(&$content, $sort = false)
-    {
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $content 模板内容
+     * @param boolean $sort 是否排序
+     * @return void
+    */
+    private function parseBlock(&$content, $sort = false) {
         $regex  = $this->getRegex('block');
         $result = [];
 
@@ -630,13 +628,14 @@ class Template
 
     /**
      * 搜索模板页面中包含的TagLib库
-     * 并返回列表
-     * @access private
-     * @param  string $content 模板内容
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无     * @param  string $content 模板内容
      * @return array|null
-     */
-    private function getIncludeTagLib(&$content)
-    {
+    */
+    private function getIncludeTagLib(&$content) {
         // 搜索是否有TagLib标签
         if (preg_match($this->getRegex('taglib'), $content, $matches)) {
             // 替换TagLib标签
@@ -648,14 +647,17 @@ class Template
 
     /**
      * TagLib库解析
-     * @access public
-     * @param  string   $tagLib 要解析的标签库
-     * @param  string   $content 要解析的模板内容
-     * @param  boolean  $hide 是否隐藏标签库前缀
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $tagLib 要解析的标签库
+     * @param string $content 要解析的模板内容
+     * @param boolean $hide 是否隐藏标签库前缀
      * @return void
-     */
-    public function parseTagLib($tagLib, &$content, $hide = false)
-    {
+    */
+    public function parseTagLib($tagLib, &$content, $hide = false) {
         if (false !== strpos($tagLib, '\\')) {
             // 支持指定标签库的命名空间
             $className = $tagLib;
@@ -671,13 +673,16 @@ class Template
 
     /**
      * 分析标签属性
-     * @access public
-     * @param  string   $str 属性字符串
-     * @param  string   $name 不为空时返回指定的属性名
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $str 属性字符串
+     * @param string $name 不为空时返回指定的属性名
      * @return array
-     */
-    public function parseAttr($str, $name = null)
-    {
+    */
+    public function parseAttr($str, $name = null) {
         $regex = '/\s+(?>(?P<name>[\w-]+)\s*)=(?>\s*)([\"\'])(?P<value>(?:(?!\\2).)*)\\2/is';
         $array = [];
 
@@ -697,13 +702,15 @@ class Template
 
     /**
      * 模板标签解析
-     * 格式： {TagName:args [|content] }
-     * @access private
-     * @param  string $content 要解析的模板内容
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无     
+     * @param string $content 要解析的模板内容
      * @return void
-     */
-    private function parseTag(&$content)
-    {
+    */
+    private function parseTag(&$content) {
         $regex = $this->getRegex('tag');
 
         if (preg_match_all($regex, $content, $matches, PREG_SET_ORDER)) {
@@ -833,13 +840,15 @@ class Template
 
     /**
      * 模板变量解析,支持使用函数
-     * 格式： {$varname|function1|function2=arg1,arg2}
-     * @access public
-     * @param  string $varStr 变量数据
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $varStr 变量数据
      * @return void
-     */
-    public function parseVar(&$varStr)
-    {
+    */
+    public function parseVar(&$varStr) {
         $varStr = trim($varStr);
 
         if (preg_match_all('/\$[a-zA-Z_](?>\w*)(?:[:\.][0-9a-zA-Z_](?>\w*))+/', $varStr, $matches, PREG_OFFSET_CAPTURE)) {
@@ -881,14 +890,16 @@ class Template
 
     /**
      * 对模板中使用了函数的变量进行解析
-     * 格式 {$varname|function1|function2=arg1,arg2}
-     * @access public
-     * @param  string    $varStr     变量字符串
-     * @param  bool      $autoescape 自动转义
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $varStr 变量字符串
+     * @param bool $autoescape 自动转义
      * @return void
-     */
-    public function parseVarFunction(&$varStr, $autoescape = true)
-    {
+    */
+    public function parseVarFunction(&$varStr, $autoescape = true) {
         if (!$autoescape && false === strpos($varStr, '|')) {
             return $varStr;
         } elseif ($autoescape && !preg_match('/\|(\s)?raw(\||\s)?/i', $varStr)) {
@@ -975,12 +986,15 @@ class Template
 
     /**
      * 分析加载的模板文件并读取内容 支持多个模板文件读取
-     * @access private
-     * @param  string $templateName 模板文件名
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $templateName 模板文件名
      * @return string
-     */
-    private function parseTemplateName($templateName)
-    {
+    */
+    private function parseTemplateName($templateName) {
         $array    = explode(',', $templateName);
         $parseStr = '';
 
@@ -1007,12 +1021,15 @@ class Template
 
     /**
      * 解析模板文件名
-     * @access private
-     * @param  string $template 文件名
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $template 文件名
      * @return string|false
-     */
-    private function parseTemplateFile($template)
-    {
+    */
+    private function parseTemplateFile($template) {
         if ($template == '') {
             $template = str_replace(\x\Config::get('route.suffix'), '', \x\Request::route());
             if ($template == '/') {
@@ -1035,12 +1052,15 @@ class Template
 
     /**
      * 按标签生成正则
-     * @access private
-     * @param  string $tagName 标签名
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $tagName 标签名
      * @return string
-     */
-    private function getRegex($tagName)
-    {
+    */
+    private function getRegex($tagName) {
         $regex = '';
         if ('tag' == $tagName) {
             $begin = $this->config['tpl_begin'];
@@ -1104,15 +1124,14 @@ class Template
      * 模板引擎配置项
      * @todo 无
      * @author 小黄牛
-     * @version v1.2.6 + 2020.07.22
+     * @version v2.0.10 + 2021.07.01
      * @deprecated 暂不启用
      * @global 无
      * @param  array|string $config
      * @return void|array
      * @return void
     */
-    public function config($config)
-    {
+    public function config($config) {
         if (is_array($config)) {
             $this->config = array_merge($this->config, $config);
         } elseif (isset($this->config[$config])) {
@@ -1122,23 +1141,29 @@ class Template
 
     /**
      * 模板引擎参数赋值
-     * @access public
-     * @param  mixed $name
-     * @param  mixed $value
-     */
-    public function __set($name, $value)
-    {
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param mixed $name
+     * @param mixed $value
+    */
+    public function __set($name, $value) {
         $this->config[$name] = $value;
     }
 
     /**
      * 模板变量获取
-     * @access public
-     * @param  string $name 变量名
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $name 变量名
      * @return mixed
-     */
-    public function get($name = '')
-    {
+    */
+    public function get($name = '') {
         if ('' == $name) {
             return $this->data;
         }
@@ -1159,17 +1184,15 @@ class Template
 
     /**
      * 检查编译缓存是否有效
-     * 如果无效则需要重新编译
      * @todo 无
      * @author 小黄牛
-     * @version v1.2.6 + 2020.07.22
+     * @version v2.0.10 + 2021.07.01
      * @deprecated 暂不启用
      * @global 无
-     * @param  string $cacheFile 缓存文件名
+     * @param string $cacheFile 缓存文件名
      * @return boolean
     */
-    private function checkCache($cacheFile)
-    {
+    private function checkCache($cacheFile) {
         if (!$this->config['tpl_cache'] || !is_file($cacheFile) || !$handle = @fopen($cacheFile, "r")) {
             return false;
         }

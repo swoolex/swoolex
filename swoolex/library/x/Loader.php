@@ -13,44 +13,32 @@
 
 namespace x;
 
-class Loader
-{
+class Loader {
     /**
      * 类名映射信息
-     * @var array
      */
     protected static $classMap = [];
-
     /**
      * 类库别名
-     * @var array
      */
     protected static $classAlias = [];
-
     /**
      * PSR-4
-     * @var array
      */
     private static $prefixLengthsPsr4 = [];
     private static $prefixDirsPsr4    = [];
     private static $fallbackDirsPsr4  = [];
-
     /**
      * PSR-0
-     * @var array
      */
     private static $prefixesPsr0     = [];
     private static $fallbackDirsPsr0 = [];
-
     /**
      * 需要加载的文件
-     * @var array
      */
     private static $files = [];
-
     /**
      * Composer安装路径
-     * @var string
      */
     private static $composerPath;
 
@@ -63,8 +51,7 @@ class Loader
      * @global 无
      * @return string
     */
-    public static function getRootPath()
-    {
+    public static function getRootPath() {
         if ('cli' == PHP_SAPI) {
             $scriptName = realpath($_SERVER['argv'][0]);
         } else {
@@ -86,8 +73,7 @@ class Loader
      * @param string $autoload 需要注册的空间地址
      * @return void
     */
-    public static function register($autoload = '')
-    {
+    public static function register($autoload = '') {
         // 注册系统自动加载
         spl_autoload_register($autoload ?: 'x\\Loader::autoload', true, true);
 
@@ -144,8 +130,7 @@ class Loader
      * @param string $class 类名
      * @return bool
     */
-    public static function autoload($class)
-    {
+    public static function autoload($class) {
         if (isset(self::$classAlias[$class])) {
             return class_alias(self::$classAlias[$class], $class);
         }
@@ -172,8 +157,7 @@ class Loader
      * @param  string $class
      * @return string|false
     */
-    private static function findFile($class)
-    {
+    private static function findFile($class) {
         if (!empty(self::$classMap[$class])) {
             // 类库映射
             return self::$classMap[$class];
@@ -245,8 +229,7 @@ class Loader
      * @param string $map 单个注册
      * @return void
     */
-    public static function addClassMap($class, $map = '')
-    {
+    public static function addClassMap($class, $map = '') {
         if (is_array($class)) {
             self::$classMap = array_merge(self::$classMap, $class);
         } else {
@@ -265,8 +248,7 @@ class Loader
      * @param mixed $path 地址
      * @return void
     */
-    public static function addNamespace($namespace, $path = '')
-    {
+    public static function addNamespace($namespace, $path = '')  {
         if (is_array($namespace)) {
             foreach ($namespace as $prefix => $paths) {
                 self::addPsr4($prefix . '\\', rtrim($paths, DIRECTORY_SEPARATOR), true);
@@ -288,8 +270,7 @@ class Loader
      * @param bool $prepend 反转
      * @return void
     */
-    private static function addPsr0($prefix, $paths, $prepend = false)
-    {
+    private static function addPsr0($prefix, $paths, $prepend = false) {
         if (!$prefix) {
             if ($prepend) {
                 self::$fallbackDirsPsr0 = array_merge(
@@ -338,10 +319,8 @@ class Loader
      * @param bool $prepend 反转
      * @return void
     */
-    private static function addPsr4($prefix, $paths, $prepend = false)
-    {
+    private static function addPsr4($prefix, $paths, $prepend = false) {
         if (!$prefix) {
-            // Register directories for the root namespace.
             if ($prepend) {
                 self::$fallbackDirsPsr4 = array_merge(
                     (array) $paths,
@@ -354,7 +333,6 @@ class Loader
                 );
             }
         } elseif (!isset(self::$prefixDirsPsr4[$prefix])) {
-            // Register directories for a new namespace.
             $length = strlen($prefix);
             if ('\\' !== $prefix[$length - 1]) {
                 throw new \InvalidArgumentException("A non-empty PSR-4 prefix must end with a namespace separator.");
@@ -363,13 +341,11 @@ class Loader
             self::$prefixLengthsPsr4[$prefix[0]][$prefix] = $length;
             self::$prefixDirsPsr4[$prefix]                = (array) $paths;
         } elseif ($prepend) {
-            // Prepend directories for an already registered namespace.
             self::$prefixDirsPsr4[$prefix] = array_merge(
                 (array) $paths,
                 self::$prefixDirsPsr4[$prefix]
             );
         } else {
-            // Append directories for an already registered namespace.
             self::$prefixDirsPsr4[$prefix] = array_merge(
                 self::$prefixDirsPsr4[$prefix],
                 (array) $paths
@@ -387,8 +363,7 @@ class Loader
      * @param string $path 地址
      * @return void
     */
-    public static function addAutoLoadDir($path)
-    {
+    public static function addAutoLoadDir($path) {
         self::$fallbackDirsPsr4[] = $path;
     }
 
@@ -403,8 +378,7 @@ class Loader
      * @param string $class 单个注册
      * @return void
     */
-    public static function addClassAlias($alias, $class = null)
-    {
+    public static function addClassAlias($alias, $class = null) {
         if (is_array($alias)) {
             self::$classAlias = array_merge(self::$classAlias, $alias);
         } else {
@@ -422,8 +396,7 @@ class Loader
      * @param string $composerPath 地址
      * @return void
     */
-    public static function registerComposerLoader($composerPath)
-    {
+    public static function registerComposerLoader($composerPath) {
         if (is_file($composerPath . 'autoload_namespaces.php')) {
             $map = require $composerPath . 'autoload_namespaces.php';
             foreach ($map as $namespace => $path) {
@@ -459,8 +432,7 @@ class Loader
      * @global 无
      * @return void
     */
-    public static function loadComposerAutoloadFiles()
-    {
+    public static function loadComposerAutoloadFiles() {
         foreach (self::$files as $fileIdentifier => $file) {
             if (empty($GLOBALS['__composer_autoload_files'][$fileIdentifier])) {
                 __require_file($file);
@@ -478,13 +450,12 @@ class Loader
      * @version v1.0.1 + 2020.05.25
      * @deprecated 暂不启用
      * @global 无
-     * @param  string  $name 字符串
-     * @param  integer $type 转换类型
-     * @param  bool    $ucfirst 首字母是否大写（驼峰规则）
+     * @param string $name 字符串
+     * @param integer $type 转换类型
+     * @param bool $ucfirst 首字母是否大写（驼峰规则）
      * @return string
     */
-    public static function parseName($name, $type = 0, $ucfirst = true)
-    {
+    public static function parseName($name, $type = 0, $ucfirst = true) {
         if ($type) {
             $name = preg_replace_callback('/_([a-zA-Z])/', function ($match) {
                 return strtoupper($match[1]);
@@ -507,12 +478,9 @@ class Loader
  * @param string $file
  * @return mixed
 */
-function __include_file($file)
-{
+function __include_file($file) {
     return include $file;
 }
-
-function __require_file($file)
-{
+function __require_file($file) {
     return require $file;
 }

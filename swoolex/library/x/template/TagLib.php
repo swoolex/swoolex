@@ -13,72 +13,67 @@
 
 namespace x\template;
 
-class TagLib
-{
+class TagLib {
 
     /**
      * 标签库定义XML文件
-     * @var string
-     * @access protected
      */
     protected $xml  = '';
-    protected $tags = []; // 标签定义
+    /**
+     * 标签定义
+    */
+    protected $tags = [];
     /**
      * 标签库名称
-     * @var string
-     * @access protected
      */
     protected $tagLib = '';
-
     /**
      * 标签库标签列表
-     * @var array
-     * @access protected
      */
     protected $tagList = [];
-
     /**
      * 标签库分析数组
-     * @var array
-     * @access protected
      */
     protected $parse = [];
-
     /**
      * 标签库是否有效
-     * @var bool
-     * @access protected
      */
     protected $valid = false;
-
     /**
      * 当前模板对象
-     * @var object
-     * @access protected
      */
     protected $tpl;
-
+    /**
+     * 逻辑表达式
+    */
     protected $comparison = [' nheq ' => ' !== ', ' heq ' => ' === ', ' neq ' => ' != ', ' eq ' => ' == ', ' egt ' => ' >= ', ' gt ' => ' > ', ' elt ' => ' <= ', ' lt ' => ' < '];
 
     /**
      * 架构函数
-     * @access public
-     * @param  \stdClass $template 模板引擎对象
-     */
-    public function __construct($template)
-    {
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param template $template 模板引擎对象
+     * @return void
+    */
+    public function __construct($template) {
         $this->tpl = $template;
     }
 
     /**
      * 按签标库替换页面中的标签
-     * @access public
-     * @param  string $content 模板内容
-     * @param  string $lib 标签库名
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $content 模板内容
+     * @param string $lib 标签库名
      * @return void
-     */
-    public function parseTag(&$content, $lib = '')
-    {
+    */
+    public function parseTag(&$content, $lib = '') {
         $tags = [];
         $lib  = $lib ? strtolower($lib) . ':' : '';
 
@@ -184,13 +179,16 @@ class TagLib
 
     /**
      * 按标签生成正则
-     * @access public
-     * @param  array|string     $tags 标签名
-     * @param  boolean          $close 是否为闭合标签
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array|string $tags 标签名
+     * @param boolean $close 是否为闭合标签
      * @return string
-     */
-    public function getRegex($tags, $close)
-    {
+    */
+    public function getRegex($tags, $close) {
         $begin   = $this->tpl->config('taglib_begin');
         $end     = $this->tpl->config('taglib_end');
         $single  = strlen(ltrim($begin, '\\')) == 1 && strlen(ltrim($end, '\\')) == 1 ? true : false;
@@ -217,14 +215,17 @@ class TagLib
 
     /**
      * 分析标签属性 正则方式
-     * @access public
-     * @param  string $str 标签属性字符串
-     * @param  string $name 标签名
-     * @param  string $alias 别名
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $str 标签属性字符串
+     * @param string $name 标签名
+     * @param string $alias 别名
      * @return array
-     */
-    public function parseAttr($str, $name, $alias = '')
-    {
+    */
+    public function parseAttr($str, $name, $alias = '') {
         $regex  = '/\s+(?>(?P<name>[\w-]+)\s*)=(?>\s*)([\"\'])(?P<value>(?:(?!\\2).)*)\\2/is';
         $result = [];
 
@@ -285,12 +286,15 @@ class TagLib
 
     /**
      * 解析条件表达式
-     * @access public
-     * @param  string $condition 表达式标签内容
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $condition 表达式标签内容
      * @return string
-     */
-    public function parseCondition($condition)
-    {
+    */
+    public function parseCondition($condition) {
         if (!strpos($condition, '::') && strpos($condition, ':')) {
             $condition = ' ' . substr(strstr($condition, ':'), 1);
         }
@@ -298,18 +302,20 @@ class TagLib
         $condition = str_ireplace(array_keys($this->comparison), array_values($this->comparison), $condition);
         $this->tpl->parseVar($condition);
 
-        // $this->tpl->parseVarFunction($condition); // XXX: 此句能解析表达式中用|分隔的函数，但表达式中如果有|、||这样的逻辑运算就产生了歧异
         return $condition;
     }
 
     /**
      * 自动识别构建变量
-     * @access public
-     * @param  string    $name       变量描述
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.10 + 2021.07.01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $name 变量描述
      * @return string
-     */
-    public function autoBuildVar(&$name)
-    {
+    */
+    public function autoBuildVar(&$name) {
         $flag = substr($name, 0, 1);
 
         if (':' == $flag) {
@@ -332,13 +338,4 @@ class TagLib
         return $name;
     }
 
-    /**
-     * 获取标签列表
-     * @access public
-     * @return array
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
 }

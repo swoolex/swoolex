@@ -72,16 +72,48 @@ class onWorkerStart
             }
 
             $crontab_list = \x\Config::get('crontab');
-            foreach($crontab_list as $app=>$fun){
+            foreach ($crontab_list as $app=>$fun) {
                 // 载入定时器
                 $obj = new $app();
                 $obj->$fun($server);
+            }
+
+            // MQTT设备在线状态更新
+            if (\x\Config::get('server.sw_service_type') == 'mqtt') {
+                $this->mqtt_crontab();
             }
         }
         
         // 调用二次转发，不做重载
         $on = new \app\event\onWorkerStart;
         $on->run($server, $workerId);
+    }
+
+    /**
+     * MQTT设备在线状态更新
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.11 + 2021.07.02
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function mqtt_crontab() {
+        $time = \x\Config::get('mqtt.ping_crontab_time')*1000;
+        $ping_max_time = \x\Config::get('mqtt.ping_max_time');
+        $server = $this->server;
+
+        \Swoole\Timer::tick($time, function ($timer_id) use ($server, $ping_max_time) {
+            $times = time();
+            foreach ($this->server->device_list as $v) {
+                // 过期了
+                if ($v['status'] == 1 && ($v['ping_time']+$ping_max_time) < $times) {
+                    $this->server->device_list->set($v['client_id'], [
+                        'status' => 2, // 离线
+                    ]);
+                }
+            }
+        });
     }
     
     /**
@@ -100,7 +132,6 @@ class onWorkerStart
         \x\db\MysqlPool::run()->timing_recovery($workerId);
 
     }
-
     
     /**
      * 打开Redis连接池

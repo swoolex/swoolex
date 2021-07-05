@@ -40,6 +40,7 @@ class App
         'websocket',
         'server',
         'rpc',
+        'mqtt',
     ];
     /**
      * 启动的服务参数

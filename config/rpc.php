@@ -21,7 +21,6 @@ return [
     // 加密向量
     'aes_iv'       => '',
 
-
     // +-----------------------------
     // | 客户端Client配置
     // +-----------------------------
@@ -46,7 +45,7 @@ return [
     // +-----------------------------
     // | Redis 服务的Key
     // +-----------------------------
-    'redis_key' => 'swoolex_rpc',
+    'redis_key' => 'test_rpc',
     // 单个服务最大主动错误记录数
     'rpc_error_max' => 20,
     
@@ -54,9 +53,12 @@ return [
     // | HTTP-RPC服务中心相关
     // +-----------------------------
     // 当前应用是否为服务中心
-    'http_rpc_is'       => false,
-    // 控制台账号
-    'http_rpc_username' => 'swoolex',
-    // 控制台密码
-    'http_rpc_password' => 'swoolex',
+    'http_rpc_is'      => false,
+    // 服务中心-控制台账号密码
+    'http_rpc_user_list' => [
+        [
+            'username' => 'swoolex',
+            'password' => 'swoolex',
+        ]
+    ],
 ];

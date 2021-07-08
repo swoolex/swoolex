@@ -48,17 +48,23 @@ class ServerRoute
         $obj = $ref->newInstance();
         $obj->headers = $data['headers'] ?? [];
         $obj->param = $data['param'] ?? [];
-        // 调用服务
-        $return = $function->invokeArgs($obj, []);
-        $return = $return ? $return : [];
-
-        // 记录主动错误日志
-        if (isset($obj->rpc_error) && $obj->rpc_error == true) {
-            // 主动抛出错误日志内容
-            if (isset($obj->rpc_msg)) {
-                $return = $obj->rpc_msg;
+        
+        try {
+            // 调用服务
+            $return = $function->invokeArgs($obj, []);
+            $return = $return ? $return : [];
+            // 记录主动错误日志
+            if (isset($obj->rpc_error) && $obj->rpc_error == true) {
+                // 主动抛出错误日志内容
+                if (isset($obj->rpc_msg)) {
+                    $return = $obj->rpc_msg;
+                }
+                $this->create_rpc_error_log($data, $return);
             }
-            $this->create_rpc_error_log($data, $return);
+        } catch (\Throwable $throwable) {
+            $msg = $throwable->getMessage().' Line：'.$throwable->getFile().'->'.$throwable->getLine();
+            $return = false;
+            $this->create_rpc_error_log($data, $msg);
         }
 
         return $ServerCurrency->returnJson($server, $fd, '200', 'SUCCESS', $return);

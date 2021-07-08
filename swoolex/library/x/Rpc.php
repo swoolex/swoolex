@@ -44,36 +44,52 @@ class Rpc
 
         $redis_key = \x\Config::get('rpc.redis_key');
         $redis = new \x\Redis();
-
-        // 先清空服务
-        // A、节点名称隐射表
-        $redis->del($redis_key);
-        // B、所有节点
-        $service_name = [];
-        foreach ($config as $k => $v) {
-            foreach ($v as $kk => $vv) {
-                $table = md5($k.$kk);
-                $key = $redis_key.'_'.$table;
-                $redis->del($key);
-                $service_name[] = $table;
-            }
-        }
-
-        // 重新设置服务节点
-        $redis->set($redis_key, json_encode($service_name, JSON_UNESCAPED_UNICODE));
         
-        // 批量设置服务
+        /**
+         * 需要以下：
+         * 1、一个list，记录所有redis-key的名称，用于重启服务时初始化服务
+         * 2、class+function为key名的sets，记录下面全部class+function+ip+port的key
+         * 3、class+function+ip+port为key名的hash，记录一个节点的详情，不包含score、使用人数、包含延迟ping值
+         * 4、class+function+ip+port+【score】，记录某个节点的当前评分值
+         * 5、class+function+ip+port+【peaks】，记录某个节点的当前峰值人数
+         * 6、class+function+ip+port+【num】，记录某个节点的历史使用人数
+        */ 
+        // 先清空服务
+        // A、RPC-KEY名称隐射表
+        while($key = $redis->LPOP($redis_key)) {
+            $redis->del($redis_key.$key);
+        }
+        // B、重新初始化全部配置
+        // $k  路由名称
+        // $kk 方法名称
         foreach ($config as $k => $v) {
             foreach ($v as $kk => $vv) {
                 foreach ($vv as $key => $val) {
-                    $table = md5($k.$kk);
-                    $key = $redis_key.'_'.$table;
-
+                    $sets_key = '_sets_'.md5($k.$kk);
+                    $md5 = md5($k.$kk.$val['ip'].$val['port']);
+                    $hash_key = '_hash_'.$md5;
+                    // 记录key名
+                    $redis->SADD($redis_key.$sets_key, $hash_key);
+                    // 记录节点详情
                     $data = $val;
                     $data['class'] = $k;
                     $data['function'] = $kk;
-                    
-                    $redis->lpush($key, json_encode($data, JSON_UNESCAPED_UNICODE));
+                    $redis->HMSET($redis_key.$hash_key, $data);
+
+                    $score_key = '_score_'.$md5;
+                    $peaks_key = '_peaks_'.$md5;
+                    $num_key = '_num_'.$md5;
+                    // 初始化
+                    $redis->set($redis_key.$score_key, 100);
+                    $redis->set($redis_key.$peaks_key, 0);
+                    $redis->set($redis_key.$num_key, 0);
+
+                    // KEY写入记录表
+                    $redis->LPUSH($redis_key, $sets_key);
+                    $redis->LPUSH($redis_key, $hash_key);
+                    $redis->LPUSH($redis_key, $score_key);
+                    $redis->LPUSH($redis_key, $peaks_key);
+                    $redis->LPUSH($redis_key, $num_key);
                 }
             }
         }
@@ -97,19 +113,18 @@ class Rpc
             $redis = new \x\Redis();
 
             // 读取全部服务
-            $json = $redis->get($redis_key);
-            $list = $json ? json_decode($json, true) : [];
-
-            foreach ($list as $key) {
-                // 服务检测
-                $key = $redis_key.'_'.$key;
-                $index = $redis->llen($key);
-                for ($i=0; $i<$index; $i++) {
-                    $json = $redis->lindex($key, $i);
-                    $val = $json ? json_decode($json, true) : [];
-
+            $max = $redis->LLEN($redis_key);
+            for ($i=0; $i<$max; $i++) {
+                $key = $redis->LINDEX($redis_key, $i);
+                if (strpos($key, '_hash_') !== false) {
+                    $val = $redis->hGetAll($redis_key.$key);
+                    // 空的跳过
+                    if (empty($val)) continue;
                     // 手动关闭的节点不需要检测
                     if (!empty($val['status'])) continue;
+                    $md5 = md5($val['class'].$val['function'].$val['ip'].$val['port']);
+                    $score_key = '_score_'.$md5;
+                    $peaks_key = '_peaks_'.$md5;
 
                     // 先Ping检测
                     $shell = 'ping  -c 1 '.$val['ip'];
@@ -128,8 +143,8 @@ class Rpc
                             $arr = \Swoole\Coroutine\System::exec($shell);
                             if (empty($arr['output'])) {
                                 $val['is_fault'] = 1;
-                                $val['ping_ms'] = 999;
-                                $redis->lset($key, $i, json_encode($val, JSON_UNESCAPED_UNICODE));
+                                $redis->HMSET($redis_key.$key, $val);
+                                $redis->SET($redis_key.$peaks_key, 999);
                                 self::ping_error($val, 2);
                                 continue;
                             }
@@ -137,31 +152,30 @@ class Rpc
                             $val['is_fault'] = 0;
                             $arr = explode('time=', $str);
                             $arr = explode(' ms', $arr[1]);
-
-                            $score = isset($val['score']) ? $val['score'] : 100;
                             $ms = $arr[0];
+                            $score = $redis->get($redis_key.$score_key);
                             if ($ms > 460) {
-                                $score -= 50;
+                                $redis->DECRBY($redis_key.$score_key, 50);
                             } else if ($ms > 400 && $ms <= 460) {
-                                $score -= 40;
+                                $redis->DECRBY($redis_key.$score_key, 40);
                             } else if ($ms > 300 && $ms <= 400) {
-                                $score -= 30;
+                                $redis->DECRBY($redis_key.$score_key, 30);
                             } else if ($ms > 200 && $ms <= 300) {
-                                $score -= 20;
+                                $redis->DECRBY($redis_key.$score_key, 20);
                             } else if ($ms > 100 && $ms <= 200) {
-                                $score -= 10;
+                                $redis->DECRBY($redis_key.$score_key, 10);
                             } else if ($ms <= 100 && $score < 100) {
-                                $score += 5;
+                                $redis->INCRBY($redis_key.$score_key, 5);
+                            } else if ($score >= 100) {
+                                $redis->DECRBY($redis_key.$score_key, ($score-100));
                             }
-                            if ($score > 100) $score = 100;
-                            $val['score'] = $score;
-                            $val['ping_ms'] = $ms;
-                            $redis->lset($key, $i, json_encode($val, JSON_UNESCAPED_UNICODE));
+                            $redis->SET($redis_key.$peaks_key, $ms);
+                            $redis->HMSET($redis_key.$key, $val);
                         }
                     } else {
                         $val['is_fault'] = 1;
-                        $val['ping_ms'] = 999;
-                        $redis->lset($key, $i, json_encode($val, JSON_UNESCAPED_UNICODE));
+                        $redis->HMSET($redis_key.$key, $val);
+                        $redis->SET($redis_key.$peaks_key, 999);
                         self::ping_error($val, 2);
                     }
                 }
@@ -195,16 +209,26 @@ class Rpc
      * @return void
     */
     public static function get($class, $function) {
-        $redis_key = \x\Config::get('rpc.redis_key').'_'.md5($class.$function);
+        $redis_key = \x\Config::get('rpc.redis_key');
+        $set_key = '_sets_'.md5($class.$function);
         $redis = new \x\Redis();
 
-        // 读取某个服务
-        $index = $redis->llen($redis_key);
+        $array = $redis->SMEMBERS($redis_key.$set_key);
         $list = [];
-        for ($i=0; $i<$index; $i++) {
-            $json = $redis->lindex($redis_key, $i);
-            if ($json) {
-                $list[] = json_decode($json, true);
+        // 读取全部节点
+        foreach ($array as $key) {
+            $val = $redis->hGetAll($redis_key.$key);
+            if ($val) {
+                $md5 = md5($val['class'].$val['function'].$val['ip'].$val['port']);
+                $score_key = '_score_'.$md5;
+                $peaks_key = '_peaks_'.$md5;
+                $num_key = '_num_'.$md5;
+                
+                $val['ping_ms'] = $redis->get($redis_key.$peaks_key);
+                $val['score'] = $redis->get($redis_key.$score_key);
+                $val['request_num'] = $redis->get($redis_key.$num_key);
+                
+                $list[] = $val;
             }
         }
 
@@ -222,11 +246,13 @@ class Rpc
      * @return void
     */
     public static function set($config) {
-        $redis_index = $config['redis_index'];
-        unset($config['redis_index']);
-        $redis_key = \x\Config::get('rpc.redis_key').'_'.md5($config['class'].$config['function']);
+        $redis_key = \x\Config::get('rpc.redis_key');
         $redis = new \x\Redis();
-        $res = $redis->lset($redis_key, $redis_index, json_encode($config, JSON_UNESCAPED_UNICODE));
+
+        $md5 = md5($config['class'].$config['function'].$config['ip'].$config['port']);
+        $hash_key = '_hash_'.$md5;
+
+        $res = $redis->HMSET($redis_key.$hash_key, $config);
         $redis->return();
         return $res;
     }

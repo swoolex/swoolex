@@ -82,7 +82,7 @@ class HttpRpc extends Controller
 
         $param = \x\Request::post();
 
-        $redis_key = \x\Config::get('rpc.redis_key').'_doc_'.md5($param['class'].$param['function']);
+        $redis_key = \x\Config::get('rpc.redis_key').'_doc_'.md5($param['class'].$param['function'].$param['ip'].$param['port']);
         $redis = new \x\Redis();
         $data = [
             'param' => $param['param']??[],
@@ -103,14 +103,13 @@ class HttpRpc extends Controller
         }
 
         $param = \x\Request::get();
-
-        $redis_key = \x\Config::get('rpc.redis_key').'_'.md5($param['class'].$param['function']);
+        $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
+        $redis_key = \x\Config::get('rpc.redis_key').'_hash_'.$md5;
         $redis = new \x\Redis();
-        $json = $redis->lindex($redis_key, $param['redis_index']);
-        $info = json_decode($json, true);
+        $info = $redis->hGetAll($redis_key);
         $this->assign('info', $info);
 
-        $redis_key = \x\Config::get('rpc.redis_key').'_doc_'.md5($param['class'].$param['function']);
+        $redis_key = \x\Config::get('rpc.redis_key').'_doc_'.$md5;
         $json = $redis->get($redis_key);
         if ($json) {
             $info = json_decode($json, true);
@@ -136,11 +135,11 @@ class HttpRpc extends Controller
         $param = \x\Request::get();
 
         if (!empty($param['class'])) {
-            $redis_key = \x\Config::get('rpc.redis_key').'_'.md5($param['class'].$param['function']);
+            $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
+            $redis_key = \x\Config::get('rpc.redis_key').'_hash_'.$md5;
             $redis = new \x\Redis();
-            $json = $redis->lindex($redis_key, $param['redis_index']);
+            $info = $redis->hGetAll($redis_key);
             $redis->return();
-            $info = json_decode($json, true);
             $this->assign('info', $info);
         }
         
@@ -161,26 +160,43 @@ class HttpRpc extends Controller
         $redis_key = \x\Config::get('rpc.redis_key');
         $redis = new \x\Redis();
 
-        // 找出服务中心隐射表
-        // 读取全部服务
-        $json = $redis->get($redis_key);
-        $service_name = $json ? json_decode($json, true) : [];
-        $status = true;
-        $end_md5 = md5($param['class'].$param['function']);
-        foreach ($service_name as $key) {
-            if ($key == $end_md5) {
-                $status = false;
-                break;
-            }
+        // 判断节点是否存在
+        $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
+        $hash_key = '_hash_'.$md5;
+        $info = $redis->hGetAll($redis_key.$hash_key);
+        if (!empty($info)) {
+            $redis->return();
+            return $this->returnJson('01', '改节点已存在，请修改后重新提交');
         }
-        if ($status) {
-            $service_name[] = $end_md5;
-            // 重新设置服务节点
-            $redis->set($redis_key, json_encode($service_name, JSON_UNESCAPED_UNICODE));
-        }
+        // 创建节点
+        $sets_key = '_sets_'.md5($param['class'].$param['function']);
+        // 记录key名
+        $redis->SADD($redis_key.$sets_key, $hash_key);
+        // 记录节点详情
+        $data = [
+            'class' => $param['class'],
+            'function' => $param['function'],
+            'title' => $param['title'],
+            'ip' => $param['ip'],
+            'port' => $param['port'],
+            'is_fault' => 0,
+            'status' => 0,
+        ];
+        $redis->HMSET($redis_key.$hash_key, $data);
 
-        // 再加入服务
-        $redis->lpush($redis_key.'_'.$end_md5, json_encode($param, JSON_UNESCAPED_UNICODE));
+        $score_key = '_score_'.$md5;
+        $peaks_key = '_peaks_'.$md5;
+        $num_key = '_num_'.$md5;
+        // 初始化
+        $redis->set($redis_key.$score_key, 100);
+        $redis->set($redis_key.$peaks_key, 0);
+        $redis->set($redis_key.$num_key, 0);
+        $redis->LPUSH($redis_key, $sets_key);
+        $redis->LPUSH($redis_key, $hash_key);
+        $redis->LPUSH($redis_key, $score_key);
+        $redis->LPUSH($redis_key, $peaks_key);
+        $redis->LPUSH($redis_key, $num_key);
+        $redis->return();
 
         $this->save_map();
         return $this->returnJson('00', '添加成功');
@@ -196,12 +212,11 @@ class HttpRpc extends Controller
 
         $param = \x\Request::get();
 
-        $redis_key = \x\Config::get('rpc.redis_key').'_'.md5($param['class'].$param['function']);
+        $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
+        $redis_key = \x\Config::get('rpc.redis_key').'_hash_'.$md5;
         $redis = new \x\Redis();
-        $json = $redis->lindex($redis_key, $param['redis_index']);
+        $info = $redis->hGetAll($redis_key);
         $redis->return();
-        $info = json_decode($json, true);
-        $info['redis_index'] = $param['redis_index'];
 
         $this->assign('info', $info);
         return $this->display();
@@ -217,41 +232,71 @@ class HttpRpc extends Controller
         if (empty($param['title'])) return $this->returnJson('01', '请先输入节点名称');
         if (empty($param['ip'])) return $this->returnJson('01', '请先输入TCP-IP');
         if (empty($param['port'])) return $this->returnJson('01', '请先输入端口');
-
+        $data = [
+            'class' => $param['class'],
+            'function' => $param['function'],
+            'title' => $param['title'],
+            'ip' => $param['ip'],
+            'port' => $param['port'],
+            'is_fault' => 0,
+            'status' => 0,
+        ];
         // 找出原来的key
         $redis_key = \x\Config::get('rpc.redis_key');
         $redis = new \x\Redis();
         // 修改了路由地址
-        if ($param['start_class'] != $param['class'] || $param['start_function'] != $param['function']) {
-            // 先删除该条记录
-            $md5 = md5($param['start_class'].$param['start_function']);
-            $redis->lset($redis_key.'_'.$md5, $param['redis_index'], 'swoolex_rpc_delete');
-            $redis->lrem($redis_key.'_'.$md5, 'swoolex_rpc_delete', 0);
-            // 找出服务中心隐射表
-            // 读取全部服务
-            $json = $redis->get($redis_key);
-            $service_name = $json ? json_decode($json, true) : [];
-            $status = true;
-            $end_md5 = md5($param['class'].$param['function']);
-            foreach ($service_name as $key) {
-                if ($key == $end_md5) {
-                    $status = false;
-                    break;
-                }
+        if (
+            $param['start_class'] != $param['class'] || 
+            $param['start_function'] != $param['function'] || 
+            $param['start_ip'] != $param['ip'] || 
+            $param['start_port'] != $param['port']
+        ) {
+            // 查询节点是否已存在
+            $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
+            $hash_key = '_hash_'.$md5;
+            $info = $redis->hGetAll($redis_key.$hash_key);
+            if (!empty($info)) {
+                $redis->return();
+                return $this->returnJson('01', '改节点已存在，不允许跨节点覆盖修改');
             }
-            if ($status) {
-                $service_name[] = $end_md5;
-                // 重新设置服务节点
-                $redis->set($redis_key, json_encode($service_name, JSON_UNESCAPED_UNICODE));
-            }
-            // 再加入一条新的记录
-            unset($param['start_class']);
-            unset($param['start_function']);
-            unset($param['redis_index']);
-            $redis->lpush($redis_key.'_'.$end_md5, json_encode($param, JSON_UNESCAPED_UNICODE));
+            // 删除原节点
+            $md5 = md5($param['start_class'].$param['start_function'].$param['start_ip'].$param['start_port']);
+            $hash_key = '_hash_'.$md5;
+            $sets_key = '_sets_'.md5($param['start_class'].$param['start_function']);
+            $redis->SREM($redis_key.$sets_key, $hash_key);
+            $score_key = '_score_'.$md5;
+            $peaks_key = '_peaks_'.$md5;
+            $num_key = '_num_'.$md5;
+            $redis->DEL($redis_key.$hash_key);
+            $redis->DEL($redis_key.$score_key);
+            $redis->DEL($redis_key.$peaks_key);
+            $redis->DEL($redis_key.$num_key);
+            // 创建新节点
+            $sets_key = '_sets_'.md5($param['class'].$param['function']);
+            $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
+            $hash_key = '_hash_'.$md5;
+            // 记录key名
+            $redis->SADD($redis_key.$sets_key, $hash_key);
+            // 记录节点详情
+            $redis->HMSET($redis_key.$hash_key, $data);
+
+            $score_key = '_score_'.$md5;
+            $peaks_key = '_peaks_'.$md5;
+            $num_key = '_num_'.$md5;
+            // 初始化
+            $redis->set($redis_key.$score_key, 100);
+            $redis->set($redis_key.$peaks_key, 0);
+            $redis->set($redis_key.$num_key, 0);
+            $redis->LPUSH($redis_key, $sets_key);
+            $redis->LPUSH($redis_key, $hash_key);
+            $redis->LPUSH($redis_key, $score_key);
+            $redis->LPUSH($redis_key, $peaks_key);
+            $redis->LPUSH($redis_key, $num_key);
         } else {
             unset($param['start_class']);
             unset($param['start_function']);
+            unset($param['start_ip']);
+            unset($param['start_port']);
             \x\Rpc::run()->set($param);
         }
         
@@ -292,9 +337,15 @@ class HttpRpc extends Controller
         if ($arr['code'] != '00') {
             return $this->fetch($res);
         }
-
-        if ($param['username'] != \x\Config::get('rpc.http_rpc_username')) return $this->returnJson('01', '账号或密码错误');
-        if ($param['password'] != \x\Config::get('rpc.http_rpc_password')) return $this->returnJson('01', '账号或密码错误'); 
+        $list = \x\Config::get('rpc.http_rpc_user_list');
+        $status = false;
+        foreach ($list as $v) {
+            if ($param['username'] == $v['username'] && $param['password'] == $v['password']) {
+                $status = true;
+                break;
+            }
+        }
+        if ($status == false) return $this->returnJson('01', '账号或密码错误');
 
         \x\Session::set('httprpc', '1');
 
@@ -315,25 +366,25 @@ class HttpRpc extends Controller
         $redis = new \x\Redis();
 
         // 读取全部服务
-        $json = $redis->get($redis_key);
-        $list = $json ? json_decode($json, true) : [];
+        $max = $redis->LLEN($redis_key);
         $arr = [];
-        foreach ($list as $key) {
-            // 读取全部服务
-            $key = $redis_key.'_'.$key;
-            $index = $redis->llen($key);
-            for ($i=0; $i<$index; $i++) {
-                $json = $redis->lindex($key, $i);
-                if ($json) {
-                    $val = json_decode($json, true);
-                    $data = $val;
-                    $data['url'] = $val['class'].'->'.$val['function'].'()';
-                    $data['redis_index'] = $i;
-                    $arr[] = $data;
+        for ($i=0; $i<$max; $i++) {
+            $key = $redis->LINDEX($redis_key, $i);
+            if (strpos($key, '_hash_') !== false) {
+                $val = $redis->hGetAll($redis_key.$key);
+                if ($val) {
+                    $md5 = md5($val['class'].$val['function'].$val['ip'].$val['port']);
+                    $score_key = '_score_'.$md5;
+                    $peaks_key = '_peaks_'.$md5;
+                    $num_key = '_num_'.$md5;
+                    $val['ping_ms'] = $redis->get($redis_key.$peaks_key);
+                    $val['score'] = $redis->get($redis_key.$score_key);
+                    $val['request_num'] = $redis->get($redis_key.$num_key);
+                    $val['url'] = $val['class'].'->'.$val['function'].'()';
+                    $arr[] = $val;
                 }
             }
         }
-
         $redis->return();
 
         $this->assign('param', $param);
@@ -351,18 +402,19 @@ class HttpRpc extends Controller
         $param = \x\Request::post();
 
         // 先读
-        $redis_key = \x\Config::get('rpc.redis_key').'_'.md5($param['class'].$param['function']);
+        $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
+        $redis_key = \x\Config::get('rpc.redis_key').'_hash_'.$md5;
         $redis = new \x\Redis();
-        $json = $redis->lindex($redis_key, $param['redis_index']);
+        $res = $redis->HMSET($redis_key, [
+            'status' => $param['status']
+        ]);
         $redis->return();
-        $info = json_decode($json, true);
-        $info['redis_index'] = $param['redis_index'];
-        $info['status'] = $param['status'];
         
-        // 合并后改
-        \x\Rpc::run()->set($info);
-        $this->save_map();
-        return $this->returnJson('00', '状态修改成功');
+        if ($res !== false) {
+            $this->save_map();
+            return $this->returnJson('00', '状态修改成功');
+        }
+        return $this->returnJson('01', '状态修改失败');
     }
 
     /**
@@ -373,19 +425,25 @@ class HttpRpc extends Controller
             return $this->display('HttpRpc/error'); 
         }
         $param = \x\Request::post();
-        $redis_key = \x\Config::get('rpc.redis_key').'_';
+        $redis_key = \x\Config::get('rpc.redis_key');
         $redis = new \x\Redis();
+        
         // 删除该条记录
-        $md5 = md5($param['class'].$param['function']);
-        $redis->lset($redis_key.$md5, $param['redis_index'], 'swoolex_rpc_delete');
-        $res = $redis->lrem($redis_key.$md5, 'swoolex_rpc_delete', 0);
+        $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
+        $hash_key = '_hash_'.$md5;
+        $sets_key = '_sets_'.md5($param['class'].$param['function']);
+        $redis->SREM($redis_key.$sets_key, $hash_key);
+        $score_key = '_score_'.$md5;
+        $peaks_key = '_peaks_'.$md5;
+        $num_key = '_num_'.$md5;
+        $redis->DEL($redis_key.$hash_key);
+        $redis->DEL($redis_key.$score_key);
+        $redis->DEL($redis_key.$peaks_key);
+        $redis->DEL($redis_key.$num_key);
         $redis->return();
 
-        if ($res) {
-            $this->save_map();
-            return $this->returnJson('00', '节点删除成功');
-        }
-        return $this->returnJson('01', '节点不存在！');
+        $this->save_map();
+        return $this->returnJson('00', '节点删除成功');
     }
 
     /**
@@ -459,9 +517,9 @@ class HttpRpc extends Controller
         $param = \x\Request::post();
         $class = $param['class'];
         $function = $param['function'];
-        $task = $param['task'];
-        $callback = $param['callback'];
-        $callback_type = $param['callback_type'];
+        $task = $param['task']??0;
+        $callback = $param['callback']??'';
+        $callback_type = $param['callback_type']??'post';
         $header = json_decode($param['header'], true);
         $param = json_decode($param['param'], true);
 
@@ -507,17 +565,12 @@ class HttpRpc extends Controller
         $redis = new \x\Redis();
 
         // 读取全部服务
-        $json = $redis->get($redis_key);
-        $service_name = $json ? json_decode($json, true) : [];
-        $arr = [];
-        foreach ($service_name as $key) {
-            // 读取全部服务
-            $key = $redis_key.'_'.$key;
-            $index = $redis->llen($key);
-            for ($i=0; $i<$index; $i++) {
-                $json = $redis->lindex($key, $i);
-                if ($json) {
-                    $v = json_decode($json, true);
+        $max = $redis->LLEN($redis_key);
+        for ($i=0; $i<$max; $i++) {
+            $key = $redis->LINDEX($redis_key, $i);
+            if (strpos($key, '_hash_') !== false) {
+                $v = $redis->hGetAll($redis_key.$key);
+                if ($v) {
                     $data = $v;
                     unset($data['class']);
                     unset($data['function']);
@@ -526,7 +579,7 @@ class HttpRpc extends Controller
             }
         }
         $redis->return();
-        
+
         $arr = var_export($list, true);
 $html = '<?php
 // +----------------------------------------------------------------------

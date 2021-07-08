@@ -16,14 +16,6 @@ return [
     'host' => '0.0.0.0',
     // 端口
     'port' => 9501,
-    // 验证服务器端证书
-    'ssl_verify_peer' => false,
-    // 自签名证书
-    'ssl_allow_self_signed' => false,
-    // 服务器主机名称
-    'ssl_host_name' => '',
-    // 验证远端证书所用到的 CA 证书
-    'ssl_cafile' => '',
     // HTTPS证书
     'ssl_cert_file' => '',
     // HTTPS证书

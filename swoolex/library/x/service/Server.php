@@ -61,10 +61,6 @@ class Server
             'package_max_length' => $config['package_max_length'],
             'open_mqtt_protocol' => $config['open_mqtt_protocol'],
             'enable_coroutine' => $config['enable_coroutine'],
-            'ssl_verify_peer' => $config['ssl_verify_peer'],
-            'ssl_allow_self_signed' => $config['ssl_allow_self_signed'],
-            'ssl_host_name' => $config['ssl_host_name'],
-            'ssl_cafile' => $config['ssl_cafile'],
         ];
         if ($config['backlog']) $set['backlog'] = $config['backlog'];
         if ($config['reactor_num']) $set['reactor_num'] = $config['reactor_num'];

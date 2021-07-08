@@ -37,7 +37,6 @@ class Subscribe extends Event {
     */ 
     public function run() {
         $data = $this->getData();
-        var_dump($data['topics']);
         // 处理完成后需要回复以下内容
         $payload = [];
         foreach ($data['topics'] as $k => $qos) {

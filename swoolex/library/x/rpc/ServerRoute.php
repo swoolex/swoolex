@@ -67,7 +67,7 @@ class ServerRoute
             $this->create_rpc_error_log($data, $msg);
         }
 
-        return $ServerCurrency->returnJson($server, $fd, '200', 'SUCCESS', $return);
+        return $ServerCurrency->returnJson($server, $fd, '200', ((isset($obj->msg)) ? $obj->msg : 'SUCCESS'), $return);
     }
 
     /**

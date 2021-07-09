@@ -379,8 +379,6 @@ class RpcClient
         if ($this->status == '200') {
             if ($this->task) {
                 $this->msg = 'Task Success';
-            } else {
-                $this->msg = 'Success';
             }
             return $this->data;
         }

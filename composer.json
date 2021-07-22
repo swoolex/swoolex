@@ -1,7 +1,7 @@
 {
     "name": "swoolex/swoolex",
     "description": "the new swoolex",
-    "version":"v2.0.14",
+    "version":"v2.5.0",
     "keywords": [
         "swoolex",
         "sw-x"
@@ -14,6 +14,6 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0"
+        "php": ">=7.3.0"
     }
 }

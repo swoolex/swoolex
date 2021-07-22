@@ -11,9 +11,5 @@
  * +----------------------------------------------------------------------
 */
 
-namespace x;
-
-// 加载基础文件
-require __DIR__ . '/swoolex/base.php';
-
-App::run()->start();
+// 载入框架启动脚本
+require __DIR__ . '/swoolex/run/start.php';

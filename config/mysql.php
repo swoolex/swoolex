@@ -12,6 +12,8 @@
 */
 
 return [
+    // 连接池驱动器 现支持：Mysql
+    'driver' => 'mysql',
     // SQL防注入过滤函数
     'function'   => ['addslashes'],
     // 是否开启连接数监控
@@ -23,11 +25,12 @@ return [
     'pool_list' => [
         // 默认使用的连接池
         'default' => [
+            'driver'   => 'mysql', // 驱动类型
             'host'     => '127.0.0.1', // 地址
             'port'     => '3306', // 端口
-            'user'     => 'root', // 用户名
-            'password' => 'root', // 密码
-            'database' => 'websocket', // 库
+            'user'     => 'sw-x', // 用户名
+            'password' => 'sw-x', // 密码
+            'database' => 'sw-x', // 库
             'charset'  => 'utf8mb4', // 字符集
             'prefix'   => 'swx_', // 数据库表前缀
             'pool_num' => 1, // 连接池数量

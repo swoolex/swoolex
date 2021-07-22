@@ -87,13 +87,13 @@ return [
     // +-----------------------------
 
     // 记录master和manager的进程id
-    'pid_file' => ROOT_PATH.'/other/env/sw-x.pid', 
+    'pid_file' => BOX_PATH.'env'.DS.'sw-x.pid', 
     // 记录worker的进程id
-    'worker_pid_file' => ROOT_PATH.'/other/env/worker.pid', 
+    'worker_pid_file' => BOX_PATH.'env'.DS.'worker.pid', 
     // 记录tasker的进程id
-    'tasker_pid_file' => ROOT_PATH.'/other/env/tasker.pid', 
+    'tasker_pid_file' => BOX_PATH.'env'.DS.'tasker.pid', 
     // 记录路由的文件
-    'route_file' => ROOT_PATH.'/other/env/route_file.env', 
+    'route_file' => BOX_PATH.'env'.DS.'route_file.env', 
 
     // +-----------------------------
     // | WebSocket 服务的独立配置
@@ -136,5 +136,5 @@ return [
     // 控制台密码
     'http_monitor_password' => 'swoolex',
     // 监控文件存放根地址-需要/结尾
-    'http_monitor_dir_root' => ROOT_PATH.'/runtime/http_monitor/',
+    'http_monitor_dir_root' => WORKLOG_PATH.'http_monitor'.DS,
 ];

@@ -11,7 +11,7 @@
  * +----------------------------------------------------------------------
 */
 
-namespace \box\event\mqtt\v5;
+namespace box\event\mqtt\v5;
 
 use x\mqtt\base\Event;
 use x\mqtt\v5\Dc;

@@ -28,7 +28,7 @@ class ParamWebSocket extends Basics {
     public function run($route){
         # 注解参数检测
         if (isset($route['own']['Param'])) {
-            $obj = new \x\WebSocket();
+            $obj = new \x\controller\WebSocket();
             $websocket_list = $obj->get_data();
 
             foreach ($route['own']['Param'] as $val) {

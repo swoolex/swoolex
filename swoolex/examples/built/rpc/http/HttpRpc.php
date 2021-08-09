@@ -298,6 +298,7 @@ class HttpRpc extends Http {
             unset($param['start_port']);
             \x\Rpc::run()->set($param);
         }
+        $redis->return();
         
         $this->save_map();
         return $this->returnJson('00', '修改成功');

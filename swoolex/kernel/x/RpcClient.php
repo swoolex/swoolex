@@ -290,7 +290,6 @@ class RpcClient {
         // 发送请求
         $res = $this->run($config);
         if ($this->status != '200') {
-            $this->num++;
             return $this->send();
         }
 

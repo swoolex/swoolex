@@ -48,6 +48,9 @@ class Request extends AbstractContext
     */
     public static function get($name=null) {
         $id = self::getCoroutineId();
+
+        if (!isset(self::$request[$id])) return false;
+
         return self::$request[$id];
     }
 

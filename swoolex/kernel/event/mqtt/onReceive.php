@@ -12,6 +12,7 @@
 */
 
 namespace event\mqtt;
+use x\mqtt\common\Types;
 use x\Config;
 
 class onReceive {

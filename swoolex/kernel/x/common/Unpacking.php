@@ -148,13 +148,13 @@ class Unpacking {
 
         if (!is_dir($controller_path)) mkdir($controller_path, 0755);
 
-        $controller_path = $controller_path.DS.'demo';
+        $controller_path = $controller_path.DS.'order';
         if (!is_dir($controller_path)) mkdir($controller_path, 0755);
 
         $dir = $controller_path.DS.'create.php';
         if (file_exists($dir)) return false;
         
-        return copy(BUILT_PATH.'unpacking/rpc/demo/create.php', $dir);
+        return copy(BUILT_PATH.'unpacking/rpc/order/create.php', $dir);
     }
     /**
      * MQTT 服务开箱
@@ -173,7 +173,7 @@ class Unpacking {
         $controller_path = $controller_path.DS.'system';
         if (!is_dir($controller_path)) mkdir($controller_path, 0755);
 
-        $dir = $controller_path.DS.'create.php';
+        $dir = $controller_path.DS.'index.php';
         if (file_exists($dir)) return false;
         
         return copy(BUILT_PATH.'unpacking/mqtt/system/index.php', $dir);

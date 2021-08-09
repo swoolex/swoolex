@@ -11,7 +11,7 @@
  * +----------------------------------------------------------------------
 */
 
-namespace \box\event\mqtt\v3;
+namespace box\event\mqtt\v3;
 
 use x\mqtt\base\Event;
 use x\mqtt\common\Types;
@@ -47,7 +47,7 @@ class Publish extends Event {
         $data = $this->getData();
         if ($data['qos'] === 1) {
             $this->getServer()->send(
-                $fd,
+                $this->getFd(),
                 Dc::pack([
                     'type' => Types::PUBACK,
                     'message_id' => $data['message_id'] ?? '',

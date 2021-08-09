@@ -48,6 +48,9 @@ class Response extends AbstractContext
     */
     public static function get($name=null) {
         $id = self::getCoroutineId();
+
+        if (!isset(self::$response[$id])) return false;
+
         return self::$response[$id];
     }
 

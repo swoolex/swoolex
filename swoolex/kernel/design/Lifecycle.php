@@ -89,6 +89,27 @@ class Lifecycle {
     }
 
     /**
+     * 当注解Param检测失败时，回调的处理函数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.0 + 2021.07.20
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $callback 回调事件
+     * @param string $tips 自定义提示内容
+     * @param string $name 参数名称
+     * @param string $status 错误事件状态码
+     * @param string $attach 错误检测返回附加说明
+     * @return void
+    */
+    public static function annotate_param($callback, $tips, $name, $status, $attach=null) {
+        $obj = new \box\lifecycle\annotate_param();
+        $obj->run($tips, $name, $status, $attach);
+        unset($obj);
+        return true;
+    }
+
+    /**
      * 当检测失败时，回调的处理函数
      * @todo 无
      * @author 小黄牛

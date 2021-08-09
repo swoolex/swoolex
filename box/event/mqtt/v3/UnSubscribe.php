@@ -11,7 +11,7 @@
  * +----------------------------------------------------------------------
 */
 
-namespace \box\event\mqtt\v3;
+namespace box\event\mqtt\v3;
 
 use x\mqtt\base\Event;
 use x\mqtt\common\Types;

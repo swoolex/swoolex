@@ -1,7 +1,7 @@
 <?php
 /**
  * +----------------------------------------------------------------------
- * 监听客户端消息发送请求
+ * 当Worker进程Start完成时触发回调，改生命周期只对WorkerID=0有效，不会多次触发
  * +----------------------------------------------------------------------
  * 官网：https://www.sw-x.cn
  * +----------------------------------------------------------------------
@@ -11,33 +11,22 @@
  * +----------------------------------------------------------------------
 */
 
-namespace box\event\server;
+namespace box\lifecycle;
 
-class onMessage
+class worker_start
 {
     /**
-	 * 启动实例
-	*/
-    public $server;
-
-    /**
-     * 统一回调入口
+     * 接受回调处理
      * @todo 无
      * @author 小黄牛
-     * @version v1.0.1 + 2020.05.26
+     * @version v1.1.4 + 2020.07.12
      * @deprecated 暂不启用
      * @global 无
-     * @param Swoole\WebSocket\Server $server
-     * @param Swoole\WebSocket\Frames $frame 状态信息
-     * @return void
+     * @return bool
     */
     public function run() {
-
-        $server = \x\context\Container::get('websocket_server');
-        $frame = \x\context\Container::get('websocket_frame');
-
-        $this->server = $server;
-
+        // 这里可以做些业务重新初始化的工作
+        
+        return true;
     }
 }
-

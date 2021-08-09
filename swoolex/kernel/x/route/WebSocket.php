@@ -31,7 +31,7 @@ class WebSocket extends AbstractRoute {
         $data = $obj->get_data();
         $request_uri = $data['action'];
         // 先匹配出路由
-        $route = \x\doc\Table::run()->get($request_uri, 'websocket');
+        $route = \x\route\doc\Table::run()->get($request_uri, 'websocket');
 
         // 匹配不到
         if ($route == false) {

@@ -25,6 +25,7 @@ class Log
         'view' => 'view',
         'log' => 'log',
         'sql' => 'sql',
+        'mqtt' => 'mqtt',
     ];
 
     /**
@@ -67,6 +68,22 @@ class Log
     }
 
     /**
+     * 挂载MQTT请求记录
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.0 + 2021.07.20
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $txt
+     * @return void
+    */
+    public function setMqtt($txt) {
+        $path = $this->_path['mqtt'].'/'.date('Y-n-j', time()).'.log';
+
+        \Swoole\Coroutine\System::writeFile($path, $txt, FILE_APPEND);
+    }
+
+    /**
      * 挂载SQL
      * @todo 无
      * @author 小黄牛
@@ -106,6 +123,8 @@ class Log
                 mkdir($this->_path[$k].'/', 0755);
             }
         }
+
+        \design\StartRecord::log();
     }
 
     /**

@@ -38,6 +38,9 @@ class onWorkerStart {
         // 调用二次转发，不做重载
         $on = new \box\event\server\onWorkerStart;
         $on->run($server, $workerId);
+        
+        // 生命周期转发
+        \design\Lifecycle::worker_start($workerId);
     }
 
     /**

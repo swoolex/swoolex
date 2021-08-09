@@ -28,9 +28,14 @@ class Pool extends AbstractMysqlPool {
      * @return $this|null
     */
     public function init() {
+        $start_time = explode(' ',microtime());
+
         foreach ($this->config as $key=>$value) {
             $this->config[$key]['connections'] = $this->createDb($value, $value['pool_num']);
         }
+        
+        \design\StartRecord::mysql_reload($start_time);
+        
         return $this;
     }
 
@@ -113,6 +118,8 @@ class Pool extends AbstractMysqlPool {
                 unset($array);
                 unset($path);
             });
+            
+            \design\StartRecord::mysql_monitor();
         }
     }
     

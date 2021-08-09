@@ -68,6 +68,10 @@ class onReceive {
         
         // 数据包解析成功
         if (is_array($data) && isset($data['type'])) {
+            // 记录日志
+            if (Config::get('app.de_bug') == true) {
+                \x\Log::setMqtt(date('Y-m-d H:i:s', time()).' FD：'.$fd.'，数据包：'.json_encode($data, JSON_UNESCAPED_UNICODE).PHP_EOL);
+            }
             if ($edition == 'v5') {
                 // 不同的消息类型
                 switch ($data['type']) {

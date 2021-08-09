@@ -52,6 +52,8 @@ class Config
      * @return void
     */
     public static function start() {
+        $start_time = explode(' ',microtime());
+
         $path = ROOT_PATH.'/config/';
         $files = scandir($path);
         foreach ($files as $file) {
@@ -59,6 +61,8 @@ class Config
             $key = str_replace('.php', '', $file);
             self::$config[$key] = require $path.$file;
         }
+
+        \design\StartRecord::config($start_time);
     }
 
     /**

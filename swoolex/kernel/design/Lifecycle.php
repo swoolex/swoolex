@@ -14,7 +14,25 @@
 namespace design;
 
 class Lifecycle {
-    
+
+    /**
+     * 当Worker进程Start完成时的回调
+     * @todo 只对WorkerID=0时回调
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.15
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public static function worker_start($workerId) {
+        // 只有第一个worker进程才能回调，不然会出现多次回调
+        if ($workerId != 0) return false;
+        
+        $obj = new \box\lifecycle\worker_start();
+        $obj->run();
+        return false;
+    }
+
     /**
      * 当应用层捕捉到错误时，系统回调处理的生命周期
      * @todo 无

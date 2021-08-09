@@ -48,6 +48,8 @@ class Error {
         register_shutdown_function([\x\Error::run(), 'deadlyError']);
         # 异常捕捉
         set_error_handler([\x\Error::run(), 'appError']); 
+        
+        \design\StartRecord::error();
     }
 
     /**

@@ -99,6 +99,8 @@ class Server {
         $device_fd->create();
         // 将表附加到SW实例里，方便后续使用
         $this->service->device_fd = $device_fd;
+
+        \design\StartRecord::mqtt_table();
     }
 
     /**
@@ -155,6 +157,8 @@ class Server {
         $this->service->on('Message', [$this->ioc('onMessage'), 'run']);
         # 监听外部调用请求
         $this->service->on('Request', [$this->ioc('onRequest', $this->service, $this->config), 'run']);
+
+        \design\StartRecord::server_event();
 
         # 启动服务
         $this->service->start();

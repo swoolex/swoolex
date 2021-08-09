@@ -95,6 +95,8 @@ class Rpc {
 
         $redis->return();
         self::ping();
+
+        \design\StartRecord::rpc_service_monitor();
     }
 
     /**

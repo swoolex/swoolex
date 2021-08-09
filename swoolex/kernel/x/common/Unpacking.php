@@ -29,6 +29,8 @@ class Unpacking {
         $res = self::create_app();
 
         self::switch_king($type, $res);
+
+        \design\StartRecord::unpacking();
     }
     /**
      * 判断服务分支选择开箱流程

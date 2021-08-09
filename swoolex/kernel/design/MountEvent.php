@@ -166,6 +166,8 @@ class MountEvent {
                 });
             }
         }
+
+        \design\StartRecord::crontab();
     }
 
     /**
@@ -197,6 +199,8 @@ class MountEvent {
                 }
             }
         });
+
+        \design\StartRecord::mqtt_service_monitor();
     }
 
     /**
@@ -210,6 +214,8 @@ class MountEvent {
     */
     public static function WorkerStart_RouteStart_Http() {
         \x\route\doc\Table::run()->start_http();
+
+        \design\StartRecord::http_doc_reload();
     }
     /**
      * WebSocket-初始化路由表
@@ -222,6 +228,8 @@ class MountEvent {
     */
     public static function WorkerStart_RouteStart_WebSocket() {
         \x\route\doc\Table::run()->start_websocket();
+
+        \design\StartRecord::websocket_doc_reload();
     }
 
     /**

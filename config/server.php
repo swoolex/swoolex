@@ -25,13 +25,13 @@ return [
     // 启动的 Reactor 线程数
     'reactor_num' => false,
     // 启动的 Worker 进程数
-    'worker_num' => 1,
+    'worker_num' => swoole_cpu_num()*2,
     // 设置 worker 进程的最大任务数
     'max_request' => 0,
     // 最大允许的连接数
     'max_connection' => false,
     // 配置 Task 进程的数量，不配置则不启动
-    'task_worker_num' => 1,
+    'task_worker_num' => swoole_cpu_num(),
     // 设置 Task 进程与 Worker 进程之间通信的方式
     'task_ipc_mode' => 1,
     // task 进程的最大任务数，如果不希望进程自动退出可以设置为 0

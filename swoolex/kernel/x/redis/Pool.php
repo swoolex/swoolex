@@ -66,9 +66,13 @@ class Pool {
      * @return $this|null
     */
     public function init() {
+        $start_time = explode(' ',microtime());
+
         foreach ($this->config as $key=>$value) {
             $this->config[$key]['connections'] = $this->createRedis($value, $value['pool_num']);
         }
+
+        \design\StartRecord::redis_reload($start_time);
         return $this;
     }
     
@@ -145,6 +149,8 @@ class Pool {
                 unset($array);
                 unset($path);
             });
+
+            \design\StartRecord::redis_monitor();
         }
     }
     

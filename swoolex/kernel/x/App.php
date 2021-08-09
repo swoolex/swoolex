@@ -137,6 +137,7 @@ class App extends AbstractConsole {
         \x\common\Unpacking::run($this->_server_start['server']);
         // 清空ENV文件
         $this->reloadEnv();
+        \design\StartRecord::clean_env();
         // 打印服务详情
         $this->start_yes();
         // 启动服务

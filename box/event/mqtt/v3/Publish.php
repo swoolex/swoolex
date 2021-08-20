@@ -40,11 +40,12 @@ class Publish extends Event {
         // 控制器，方法[默认index]
         // $this->controller('system/index');
 
+        $data = $this->getData();
+
         // 默认的广播示例控制器
         $this->controller('system/index', 'run');
 
         // // 处理完成后需要回复以下内容
-        $data = $this->getData();
         if ($data['qos'] === 1) {
             $this->getServer()->send(
                 $this->getFd(),

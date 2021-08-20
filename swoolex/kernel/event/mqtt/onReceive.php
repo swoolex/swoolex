@@ -83,9 +83,19 @@ class onReceive {
                             return false;
                         }
                         // 账号密码校验
-                        if ($data['user_name'] != Config::get('mqtt.user_name') || $data['password'] != Config::get('mqtt.password')) {
-                            $server->close($fd);
-                            return false;
+                        if (Config::get('mqtt.auth_status') == false) {
+                            if ($data['user_name'] != Config::get('mqtt.user_name') || $data['password'] != Config::get('mqtt.password')) {
+                                $server->close($fd);
+                                return false;
+                            }
+                        } else {
+                            // 启用密码器
+                            $MqttCipherClass = Config::get('mqtt.cipher');
+                            $MqttCipher = (new $MqttCipherClass())->run($data);
+                            if ($MqttCipher == false) {
+                                $server->close($fd);
+                                return false;
+                            }
                         }
                         (new \x\mqtt\Table($server))->deviceReload($data, $fd);
                         (new \box\event\mqtt\v5\Connect($server, $fd, $reactorId, $data))->run();
@@ -138,9 +148,19 @@ class onReceive {
                             return false;
                         }
                         // 账号密码校验
-                        if ($data['user_name'] != Config::get('mqtt.user_name') || $data['password'] != Config::get('mqtt.password')) {
-                            $server->close($fd);
-                            return false;
+                        if (Config::get('mqtt.auth_status') == false) {
+                            if ($data['user_name'] != Config::get('mqtt.user_name') || $data['password'] != Config::get('mqtt.password')) {
+                                $server->close($fd);
+                                return false;
+                            }
+                        } else {
+                            // 启用密码器
+                            $MqttCipherClass = Config::get('mqtt.cipher');
+                            $MqttCipher = (new $MqttCipherClass())->run($data);
+                            if ($MqttCipher == false) {
+                                $server->close($fd);
+                                return false;
+                            }
                         }
                         (new \x\mqtt\Table($server))->deviceReload($data, $fd);
                         (new \box\event\mqtt\v3\Connect($server, $fd, $reactorId, $data))->run();

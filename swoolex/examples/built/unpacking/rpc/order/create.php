@@ -13,11 +13,28 @@
 
 namespace app\rpc\order;
 
-class create {
+// 新版本都应该继承系统基类
+use \x\controller\Rpc;
 
+class create extends Rpc{
+
+    /**
+     * 我是\order\create->run()服务
+    */
     public function run() {
-        return ['id' => 1];
+        // 可以这样获取请求头
+        $headers = $this->headers();
+        // 可以这样获取请求参数
+        $param = $this->param();
+        // 可以这样设置返回值说明
+        $this->msg('缺少某些请求参数啦！');
+        // 可以这样抛出返回值，并同时设置返回值说明
+        return $this->fetch(false, '缺少某些请求参数啦！');
+
+        // 当然，也支持直接设置返回值说明
+        $this->msg = '缺少某些请求参数啦！';
+        // 当然，也支持直接抛出返回值
+        return false;
     }
     
 }
-

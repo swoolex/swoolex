@@ -1,7 +1,7 @@
 <?php
 /**
  * +----------------------------------------------------------------------
- * 当Jwt注解校验失败时，系统回调处理的生命周期
+ * Mqtt密码器-抽象类
  * +----------------------------------------------------------------------
  * 官网：https://www.sw-x.cn
  * +----------------------------------------------------------------------
@@ -10,29 +10,19 @@
  * 开源协议：http://www.apache.org/licenses/LICENSE-2.0
  * +----------------------------------------------------------------------
 */
+namespace design;
 
-namespace box\lifecycle;
-
-class jwt_error
-{
+abstract class AbstractMqttCipher {
+    
     /**
-     * 接受回调处理
+     * 必须实现的密码器入口方法
      * @todo 无
      * @author 小黄牛
-     * @version v1.1.5 + 2020.07.15
+     * @version v2.5.1 + 2021.08.20
      * @deprecated 暂不启用
      * @global 无
-     * @param string $tips 错误内容
+     * @param array $data 连接请求参数
      * @return bool
     */
-    public function run($tips) {
-        $type = \x\Config::get('server.sw_service_type');
-        // HTTP请求
-        if ($type == 'http') {
-            $obj = new \x\controller\Http();
-            $obj->fetch($tips);
-        }
-        unset($obj);
-        return true;
-    }
+    abstract public function run($data);
 }

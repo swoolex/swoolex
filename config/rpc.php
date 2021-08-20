@@ -45,7 +45,7 @@ return [
     // +-----------------------------
     // | Redis 服务的Key
     // +-----------------------------
-    'redis_key' => 'test_rpc',
+    'redis_key' => 'swoolex_rpc',
     // 单个服务最大主动错误记录数
     'rpc_error_max' => 20,
     

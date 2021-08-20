@@ -31,10 +31,6 @@ class csrf_error
         if ($type == 'http') {
             $obj = new \x\controller\Http();
             $obj->fetch($tips);
-        // websocket请求
-        } else if($type == 'websocket') {
-            $obj = new \x\controller\WebSocket();
-            $obj->fetch('route_error', 'error', $tips);
         }
         unset($obj);
         return true;

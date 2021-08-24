@@ -17,15 +17,23 @@ class RPC {
     /**
      * 请求头
     */
-    private $headers = [];
+    public $headers = [];
     /**
      * 请求参数
     */
-    private $param = [];
+    public $param = [];
     /**
      * 当次请求处理说明
     */
-    private $msg = 'SUCCESS';
+    public $msg = 'SUCCESS';
+    /**
+     * 当次请求处理业务是否异常
+    */
+    public $rpc_error = false;
+    /**
+     * 当次请求处理业务异常的说明
+    */
+    public $rpc_msg = '';
 
     /**
      * 输出返回内容给客户端
@@ -80,6 +88,24 @@ class RPC {
     */
     public final function msg($msg) {
         $this->msg = $msg;
+        return true;
+    }
+
+    /**
+     * 标记当次请求业务处理异常
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.0 + 2021-08-24
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $msg 说明
+     * @return void
+    */
+    public final function error($msg=null) {
+        $this->rpc_error = true;
+        if ($msg !== null) {
+            $this->rpc_msg = $msg;
+        }
         return true;
     }
 }

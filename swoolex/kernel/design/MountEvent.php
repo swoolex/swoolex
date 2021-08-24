@@ -217,6 +217,7 @@ class MountEvent {
 
         \design\StartRecord::http_doc_reload();
     }
+
     /**
      * WebSocket-初始化路由表
      * @todo 无
@@ -230,6 +231,36 @@ class MountEvent {
         \x\route\doc\Table::run()->start_websocket();
 
         \design\StartRecord::websocket_doc_reload();
+    }
+
+    /**
+     * Rpc-初始化路由表
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.2 + 2021.08.24
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public static function WorkerStart_RouteStart_Rpc() {
+        \x\route\doc\Table::run()->start_rpc();
+
+        \design\StartRecord::rpc_doc_reload();
+    }
+
+    /**
+     * Mqtt-初始化路由表
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.2 + 2021.08.24
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public static function WorkerStart_RouteStart_Mqtt() {
+        \x\route\doc\Table::run()->start_mqtt();
+
+        \design\StartRecord::mqtt_doc_reload();
     }
 
     /**

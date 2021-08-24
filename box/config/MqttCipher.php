@@ -40,4 +40,3 @@ class MqttCipher extends AbstractMqttCipher {
         return true;
     }
 }
-

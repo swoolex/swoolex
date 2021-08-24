@@ -60,7 +60,7 @@ class Mqtt {
     protected final function getReactorId() {
         return $this->reactorId;
     }
-    protected final function getData() {
+    public final function getData() {
         return $this->data;
     }
 

@@ -35,7 +35,7 @@ class Annotate {
 
         // 解析注解 - 获得类的路由参数
         $controller = DocParser::getInstance()->parse($reflection->getDocComment());
-
+        
         /// 获得成员函数
         $action = [];
         $methods = $reflection->getMethods();

@@ -24,9 +24,10 @@ class AopThrows extends Basics
      * @deprecated 暂不启用
      * @global 无
      * @param array $route 路由参数
+     * @param bool $tcp_status 是否tcp的服务
      * @return true
     */
-    public function run($route){
+    public function run($route, $tcp_status=false){
         # 循环注入父AOP事件
         $father_AopThrows = '';
         if (isset($route['father'])) {
@@ -59,7 +60,7 @@ class AopThrows extends Basics
         # 载入控制器
         if ($father_AopThrows || $own_AopThrows) {
             try{
-                $this->controller_method->invokeArgs($this->controller_instance, []);
+                $return = $this->controller_method->invokeArgs($this->controller_instance, []);
             } catch(\Exception $e) {
                 // 开始异常通知
                 if ($father_AopThrows) {
@@ -78,11 +79,15 @@ class AopThrows extends Basics
                 }
             }
         } else {
-            $this->controller_method->invokeArgs($this->controller_instance, []); 
+            $return = $this->controller_method->invokeArgs($this->controller_instance, []); 
         }
-
+        
+        // 兼容HTTP/WebSocket服务
+        if ($tcp_status === false) {
+            $return = true;
+        }
         // 更新容器
-        return $this->_return();
+        return $this->_return($return);
     }
 
 }

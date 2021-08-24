@@ -36,14 +36,14 @@ class Basics
     }
 
     // 需要主动更新容器
-    protected function _return() {
+    protected function _return($return=true) {
         \x\context\Request::set($this->request);
         \x\context\Response::set($this->response);
         \x\context\Container::set('websocket_server', $this->websocket_server);
         \x\context\Container::set('websocket_frame', $this->websocket_frame);
         \x\context\Container::set('controller_instance', $this->controller_instance);
         \x\context\Container::set('controller_method', $this->controller_method);
-        return true;
+        return $return;
     }
 
     /**

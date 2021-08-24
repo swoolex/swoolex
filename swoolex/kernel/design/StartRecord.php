@@ -75,6 +75,18 @@ class StartRecord {
         self::insert_log('WebSocket服务-注解解析完成');
     }
     /**
+     * Rpc服务解析完成
+    */
+    public static function rpc_doc_reload() {
+        self::insert_log('Rpc服务-注解解析完成');
+    }
+    /**
+     * Mqtt服务解析完成
+    */
+    public static function mqtt_doc_reload() {
+        self::insert_log('Mqtt服务-注解解析完成');
+    }
+    /**
      * Mysql连接池
     */
     public static function mysql_reload($time) {

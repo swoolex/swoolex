@@ -76,26 +76,40 @@ abstract class Event {
      * @global 无
      * @param string $controller
      * @param string $action
-     * @param array $param
      * @return Controller
     */
-    protected final function controller($controller, $action='index', $param=[]) {
+    protected final function controller($controller, $action='index') {
         $class = '\app\mqtt\\'. str_replace('/', '\\', trim($controller, '/'));
         if (!class_exists($class)) {
             throw new \Exception('MQTT '.$class.' not exist');
             return false;
         }
 
-        $obj = new $class;
-        if (!method_exists($obj, $action)) {
+        $ref = new \ReflectionClass($class);
+        if (!$ref->hasMethod($action)) {
             throw new \Exception('MQTT '.$class.' action '.$action.' not exist');
             return false;
         }
+        // 实例化操作方法
+        $function = $ref->getmethod($action);
+        if ($function->isStatic()) {
+            throw new \Exception('MQTT '.$class.' action '.$action.' is a static method');
+            return false;
+        }
+        if (!$function->isPublic()) {
+            throw new \Exception('MQTT '.$class.' action '.$action.' is a Protected method');
+            return false;
+        }
+
+        // 先注入属性
+        $obj = $ref->newInstance();
         $obj->setServer($this->server);
         $obj->setData($this->data);
         $obj->setFd($this->fd);
         $obj->setReactorId($this->reactorId);
-        return $obj->$action();
+
+        // 注解挂载
+        return (new \x\route\Mqtt($obj, $function, $controller, $action))->start();
     }
 
     /**

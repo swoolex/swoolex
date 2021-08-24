@@ -54,6 +54,8 @@ class onWorkerStart {
      * @return void
     */
     private function mount($workerId) {
+        // 初始化RPC路由
+        \design\MountEvent::WorkerStart_RouteStart_Mqtt();
         // 挂载PID-ENV更新
         \design\MountEvent::WorkerStart_PidENV($this->server, $workerId);
         // 挂载DAO连接池

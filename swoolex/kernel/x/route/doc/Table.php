@@ -73,6 +73,40 @@ class Table {
     }
 
     /**
+     * RPC-初始化路由表
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.2 + 2021-08-24
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function start_rpc() {
+        $cutting = \x\Config::get('route.cutting');
+        
+        // rpc路由
+        $list = $this->every_file(ROOT_PATH.'app'.DS.'rpc');
+        $this->add_list($list, $cutting, 'rpc');
+    }
+
+    /**
+     * MQTT-初始化路由表
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.2 + 2021-08-24
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function start_mqtt() {
+        $cutting = \x\Config::get('route.cutting');
+        
+        // mqtt路由
+        $list = $this->every_file(ROOT_PATH.'app'.DS.'mqtt');
+        $this->add_list($list, $cutting, 'mqtt');
+    }
+
+    /**
      * 更新缓存
      * @todo 无
      * @author 小黄牛
@@ -243,7 +277,6 @@ class Table {
             
             # 使用注解
             $doc = \x\route\doc\Annotate::run($namespace);
-
             $this->add_doc_route($doc, $namespace, $cutting, $route_type);
         }
     }

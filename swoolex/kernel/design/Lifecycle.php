@@ -134,7 +134,7 @@ class Lifecycle {
      * @param string $type 连接池类型
      * @return void
     */
-    public static function pop_error($type) {
+    public static function mysql_pop_error($type) {
         $obj = new \box\lifecycle\mysql_pop_error();
         $obj->run($type);
         return false;

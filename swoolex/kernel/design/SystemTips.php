@@ -40,4 +40,18 @@ class SystemTips {
     const HTTP_CONTROLLER_7 = '指令错误：sw-x controller 没有权限，控制器创建失败！';
     const HTTP_CONTROLLER_8 = '文件已存在！';
     const HTTP_CONTROLLER_9 = '控制器创建完成！';
+    const RPC_SERVER_ROUTE_1 = '数据为空，可能是AES解密失败！';
+    const RPC_SERVER_ROUTE_2 = '缺少请求路由class参数！';
+    const RPC_SERVER_ROUTE_3 = '缺少请求路由function参数！';
+    const RPC_SERVER_ROUTE_4 = '请求的路由类不存在！';
+    const RPC_SERVER_ROUTE_5 = '请求的路由方法不存在！';
+    const RPC_SERVER_ROUTE_6 = '请求的路由是一个静态地址，禁止访问！';
+    const RPC_SERVER_ROUTE_7 = '请求的路由是一个受保护的私有方法';
+    const RPC_SERVER_ROUTE_8 = '注解：参数过滤拦截！';
+    const RPC_SERVER_ROUTE_9 = '注解：容器注入失败！';
+    const RPC_SERVER_ROUTE_10 = '注解：前置操作拦截！';
+    const RPC_SERVER_ROUTE_11 = '注解：环绕操作拦截！';
+    const RPC_SERVER_ROUTE_12 = '注解：自定义注解拦截！';
+    const RPC_SERVER_ROUTE_13 = '注解：请求已执行完成，但被环绕操作拦截！';
+    const RPC_SERVER_ROUTE_14 = '注解：请求已执行完成，但被后置操作拦截！';
 }

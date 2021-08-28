@@ -50,9 +50,10 @@ class Rpc {
          * 2、class+function为key名的sets，记录下面全部class+function+ip+port的key
          * 3、class+function+ip+port为key名的hash，记录一个节点的详情，不包含score、使用人数、包含延迟ping值
          * 4、class+function+ip+port+【score】，记录某个节点的当前评分值
-         * 5、class+function+ip+port+【peaks】，记录某个节点的当前峰值人数
-         * 6、class+function+ip+port+【num】，记录某个节点的历史使用人数
+         * 5、class+function+ip+port+【peaks】，记录某个节点的当前延迟ms
+         * 6、class+function+ip+port+【num】，记录某个节点的当前请求占用数
         */ 
+
         // 先清空服务
         // A、RPC-KEY名称隐射表
         while($key = $redis->LPOP($redis_key)) {

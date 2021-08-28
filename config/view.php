@@ -11,7 +11,6 @@
  * +----------------------------------------------------------------------
 */
 
-
 return [
     // 模板引擎类型 仅支持 SwooleX 支持扩展
     'type'         => 'SwooleX',
@@ -52,4 +51,8 @@ return [
     'http_response_headers' => [
         'Content-type' => 'text/html; charset=utf-8'
     ],
+    // 模板替换 - 可看做模板常量
+    'tpl_replace_string'  =>  [
+        '__PUBLIC__' => 'http://IP:端口/静态文件地址',
+    ]
 ];

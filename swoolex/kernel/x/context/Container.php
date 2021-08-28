@@ -56,6 +56,24 @@ class Container extends AbstractContext {
     }
 
     /**
+     * 判断实例是否存在
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.0 + 2021.07.20
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $name key名称
+     * @return mixed
+    */
+    public static function has($name) {
+        $id = self::getCoroutineId();
+        
+        if (!isset(self::$list[$id][$name])) return false;
+
+        return true;
+    }
+
+    /**
      * 删除实例
      * @todo 无
      * @author 小黄牛

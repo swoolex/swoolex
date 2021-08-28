@@ -367,10 +367,16 @@ class HttpRpc extends Http {
 
         // 读取全部服务
         $max = $redis->LLEN($redis_key);
+        $cache = [];
         $arr = [];
         for ($i=0; $i<$max; $i++) {
             $key = $redis->LINDEX($redis_key, $i);
             if (strpos($key, '_hash_') !== false) {
+                if (isset($cache[$key])) {
+                    continue;
+                } else {
+                    $cache[$key] = 1;
+                }
                 $val = $redis->hGetAll($redis_key.$key);
                 if ($val) {
                     $md5 = md5($val['class'].$val['function'].$val['ip'].$val['port']);
@@ -559,6 +565,7 @@ class HttpRpc extends Http {
      * @return void
     */
     private function save_map() {
+        $cache = [];
         $list = [];
 
         $redis_key = \x\Config::get('rpc.redis_key');
@@ -569,6 +576,11 @@ class HttpRpc extends Http {
         for ($i=0; $i<$max; $i++) {
             $key = $redis->LINDEX($redis_key, $i);
             if (strpos($key, '_hash_') !== false) {
+                if (isset($cache[$key])) {
+                    continue;
+                } else {
+                    $cache[$key] = 1;
+                }
                 $v = $redis->hGetAll($redis_key.$key);
                 if ($v) {
                     $data = $v;

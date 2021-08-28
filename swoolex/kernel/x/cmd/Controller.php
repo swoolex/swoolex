@@ -101,7 +101,10 @@ class Controller {
         }
         // 不存在就直接创建一个就行
         if (!file_exists($file)) {
-            $myfile = fopen($file, "w") or return AbstractConsole::exit_error(SystemTips::HTTP_CONTROLLER_7 . PHP_EOL);
+            $myfile = fopen($file, "w");
+            if ($myfile == false) {
+                return AbstractConsole::exit_error(SystemTips::HTTP_CONTROLLER_7 . PHP_EOL);
+            }
 $html = '<?php
 // +----------------------------------------------------------------------
 // | 示例控制器
@@ -158,7 +161,9 @@ class Index extends Http
         }
         // 不存在就直接创建一个就行
         if (!file_exists($file)) {
-            $myfile = fopen($file, "w") or return AbstractConsole::exit_error(SystemTips::HTTP_CONTROLLER_7 . PHP_EOL);
+            if ($myfile == false) {
+                return AbstractConsole::exit_error(SystemTips::HTTP_CONTROLLER_7 . PHP_EOL);
+            }
 $html = '<?php
 // +----------------------------------------------------------------------
 // | 示例控制器

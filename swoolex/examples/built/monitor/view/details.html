@@ -36,7 +36,7 @@
         </tr>
         <tr>
             <th>状态</rh>
-            <td>{if ($v.status==1)}<font color="red">进行中</font>{else /}已结束{/if}</td>
+            <td>{if ($info.status==1)}<font color="red">进行中</font>{else /}已结束{/if}</td>
         </tr>
         <tr>
             <th>请求类型</rh>
@@ -60,7 +60,7 @@
         </tr>
         <tr>
             <th>是否报错</rh>
-            <td>{if ($v.is_error==1)}<font color="red">是</font>{else /}否{/if}</td>
+            <td>{if ($info.is_error==1)}<font color="red">是</font>{else /}否{/if}</td>
         </tr>
         <tr>
             <th>错误文件</rh>

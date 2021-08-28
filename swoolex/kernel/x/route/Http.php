@@ -29,7 +29,6 @@ class Http extends AbstractRoute {
     public function start(){
         // 获取容器
         $request = \x\context\Request::get();
-        $pattern = \x\Config::get('route.pattern');
         $request_uri = $this->format($request->server['request_uri']);
         // 先匹配出路由
         $route = \x\route\doc\Table::run()->get($request_uri, 'http');

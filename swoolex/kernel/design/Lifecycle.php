@@ -171,4 +171,52 @@ class Lifecycle {
         $obj->run($type);
         return false;
     }
+
+    /**
+     * 当其余注解检测失败时，回调的处理函数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.3 + 2021-08-25
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $status 错误事件状态码
+     * @return void
+    */
+    public static function route_error($status) {
+        $obj = new \box\lifecycle\route_error();
+        $obj->run($status);
+        return false;
+    }
+
+    /**
+     * JWT注解检测失败时，回调的处理函数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.3 + 2021-08-25
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $status 错误事件状态码
+     * @return void
+    */
+    public static function jwt_error($status) {
+        $obj = new \box\lifecycle\jwt_error();
+        $obj->run($status);
+        return false;
+    }
+
+    /**
+     * CSRF注解检测失败时，回调的处理函数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.3 + 2021-08-25
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $status 错误事件状态码
+     * @return void
+    */
+    public static function csrf_error($status) {
+        $obj = new \box\lifecycle\csrf_error();
+        $obj->run($status);
+        return false;
+    }
 }

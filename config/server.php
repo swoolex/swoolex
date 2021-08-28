@@ -15,7 +15,7 @@ return [
     // host
     'host' => '0.0.0.0',
     // 端口
-    'port' => 9501,
+    'port' => 9502,
     // HTTPS证书
     'ssl_cert_file' => '',
     // HTTPS证书

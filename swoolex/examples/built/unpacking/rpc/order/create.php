@@ -14,7 +14,7 @@
 namespace app\rpc\order;
 
 // 新版本都应该继承系统基类
-use \x\controller\Rpc;
+use x\controller\Rpc;
 
 class create extends Rpc{
 

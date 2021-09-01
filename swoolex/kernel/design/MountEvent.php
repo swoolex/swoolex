@@ -318,4 +318,36 @@ class MountEvent {
         // 启动连接池检测定时器
         \x\redis\Pool::run()->timing_recovery($workerId);
     }
+
+    /**
+     * 打开MongoDb连接池
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.0 + 2021.07.20
+     * @deprecated 暂不启用
+     * @global 无
+     * @param int $workerId 进程ID
+     * @return void
+    */
+    public static  function WorkerStart_MongoDbStart($workerId) {
+        // 启动数据库连接池
+        \x\mongodb\Pool::run()->init();
+        // 启动连接池检测定时器
+        \x\mongodb\Pool::run()->timing_recovery($workerId);
+    }
+    
+    /**
+     * Swoole/Table组件回调通知挂载
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.0 + 2021.07.20
+     * @deprecated 暂不启用
+     * @global 无
+     * @param int $workerId 进程ID
+     * @return void
+    */
+    public static  function WorkerStart_SwooleTableStart($workerId) {
+        // 通知回调
+        \design\Lifecycle::swoole_table_start($workerId);
+    }
 }

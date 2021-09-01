@@ -16,6 +16,32 @@ namespace design;
 class Lifecycle {
 
     /**
+     * 当Worker进程Start完成时对Table的回调
+     * @todo 只对WorkerID=0时回调
+     * @author 小黄牛
+     * @version v1.1.5 + 2020.07.15
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public static function swoole_table_start($workerId) {
+        // 只有第一个worker进程才能回调，不然会出现多次回调
+        if ($workerId != 0) return false;
+        
+        // 防止reload时重复触发
+        if (\x\Config::has('app.swoole_table_start')) return true;
+        \x\Config::set('app.swoole_table_start', true);
+        
+        $list = \x\Config::get('swoole_table');
+        foreach ($list as $v) {
+            $obj = new \box\lifecycle\swoole_table_start();
+            $obj->run($v['table'], $v['field'], $v['status']);
+        }
+
+        return true;
+    }
+
+    /**
      * 当Worker进程Start完成时的回调
      * @todo 只对WorkerID=0时回调
      * @author 小黄牛
@@ -30,7 +56,7 @@ class Lifecycle {
         
         $obj = new \box\lifecycle\worker_start();
         $obj->run();
-        return false;
+        return true;
     }
 
     /**

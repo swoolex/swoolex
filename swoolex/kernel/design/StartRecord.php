@@ -51,6 +51,12 @@ class StartRecord {
         self::insert_log('框架ENV环境变量缓存文件初始化完成');
     }
     /**
+     * Swoole/Table内存表创建
+    */
+    public static function swoole_table() {
+        self::insert_log('开发者自定义专属Swoole-Table内存表初始化完成');
+    }
+    /**
      * MQTT内存表创建
     */
     public static function mqtt_table() {
@@ -107,10 +113,23 @@ class StartRecord {
         self::insert_log('Redis连接池解析完成');
     }
     /**
-     * Mysql连接池-监控
+     * Redis连接池-监控
     */
     public static function redis_monitor() {
         self::insert_log('Redis连接数统计监控器启动成功');
+    }
+    /**
+     * MongoDb连接池
+    */
+    public static function mongodb_reload($time) {
+        self::$start_time = $time;
+        self::insert_log('MongoDb连接池解析完成');
+    }
+    /**
+     * MongoDb连接池-监控
+    */
+    public static function mongodb_monitor() {
+        self::insert_log('MongoDb连接数统计监控器启动成功');
     }
     /**
      * Rpc服务中心监控器

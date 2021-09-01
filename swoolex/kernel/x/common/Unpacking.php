@@ -26,10 +26,8 @@ class Unpacking {
      * @return void
     */
     public static function run($type) {
-        $res = self::create_app();
-
-        self::switch_king($type, $res);
-
+        self::create_app();
+        self::switch_king($type);
         \design\StartRecord::unpacking();
     }
     /**
@@ -40,23 +38,18 @@ class Unpacking {
      * @deprecated 暂不启用
      * @global 无
      * @param string $type 服务类型
-     * @param bool $status 开箱状态
      * @return void
     */
-    private static function switch_king($type, $status) {
+    private static function switch_king($type) {
         switch ($type) {
             case 'http':
-                self::unpack_http(true);
+                self::unpack_http();
             break;
             case 'websocket':
-                self::unpack_http(true);
-                // WebSocket组件，不是每次必备开箱
-                if (!$status) return false;
-                self::unpack_websocket(true);
+                self::unpack_http();
+                self::unpack_websocket();
             break;
             case 'rpc':
-                // RPC组件，不是每次必备开箱
-                if (!$status) return false;
                 self::unpack_rpc();
             break;
             case 'mqtt':
@@ -91,24 +84,19 @@ class Unpacking {
      * @version v2.5.0 + 2021.07.20
      * @deprecated 暂不启用
      * @global 无
-     * @param bool $status 是否需要创建开箱控制器文件
      * @return void
     */
-    public static function unpack_http($status=true) {
+    public static function unpack_http() {
         $controller_path = APP_PATH.'http';
         $view_path = APP_PATH.'view';
 
         if (!is_dir($controller_path)) mkdir($controller_path, 0755);
         if (!is_dir($view_path)) mkdir($view_path, 0755);
 
-        if ($status) {
-            $dir = $controller_path.DS.'Index.php';
-            if (file_exists($dir)) return false;
-    
-            return copy(BUILT_PATH.'unpacking/http/Index.php', $dir);
-        }
-        
-        return true;
+        $dir = $controller_path.DS.'Index.php';
+        if (file_exists($dir)) return true;
+
+        return copy(BUILT_PATH.'unpacking/http/Index.php', $dir);
     }
     /**
      * WebSocket 服务开箱
@@ -117,22 +105,17 @@ class Unpacking {
      * @version v2.5.0 + 2021.07.20
      * @deprecated 暂不启用
      * @global 无
-     * @param bool $status 是否需要创建开箱控制器文件
      * @return void
     */
-    public static function unpack_websocket($status=true) {
+    public static function unpack_websocket() {
         $controller_path = APP_PATH.'websocket';
 
         if (!is_dir($controller_path)) mkdir($controller_path, 0755);
         
-        if ($status) {
-            $dir = $controller_path.DS.'Index.php';
-            if (file_exists($dir)) return false;
-            
-            return copy(BUILT_PATH.'unpacking/websocket/Index.php', $dir);
-        }
+        $dir = $controller_path.DS.'Index.php';
+        if (file_exists($dir)) return true;
         
-        return true;
+        return copy(BUILT_PATH.'unpacking/websocket/Index.php', $dir);
     }
     /**
      * RPC 服务开箱

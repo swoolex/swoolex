@@ -158,7 +158,7 @@ class App extends AbstractConsole {
         $idJson = file_get_contents($this->config['pid_file']);  
         $idArray = json_decode($idJson, true);
         // 清空ENV文件
-        $this->reloadEnv();
+        $this->reloadEnv(false);
         // 通知Swoole平滑重启进程
         posix_kill($idArray['manager_pid'], SIGUSR1);
     }
@@ -332,7 +332,7 @@ class App extends AbstractConsole {
         
         $this->_argv = $argv;
         $this->_server_start['action'] = $argv[1] ?? null;
-        $this->_server_start['server'] = strtolower($argv[2]) ?? null;
+        $this->_server_start['server'] = !empty($argv[2]) ? strtolower($argv[2]) : null;
         $this->_server_start['option'] = !empty($argv[3]) ? strtolower($argv[3]) : null;
 
         // 删除全局变量
@@ -386,9 +386,10 @@ class App extends AbstractConsole {
      * @version v2.5.0 + 2021.07.20
      * @deprecated 暂不启用
      * @global 无
+     * @param bool $status 是否删除服务进程ID缓存
      * @return void
     */
-    private function reloadEnv() {
+    private function reloadEnv($status=true) {
         // 设置master进程别名
         swoole_set_process_name($this->config['master']);
         // 创建缓存目录
@@ -403,7 +404,7 @@ class App extends AbstractConsole {
         if (!file_exists($crontab)) mkdir($crontab, 0755);
 
         // 服务进程ID
-        file_put_contents($this->config['pid_file'], '');
+        if ($status) file_put_contents($this->config['pid_file'], '');
         // 工作进程ID
         file_put_contents($this->config['worker_pid_file'], '');
         file_put_contents($this->config['tasker_pid_file'], '');
@@ -412,6 +413,9 @@ class App extends AbstractConsole {
         file_put_contents($path, '{}');
         // Redis连接数
         $path = BOX_PATH.'env'.DS.'redis_pool_num.count';
+        file_put_contents($path, '{}');
+        // MongoDb连接数
+        $path = BOX_PATH.'env'.DS.'mongodb_pool_num.count';
         file_put_contents($path, '{}');
         // 路由日志
         file_put_contents($this->config['route_file'], '');

@@ -48,16 +48,24 @@ class Server {
         $this->server_type = $server;
         // 初始化设置
         $set = $this->seConfig($config);
+        // 加入路由初始化
         switch ($this->server_type) {
             case 'http':
                 $this->service = new \Swoole\Http\Server($config['host'], $config['port'], SWOOLE_PROCESS, $set['wss']);
+                \design\MountEvent::WorkerStart_RouteStart_Http();
             break;
             case 'websocket':
                 $this->service = new \Swoole\WebSocket\Server($config['host'], $config['port'], SWOOLE_PROCESS, $set['wss']);
+                \design\MountEvent::WorkerStart_RouteStart_Http();
+                \design\MountEvent::WorkerStart_RouteStart_WebSocket();
             break;
             case 'rpc':
+                $this->service = new \Swoole\Server($config['host'], $config['port'], SWOOLE_PROCESS, $set['wss']);
+                \design\MountEvent::WorkerStart_RouteStart_Rpc();
+            break;
             case 'mqtt':
                 $this->service = new \Swoole\Server($config['host'], $config['port'], SWOOLE_PROCESS, $set['wss']);
+                \design\MountEvent::WorkerStart_RouteStart_Mqtt();
             break;
         }
         // 启动类型写入配置项
@@ -69,8 +77,32 @@ class Server {
         if ($this->server_type == 'mqtt') {
             $this->create_mqtt_table();
         }
+        // 初始化Swoole/Table内存表
+        $this->create_table();
         // 进行事件绑定
         $this->event_binding();
+    }
+
+    /**
+     * 初始化Swoole/Table内存表
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.0.11 + 2021.07.03
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function create_table() {
+        $list = \x\Config::get('swoole_table');
+        if (!$list) return false;
+
+        foreach ($list as $k=>$v) {
+            $res = \x\swoole\Table::table($v['table'])->createTable($v['length'], $v['field']);
+            $list[$k]['status'] = $res;
+        }
+        \x\Config::set('swoole_table', $list);
+        
+        \design\StartRecord::swoole_table();
     }
 
     /**

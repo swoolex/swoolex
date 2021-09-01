@@ -79,7 +79,7 @@ class Config
     private static function loop_get($config, $array) {
         foreach ($array as $k=>$v) {
             if (!isset($array[$k+1])) {
-                return $config[$v];
+                return $config[$v] ?? false;
             } else {
                 unset($array[$k]);
                 if (!isset($config[$v])) return false;
@@ -170,6 +170,26 @@ class Config
                 unset($config);
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    /**
+     * 判断参数是否存在
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.4 + 2021-09-01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $key 读取配置，递归使用.区分，空的时候读取全部
+     * @return bool
+    */
+    public function has($key) {
+        if (strpos($key, '.') !== false) {
+            return self::loop_get(self::$config, explode('.', $key));
+        } else if (isset(self::$config[$key])) {
+            return true;
         }
 
         return false;

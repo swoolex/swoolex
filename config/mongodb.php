@@ -26,7 +26,7 @@ return [
     // 库，不选择则默认进入test库
     'database' => '',
     // 连接池数量
-    'pool_num' => 1,
+    'pool_num' => 0,
     // 空闲连接池检测间隔时间(S)
     'monitor_time' => 1200,
     // 空闲连接回收时间(S)

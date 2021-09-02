@@ -92,6 +92,20 @@ class WebSocket {
     }
 
     /**
+     * 获取当前客户端fd标识
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.4 + 2021-09-02
+     * @deprecated 暂不启用
+     * @global 无
+     * @return int
+    */
+    public final function get_current_fd() {
+        $websocket_frame = \x\context\Container::get('websocket_frame');
+        return $websocket_frame->fd;
+    }
+
+    /**
      * 发送数据包
      * @todo 无
      * @author 小黄牛

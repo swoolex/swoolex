@@ -35,6 +35,7 @@ class DocParser {
         'TestCase', // 单元测试
         'Csrf', // Csrf
         'Jwt', // Jwt
+        'Limit', // Limit
     ];
 
     private static $instance = null;
@@ -156,6 +157,9 @@ class DocParser {
                 'AopThrows',
                 'Controller',
                 'onRoute',
+                'Csrf',
+                'Jwt',
+                'Limit',
             ];
             if (in_array($param, $arr)) {
                 $this->params[$param] = $return;

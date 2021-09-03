@@ -93,10 +93,12 @@ class Route
      * @deprecated 暂不启用
      * @global 无
      * @param array $rule 映射规则
+     * @param string $server_type 服务类型 http/websocket/rpc
      * @return void
     */
-    public function prefix($rule) {
+    public function prefix($rule, $server_type='http') {
         if (!is_array($rule)) return false;
+        $server_type = strtolower($server_type);
 
         foreach ($rule as $prefix => $list) {
             $prefix = $this->lrtrim($prefix);
@@ -105,12 +107,12 @@ class Route
                 if (substr($v, -1) == '*') {
                     $v = $this->lrtrim(rtrim($v, '*'));
                     // 先注册
-                    $this->wildcard_prefix[$v] = $prefix;
+                    $this->wildcard_prefix[$server_type][$v] = $prefix;
                     // 删除普通前缀
-                    foreach ($this->usual_prefix as $key => $value) {
+                    foreach ($this->usual_prefix[$server_type] as $key => $value) {
                         $num = stripos($key, $v);
                         if ($num === 0) {
-                            unset($this->usual_prefix[$key]);
+                            unset($this->usual_prefix[$server_type][$key]);
                             continue;
                         }
                     }
@@ -118,7 +120,7 @@ class Route
                     $v = $this->lrtrim($v);
                     // 先找通配符
                     $status = true;
-                    foreach ($this->wildcard_prefix as $key => $value) {
+                    foreach ($this->wildcard_prefix[$server_type] as $key => $value) {
                         $num = stripos($v, $key);
                         if ($num === 0) {
                             $status = false;
@@ -127,7 +129,7 @@ class Route
                     }
                     if (!$status) continue;
                     // 最后注册
-                    $this->usual_prefix[$v] = $prefix;
+                    $this->usual_prefix[$server_type][$v] = $prefix;
                 }
             }
         }
@@ -338,16 +340,19 @@ class Route
      * @deprecated 暂不启用
      * @global 无
      * @param string $route
+     * @param string $server_type 服务类型 http/websocket/rpc
      * @return string
     */
-    public function package($route) {
+    public function package($route, $server_type='http') {
         $cutting = \x\Config::get('route.cutting');
+        $server_type = strtolower($server_type);
+
         // 先找普通的
-        if (isset($this->usual_prefix[$route])) {
-            return $this->usual_prefix[$route] . $cutting . $route;
+        if (isset($this->usual_prefix[$server_type][$route])) {
+            return $this->usual_prefix[$server_type][$route] . $cutting . $route;
         }
         // 再找通配符
-        foreach ($this->wildcard_prefix as $key => $value) {
+        foreach ($this->wildcard_prefix[$server_type] as $key => $value) {
             $num = stripos($route, $key);
             if ($num === 0) {
                 return $value . $cutting . $route;

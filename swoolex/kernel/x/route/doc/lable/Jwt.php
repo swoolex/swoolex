@@ -31,7 +31,7 @@ class Jwt extends Basics
             // 更新容器
             return $this->_return();
         }
-        $route = $route['own']['Jwt'][0];
+        $route = $route['own']['Jwt'];
 
         // 错误提示内容
         $tips = '';

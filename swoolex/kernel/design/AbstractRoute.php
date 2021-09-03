@@ -59,16 +59,19 @@ abstract class AbstractRoute {
          * 内置注解标签大全
         */
         $arr = [
-            'RequestMapping',
-            'Ioc',
-            'AopBefore',
-            'AopAfter',
-            'AopAround',
-            'AopThrows',
-            'Param',
-            'Controller',
-            'onRoute',
-            'TestCase'
+            'Ioc', // 容器
+            'RequestMapping', // 方法路由绑定
+            'AopBefore', // 前置
+            'AopAfter', // 后置
+            'AopAround', // 环绕
+            'AopThrows', // 异常
+            'Controller', // 控制器路由绑定
+            'onRoute', // 不允许访问的路由
+            'Param', // 参数过滤
+            'TestCase', // 单元测试
+            'Csrf', // Csrf
+            'Jwt', // Jwt
+            'Limit', // Limit
         ];
         // 注册自定义注解类
         // 控制器注解

@@ -138,6 +138,8 @@ class App extends AbstractConsole {
         // 清空ENV文件
         $this->reloadEnv();
         \design\StartRecord::clean_env();
+        // 载入路由表注册
+        require_once BOX_PATH.'route.php';
         // 打印服务详情
         $this->start_yes();
         // 启动服务

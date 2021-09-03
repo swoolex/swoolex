@@ -31,7 +31,7 @@ class Csrf extends Basics
             // 更新容器
             return $this->_return();
         }
-        $route = $route['own']['Csrf'][0];
+        $route = $route['own']['Csrf'];
 
         // 错误提示内容
         $tips = '';

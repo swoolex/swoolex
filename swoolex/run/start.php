@@ -26,5 +26,7 @@ require_once ROOT_PATH.'common'.DS.'common.php';
 \x\Error::run()->register();
 // 日志模块初始化
 \x\Log::start();
+// 路由表初始化
+\x\Route::run();
 // 服务启动
 \x\App::run()->start();

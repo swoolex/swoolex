@@ -48,6 +48,7 @@ class Table {
      * @return void
     */
     public function start_http() {
+        $this->table = \x\Route::readAll();
         $cutting = \x\Config::get('route.cutting');
 
         // http路由
@@ -65,6 +66,7 @@ class Table {
      * @return void
     */
     public function start_websocket() {
+        $this->table = \x\Route::readAll();
         $cutting = \x\Config::get('route.cutting');
 
         // websocket路由
@@ -82,6 +84,7 @@ class Table {
      * @return void
     */
     public function start_rpc() {
+        $this->table = \x\Route::readAll();
         $cutting = \x\Config::get('route.cutting');
         
         // rpc路由
@@ -217,7 +220,30 @@ class Table {
             $array['father'] = $class;
             $array['own'] = $val;
 
-            $url = strtolower($url);
+            $url = \x\Route::package(strtolower($url), $route_type);
+            if (isset($this->table[$route_type][$url])) {
+                $param = $this->table[$route_type][$url];
+                $array['n'] = $param['n'];
+                $array['name'] = $param['name'];
+                $array['method'] = $param['method'];
+                // 限流注解
+                if (!empty($array['own']['Limit']) && !empty($param['own']['Limit'])) {
+                    if (empty($array['own']['Limit']['peak']) && !empty($param['own']['peak'])) $array['own']['Limit']['peak'] = $param['own']['Limit']['peak'];
+                    if (empty($array['own']['Limit']['time']) && !empty($param['own']['time'])) $array['own']['Limit']['time'] = $param['own']['Limit']['time'];
+                    if (empty($array['own']['Limit']['start']) && !empty($param['own']['start'])) $array['own']['Limit']['start'] = $param['own']['Limit']['start'];
+                    if (empty($array['own']['Limit']['end']) && !empty($param['own']['end'])) $array['own']['Limit']['end'] = $param['own']['Limit']['end'];
+                } else if (!empty($param['own']['Limit'])){
+                    $array['own']['Limit'] = $param['own']['Limit'];
+                }
+                // 参数注解
+                if (!empty($array['own']['Param']) && !empty($param['own']['Param'])) {
+                    foreach ($param['own']['Param'] as $value) {
+                        $array['own']['Param'][] = $value;
+                    }
+                } else if (!empty($param['own']['Param'])){
+                    $array['own']['Param'] = $param['own']['Param'];
+                }
+            }
             $this->table[$route_type][$url] = $array;
         }
     }
@@ -233,8 +259,9 @@ class Table {
      * @return void
     */
     private function every_file($dir, $list=[]) {
-        $handle = opendir($dir);
+        $this->table = \x\Route::readAll();
 
+        $handle = opendir($dir);
         while ($line = readdir($handle)) {
             if ($line != '.' && $line != '..') {
                 if (is_dir($dir .'/'. $line)) {

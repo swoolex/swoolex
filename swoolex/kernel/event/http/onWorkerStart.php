@@ -68,6 +68,10 @@ class onWorkerStart {
         \design\MountEvent::WorkerStart_SwooleTableStart($workerId);
         // 挂载Rpc服务中心监测器
         \design\MountEvent::WorkerStart_RpcClient($workerId);
+        // 载入路由限流器重置定时任务
+        \design\MountEvent::WorkerStart_LimitRouteReset($this->server, $workerId, 'http');
+        // 载入IP限流器重置定时任务
+        \design\MountEvent::WorkerStart_LimitIpReset($this->server, $workerId);
         // 载入定时任务
         \design\MountEvent::WorkerStart_Crontab($this->server, $workerId);
     }

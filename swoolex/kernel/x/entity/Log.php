@@ -40,7 +40,7 @@ class Log
     */
     public static function run($txt=null){
         if (empty(self::$instance)) {
-            self::$instance = new \x\entity\Log();
+            self::$instance = new static();
         }
         if ($txt) {
             self::$instance->setLog($txt);

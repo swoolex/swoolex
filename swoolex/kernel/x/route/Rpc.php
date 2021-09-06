@@ -84,6 +84,8 @@ class Rpc extends AbstractRoute {
         \x\context\Container::set('controller_method', $this->function);
         // 注册注解类
 
+        // 达到峰值由生命周期抛出错误信息
+        if (\x\Limit::routeVif('rpc', $request_uri) == false) return false;
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamRpc())->run($route);
         if ($ret !== true) {

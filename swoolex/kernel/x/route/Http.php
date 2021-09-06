@@ -73,6 +73,8 @@ class Http extends AbstractRoute {
         \x\context\Container::set('controller_method', $reflection->getmethod($route['name']));
         // 注册注解类
 
+        // 达到峰值由生命周期抛出错误信息
+        if (\x\Limit::routeVif('http', $request_uri) == false) return false;
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamHttp())->run($route);
         if ($ret !== true) return $ret;

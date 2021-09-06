@@ -12,34 +12,16 @@
 */
 
 namespace x\swoole\atomic;
+use design\AbstractSingleCase;
 
-class Action {
-    private static $instance = null;
-    private function __construct(){}
-    private function __clone(){}
-
+class Action 
+{
+    use AbstractSingleCase;
+    
     /**
      * 计数器的集合
     */
     private $list = [];
-    
-    /**
-     * 实例化对象方法，供外部获得唯一的对象
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.26
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $txt
-     * @return App
-    */
-    public static function run(){
-        if (empty(self::$instance)) {
-            self::$instance = new \x\swoole\atomic\Action();
-        }
-
-        return self::$instance;
-    }
 
     /**
      * 判断一个计数器是否存在

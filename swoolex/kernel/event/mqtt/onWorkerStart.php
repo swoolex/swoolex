@@ -66,6 +66,8 @@ class onWorkerStart {
         \design\MountEvent::WorkerStart_MongoDbStart($workerId);
         // 挂载Swoole/Table组件回调通知
         \design\MountEvent::WorkerStart_SwooleTableStart($workerId);
+        // 载入IP限流器重置定时任务
+        \design\MountEvent::WorkerStart_LimitIpReset($this->server, $workerId);
         // 载入定时任务
         \design\MountEvent::WorkerStart_Crontab($this->server, $workerId);
     }

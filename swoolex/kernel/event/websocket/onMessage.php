@@ -31,6 +31,12 @@ class onMessage {
      * @return void
     */
     public function run($server, $frame) {
+        $ip = $server->getClientInfo($frame->fd)['remote_ip'];
+        // 触发限流器
+        if (\x\Limit::ipVif($ip, 'websocket') == false) {
+            return false;
+        }
+
         $this->server = $server;
 
         // 上下文管理

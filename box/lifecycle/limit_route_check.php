@@ -1,7 +1,7 @@
 <?php
 /**
  * +----------------------------------------------------------------------
- * HTTP请求对象类
+ * 路由限流器达到峰值时，回调的通知函数
  * +----------------------------------------------------------------------
  * 官网：https://www.sw-x.cn
  * +----------------------------------------------------------------------
@@ -11,42 +11,34 @@
  * +----------------------------------------------------------------------
 */
 
-namespace x\entity;
-use design\AbstractSingleCase;
+namespace box\lifecycle;
 
-class Request
+class limit_route_check
 {
-    use AbstractSingleCase;
-    
     /**
-     * 请求实例
-    */
-    private $request;
-
-    /**
-     * 设置实例
+     * 接受回调处理
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.0 + 2021.07.20
+     * @version v2.5.5 + 2021-09-06
      * @deprecated 暂不启用
      * @global 无
-     * @param Swoole\Http\Request $request HTTP请求对象
+     * @param string $server_type 服务类型 http/websocket/rpc
+     * @param string $route 触发路由
+     * @param string $data 对应限流配置信息
      * @return void
     */
-    public function set($request) {
-        $this->request = $request;
-    }
-
-    /**
-     * 获取实例
-     * @todo 无
-     * @author 小黄牛
-     * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return Swoole\Http\Request
-    */
-    public function get() {
-        return $this->request;
+    public function run($server_type, $route, $data) {
+        switch ($server_type) {
+            case 'http':
+                
+            break;
+            case 'websocket':
+                
+            break;
+            case 'rpc':
+                
+            break;
+        }
+        return true;
     }
 }

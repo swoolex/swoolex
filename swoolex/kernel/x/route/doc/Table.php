@@ -245,6 +245,13 @@ class Table {
                 }
             }
             $this->table[$route_type][$url] = $array;
+
+            // 限流器注册
+            if (!empty($array['own']['Limit'])) {
+                \x\Limit::routeSet($route_type, $url, $array['own']['Limit'], true)->register();
+            } else {
+                \x\Limit::routeSet($route_type, $url)->register();
+            }
         }
     }
 

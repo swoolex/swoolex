@@ -34,7 +34,7 @@ class Lang {
     */
     public static function run($lang=null){
         if (empty(self::$instance)) {
-            self::$instance = new \x\entity\Lang();
+            self::$instance = new static();
             self::$instance::runtime($lang);
         }
         return self::$instance;

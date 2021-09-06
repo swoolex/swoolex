@@ -293,7 +293,7 @@ class MountEvent {
      * @param int $workerId 进程ID
      * @return void
     */
-    public static  function WorkerStart_MysqlStart($workerId) {
+    public static function WorkerStart_MysqlStart($workerId) {
         if (\x\Config::get('mysql.driver') == 'mysql') {
             // 启动数据库连接池
             \x\db\mysql\Pool::run()->init();
@@ -312,7 +312,7 @@ class MountEvent {
      * @param int $workerId 进程ID
      * @return void
     */
-    public static  function WorkerStart_RedisStart($workerId) {
+    public static function WorkerStart_RedisStart($workerId) {
         // 启动数据库连接池
         \x\redis\Pool::run()->init();
         // 启动连接池检测定时器
@@ -329,7 +329,7 @@ class MountEvent {
      * @param int $workerId 进程ID
      * @return void
     */
-    public static  function WorkerStart_MongoDbStart($workerId) {
+    public static function WorkerStart_MongoDbStart($workerId) {
         // 启动数据库连接池
         \x\mongodb\Pool::run()->init();
         // 启动连接池检测定时器
@@ -346,8 +346,61 @@ class MountEvent {
      * @param int $workerId 进程ID
      * @return void
     */
-    public static  function WorkerStart_SwooleTableStart($workerId) {
+    public static function WorkerStart_SwooleTableStart($workerId) {
         // 通知回调
         \design\Lifecycle::swoole_table_start($workerId);
+    }
+    
+    /**
+     * 路由限流器重置定时任务
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.5 + 2021-09-06
+     * @deprecated 暂不启用
+     * @global 无
+     * @param Swoole $server
+     * @param int $workerId 进程ID
+     * @param string $service_type 服务类型
+     * @return void
+    */
+    public static function WorkerStart_LimitRouteReset($server, $workerId, $service_type) {
+        // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
+        if ($workerId != 0) return false;
+        
+        $list = \x\Limit::readRouteTimeAll($service_type);
+        foreach ($list as $time => $array) {
+            $ms = $time*1000;
+            \Swoole\Timer::tick($ms, function ($timer_id) use ($service_type,$array) {
+                foreach ($array as $route => $i) {
+                    \x\Limit::routeAtomicReset($service_type, $route);
+                }
+            });
+        }
+    }
+
+    /**
+     * IP限流器重置定时任务
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.5 + 2021-09-06
+     * @deprecated 暂不启用
+     * @global 无
+     * @param Swoole $server
+     * @param int $workerId 进程ID
+     * @return void
+    */
+    public static function WorkerStart_LimitIpReset($server, $workerId) {
+        // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
+        if ($workerId != 0) return false;
+        
+        $list = \x\Limit::readIpTimeAll();
+        foreach ($list as $time => $array) {
+            $ms = $time*1000;
+            \Swoole\Timer::tick($ms, function ($timer_id) use ($array) {
+                foreach ($array as $ip => $i) {
+                    \x\Limit::ipAtomicReset($ip);
+                }
+            });
+        }
     }
 }

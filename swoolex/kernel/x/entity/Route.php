@@ -12,12 +12,12 @@
 */
 
 namespace x\entity;
+use design\AbstractSingleCase;
 
 class Route
 {
-    private static $instance = null;
-    private function __construct(){}
-    private function __clone(){}
+    use AbstractSingleCase;
+    
     /**
      * 路由表
     */
@@ -36,27 +36,10 @@ class Route
     private $wildcard_prefix = [];
 
     /**
-     * 单例入口
-     * @todo 无
-     * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
-    */
-    public static function run(){
-        if (empty(self::$instance)) {
-            self::$instance = new \x\entity\Route();
-        }
-        
-        return self::$instance;
-    }
-
-    /**
      * 最终解析方法
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @return void
@@ -89,7 +72,7 @@ class Route
      * 设置路由统一前缀
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param array $rule 映射规则
@@ -140,7 +123,7 @@ class Route
      * 路由规则分解
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param string $server_type 服务类型
@@ -150,8 +133,12 @@ class Route
      * @return void
     */
     public function resolve($server_type, $route, $class, $method=null) {
+        $this->cache = [];
+        
         if (strpos($class, '/')) {
             $class = str_replace('/', '\\', $this->lrtrim($class, '/'));
+        } else {
+            $class = $this->lrtrim($class, '\\');
         }
 
         $length = strrpos($class, '\\');
@@ -171,7 +158,7 @@ class Route
      * 设置HTTP路由
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param string|array $route 路由地址
@@ -186,7 +173,7 @@ class Route
      * 设置HTTP路由-GET
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param string|array $route 路由地址
@@ -200,7 +187,7 @@ class Route
      * 设置HTTP路由-POST
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param string|array $route 路由地址
@@ -214,7 +201,7 @@ class Route
      * 设置WebSocket路由
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param string|array $route 路由地址
@@ -228,7 +215,7 @@ class Route
      * 设置Rpc路由
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param string|array $route 路由地址
@@ -242,7 +229,7 @@ class Route
      * 设置@Param注解支持
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param array $data
@@ -260,7 +247,7 @@ class Route
      * 设置@Limit注解支持 - 峰值
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param int $peak 限流峰值
@@ -276,7 +263,7 @@ class Route
      * 设置@Limit注解支持 - 间隔时间
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param int $time 间隔时间
@@ -292,7 +279,7 @@ class Route
      * 设置@Limit注解支持 - 开始时间
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param string $date 开始时间
@@ -308,7 +295,7 @@ class Route
      * 设置@Limit注解支持 - 结束时间
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param string $date 结束时间
@@ -321,10 +308,26 @@ class Route
         return $this;
     }
     /**
+     * 设置@Limit注解支持 - 回调生命周期
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.5 + 2021-09-02
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $callback 命名空间地址
+     * @return void
+    */
+    public function limitCallback($callback) {
+        if (!$this->cache) return $this;
+        
+        $this->cache['limit']['callback'] = $callback;
+        return $this;
+    }
+    /**
      * 读取整张路由表
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @return void
@@ -336,7 +339,7 @@ class Route
      * 根据前缀规则，读取出某条路由，拼接后的完整路由
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param string $route
@@ -352,10 +355,12 @@ class Route
             return $this->usual_prefix[$server_type][$route] . $cutting . $route;
         }
         // 再找通配符
-        foreach ($this->wildcard_prefix[$server_type] as $key => $value) {
-            $num = stripos($route, $key);
-            if ($num === 0) {
-                return $value . $cutting . $route;
+        if (isset($this->wildcard_prefix[$server_type])) {
+            foreach ($this->wildcard_prefix[$server_type] as $key => $value) {
+                $num = stripos($route, $key);
+                if ($num === 0) {
+                    return $value . $cutting . $route;
+                }
             }
         }
 
@@ -366,7 +371,7 @@ class Route
      * 删除头尾路由分隔符
      * @todo 无
      * @author 小黄牛
-     * @version v2.5.4 + 2021-09-02
+     * @version v2.5.5 + 2021-09-02
      * @deprecated 暂不启用
      * @global 无
      * @param string $str 路由

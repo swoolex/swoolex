@@ -12,13 +12,13 @@
 */
 
 namespace x\swoole\table;
-
+use design\AbstractSingleCase;
 use x\swoole\table\Mirror;
 
-class Action {
-    private static $instance = null;
-    private function __construct(){}
-    private function __clone(){}
+class Action 
+{
+    use AbstractSingleCase;
+    
     /**
      * 表名
     */
@@ -27,24 +27,6 @@ class Action {
      * key名
     */
     private $key = null;
-    
-    /**
-     * 实例化对象方法，供外部获得唯一的对象
-     * @todo 无
-     * @author 小黄牛
-     * @version v1.0.1 + 2020.05.26
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $txt
-     * @return App
-    */
-    public static function run(){
-        if (empty(self::$instance)) {
-            self::$instance = new \x\swoole\table\Action();
-        }
-
-        return self::$instance;
-    }
 
     /**
      * 设置表名

@@ -26,7 +26,11 @@ require_once ROOT_PATH.'common'.DS.'common.php';
 \x\Error::run()->register();
 // 日志模块初始化
 \x\Log::start();
+// 全局计数器初始化
+\x\swoole\Atomic::run();
 // 路由表初始化
 \x\Route::run();
+// 限流器初始化
+\x\Limit::run();
 // 服务启动
 \x\App::run()->start();

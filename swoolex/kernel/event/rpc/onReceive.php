@@ -35,6 +35,12 @@ class onReceive {
     */
     public function run($server, $fd, $reactorId, $data=null) {
         try {
+            $ip = $server->getClientInfo($fd)['remote_ip'];
+            // 触发限流器
+            if (\x\Limit::ipVif($ip, 'rpc') == false) {
+                return false;
+            }
+
             $this->server = $server;
             
             // 业务挂载

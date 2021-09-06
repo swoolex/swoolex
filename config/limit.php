@@ -17,13 +17,19 @@ return [
     // +-----------------------------
     'route' => [
         // 限流开关 true.开  false.关
-        'limit_switch' => false,
+        'limit_switch' => true,
         // 是否全部路由开启 true.开  false.关
         'global_switch' => false,
         // 统计器重置间隔时间【理解为每次统计的间隔时间】
         'reset_time' => 1,
         // 限流峰值
         'peak_num' => 60,
+        // 启用日期，支持【年-月-日】、【时:分：秒】格式
+        'start_date' => false,
+        // 关闭日期，支持【年-月-日】、【时:分：秒】格式
+        'end_date' => false,
+        // 限流器触发回调地址
+        'callback' => '\\box\\lifecycle\\limit_route_check',
     ],
 
     // +-----------------------------
@@ -31,12 +37,16 @@ return [
     // +-----------------------------
     'ip' => [
         // 限流开关 true.开  false.关
-        'limit_switch' => false,
-        // 是否全部路由开启 true.开  false.关 【不建议开启，因为开启该选项会导致每个IP都会加入统计器，很消耗内存】
-        'global_switch' => false,
+        'limit_switch' => true,
         // 统计器重置间隔时间【理解为每次统计的间隔时间】
-        'reset_time' => 1,
+        'reset_time' => (86400*7),
         // 限流峰值
-        'peak_num' => 60,
+        'peak_num' => 1000,
+        // 启用日期，支持【年-月-日】、【时:分：秒】格式
+        'start_date' => false,
+        // 关闭日期，支持【年-月-日】、【时:分：秒】格式
+        'end_date' => false,
+        // 限流器触发回调地址
+        'callback' => '\\box\\lifecycle\\limit_ip_check',
     ],
 ];

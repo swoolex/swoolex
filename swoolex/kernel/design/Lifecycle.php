@@ -245,4 +245,42 @@ class Lifecycle {
         $obj->run($status);
         return false;
     }
+
+    /**
+     * 路由限流器达到峰值时，回调的通知函数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.3 + 2021-08-25
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $callback 回调地址
+     * @param string $server_type 服务类型 http/websocket/rpc
+     * @param string $route 触发路由
+     * @param string $data 对应限流配置信息
+     * @return void
+    */
+    public static function limit_route($callback, $server_type, $route, $data) {
+        $obj = new $callback;
+        $obj->run($server_type, $route, $data);
+        return false;
+    }
+
+    /**
+     * IP限流器达到峰值时，回调的通知函数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.3 + 2021-08-25
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $callback 回调地址
+     * @param string $server_type 服务类型 http/websocket/rpc/mqtt
+     * @param string $ip 触发IP
+     * @param string $data 对应限流配置信息
+     * @return void
+    */
+    public static function limit_ip($callback, $server_type, $ip, $data) {
+        $obj = new $callback;
+        $obj->run($server_type, $ip, $data);
+        return false;
+    }
 }

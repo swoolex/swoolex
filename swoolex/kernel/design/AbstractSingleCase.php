@@ -1,7 +1,7 @@
 <?php
 /**
  * +----------------------------------------------------------------------
- * Limit注解解析类
+ * 单例-基类
  * +----------------------------------------------------------------------
  * 官网：https://www.sw-x.cn
  * +----------------------------------------------------------------------
@@ -11,33 +11,29 @@
  * +----------------------------------------------------------------------
 */
 
-namespace x\route\doc\lable;
-use \x\route\doc\lable\Basics;
+namespace design;
 
-class Limit extends Basics
+
+trait AbstractSingleCase
 {
+    private static $instance = null;
+    private function __construct(){}
+    private function __clone(){}
+
     /**
-     * 启动项
+     * 实例化对象方法，供外部获得唯一的对象
      * @todo 无
      * @author 小黄牛
-     * @version v1.2.10 + 2020.07.30
+     * @version v2.5.5 + 2021.09.06
      * @deprecated 暂不启用
      * @global 无
-     * @param array $route 路由参数
-     * @return true
+     * @return static
     */
-    public function run($route){
-        if (!isset($route['own']['Limit'])) {
-            // 更新容器
-            return $this->_return();
+    public static function run(...$params){
+        if (empty(self::$instance)) {
+            self::$instance = new static(...$params);
         }
-        $route = $route['own']['Limit'];
 
-        // 这里可能只是用于更新限流器配置信息
-        // 并在限流器中标记该条信息已被注解修改过，不允许重复修改，防止请求并发
-
-        // 更新容器
-        return $this->_return();
+        return self::$instance;
     }
-
 }

@@ -140,6 +140,8 @@ class App extends AbstractConsole {
         \design\StartRecord::clean_env();
         // 载入路由表注册
         require_once BOX_PATH.'route.php';
+        // 载入限流器注册
+        require_once BOX_PATH.'limit.php';
         // 打印服务详情
         $this->start_yes();
         // 启动服务

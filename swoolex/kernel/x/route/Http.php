@@ -24,6 +24,8 @@ class Http extends AbstractRoute {
      * @version v1.2.1 + 2020.07.18
      * @deprecated 暂不启用
      * @global 无
+     * @param Swoole $server 服务实例
+     * @param string $fd 客户端标识
      * @return App
     */
     public function start(){
@@ -74,7 +76,7 @@ class Http extends AbstractRoute {
         // 注册注解类
 
         // 达到峰值由生命周期抛出错误信息
-        if (\x\Limit::routeVif('http', $request_uri) == false) return false;
+        if (\x\Limit::routeVif($this->server, $this->fd, $request_uri, 'http') == false) return false;
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamHttp())->run($route);
         if ($ret !== true) return $ret;

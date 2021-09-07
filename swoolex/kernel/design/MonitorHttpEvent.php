@@ -26,6 +26,28 @@ class MonitorHttpEvent {
     */
     public static function start($server, $config, $request, $response) {
         try {
+            # 防止Chrome的空包
+            $uri = ltrim($request->server['request_uri'], '/');
+            if ($uri == 'favicon.ico') {
+                $response->status(404);
+                $response->end();
+                return false;
+            }
+
+            // 记录上下文
+            \x\context\Request::set($request);
+            \x\context\Response::set($response);
+
+            $ip = $server->getClientInfo($request->fd)['remote_ip'];
+            // 触发限流器
+            if (\x\Limit::ipVif($server, $request->fd, $ip, 'http') == false) {
+                // 销毁上下文
+                \x\context\Request::delete();
+                \x\context\Response::delete();
+                \x\context\Container::delete();
+                return false;
+            }
+            
             // 根目录
             $dir_root = \x\Config::get('server.http_monitor_dir_root');
             // 存储目录
@@ -52,18 +74,6 @@ class MonitorHttpEvent {
             if ($config['credentials']) $response->header('Access-Control-Allow-Credentials', $config['credentials']); 
             if ($config['headers']) $response->header('Access-Control-Allow-Headers', $config['headers']); 
 
-            # 防止Chrome的空包
-            $uri = ltrim($request->server['request_uri'], '/');
-            if ($uri == 'favicon.ico') {
-                $response->status(404);
-                $response->end();
-                return false;
-            }
-
-            // 记录上下文
-            \x\context\Request::set($request);
-            \x\context\Response::set($response);
-
             // 注入调试内容
             if (\x\Config::get('app.de_bug')) {
                 // 请求开始时间
@@ -73,7 +83,7 @@ class MonitorHttpEvent {
             }
 
             # 开始转发路由
-            $obj = new \x\route\Http();
+            $obj = new \x\route\Http($server, $request->fd);
             $obj->start();
 
             // 调用二次转发，不做重载

@@ -29,12 +29,12 @@ class create extends Rpc{
         // 可以这样设置返回值说明
         $this->msg('缺少某些请求参数啦！');
         // 可以这样抛出返回值，并同时设置返回值说明
-        return $this->fetch(false, '缺少某些请求参数啦！');
+        return $this->fetch('成功拉~', '缺少某些请求参数啦！');
 
         // 当然，也支持直接设置返回值说明
         $this->msg = '缺少某些请求参数啦！';
         // 当然，也支持直接抛出返回值
-        return false;
+        return '成功拉~';
     }
     
 }

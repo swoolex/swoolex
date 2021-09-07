@@ -69,6 +69,7 @@ class onWorkerStart {
         // 挂载Swoole/Table组件回调通知
         \design\MountEvent::WorkerStart_SwooleTableStart($workerId);
         // 载入路由限流器重置定时任务
+        \design\MountEvent::WorkerStart_LimitRouteReset($this->server, $workerId, 'http');
         \design\MountEvent::WorkerStart_LimitRouteReset($this->server, $workerId, 'websocket');
         // 载入IP限流器重置定时任务
         \design\MountEvent::WorkerStart_LimitIpReset($this->server, $workerId);

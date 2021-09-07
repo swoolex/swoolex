@@ -77,9 +77,9 @@ class Limit
      * @return void
     */
     public function register() {
-        if ($this->config['route']['limit_switch'] == false) return false;
-
         if ($this->cache_route) {
+            if ($this->config['route']['limit_switch'] == false) return false;
+
             foreach ($this->cache_route as $key => $value) {
                 if (isset($this->route[$value['server_type']][$key])) {
                     $time = $this->route[$value['server_type']][$key]['time'];
@@ -95,6 +95,8 @@ class Limit
             }
             $this->cache_route = [];
         } else if ($this->cache_ip) {
+            if ($this->config['ip']['limit_switch'] == false) return false;
+
             foreach ($this->cache_ip as $key => $value) {
                 if (isset($this->ip[$key])) {
                     $time = $this->ip[$key]['time'];
@@ -590,11 +592,13 @@ class Limit
      * @version v2.5.5 + 2021-09-06
      * @deprecated 暂不启用
      * @global 无
-     * @param string $server_type 服务类型
+     * @param Swoole $server 服务实例
+     * @param string $fd 客户端标识
      * @param string $route 路由地址
+     * @param string $server_type 服务类型
      * @return bool
     */
-    public function routeVif($server_type, $route) {
+    public function routeVif($server, $fd, $route, $server_type) {
         if ($this->config['route']['limit_switch'] == false) return true;
         if (!$this->routeHas($server_type, $route)) return true;
 
@@ -619,7 +623,7 @@ class Limit
         // 读取
         if ($this->routeAtomicGet($server_type, $route) > $data['peak']) {
             // 已经达到峰值
-            \design\Lifecycle::limit_route($data['callback'], $server_type, $route, $data);
+            \design\Lifecycle::limit_route($server, $fd, $data['callback'], $server_type, $route, $data);
             return false;
         }
 
@@ -633,12 +637,14 @@ class Limit
      * @version v2.5.5 + 2021-09-06
      * @deprecated 暂不启用
      * @global 无
+     * @param Swoole $server 服务实例
+     * @param string $fd 客户端标识
      * @param string $ip IP地址
      * @param string $server_type 服务类型
      * @return bool
     */
-    public function ipVif($ip, $server_type) {
-        if ($this->config['route']['limit_switch'] == false) return true;
+    public function ipVif($server, $fd, $ip, $server_type) {
+        if ($this->config['ip']['limit_switch'] == false) return true;
         if (!$this->ipHas($ip)) return true;
 
         $data = $this->ip[$ip];
@@ -661,7 +667,7 @@ class Limit
         // 读取
         if ($this->ipAtomicGet($ip) > $data['peak']) {
             // 已经达到峰值
-            \design\Lifecycle::limit_ip($data['callback'], $server_type, $ip, $data);
+            \design\Lifecycle::limit_ip($server, $fd, $data['callback'], $server_type, $ip, $data);
             return false;
         }
 

@@ -34,6 +34,7 @@ class Table {
     public static function run(){
         if (empty(self::$instance)) {
             self::$instance = new Table();
+            self::$instance->table = \x\Route::readAll();
         }
         return self::$instance;
     }
@@ -48,7 +49,6 @@ class Table {
      * @return void
     */
     public function start_http() {
-        $this->table = \x\Route::readAll();
         $cutting = \x\Config::get('route.cutting');
 
         // http路由
@@ -66,7 +66,6 @@ class Table {
      * @return void
     */
     public function start_websocket() {
-        $this->table = \x\Route::readAll();
         $cutting = \x\Config::get('route.cutting');
 
         // websocket路由
@@ -84,7 +83,6 @@ class Table {
      * @return void
     */
     public function start_rpc() {
-        $this->table = \x\Route::readAll();
         $cutting = \x\Config::get('route.cutting');
         
         // rpc路由
@@ -225,7 +223,8 @@ class Table {
                 $param = $this->table[$route_type][$url];
                 $array['n'] = $param['n'];
                 $array['name'] = $param['name'];
-                $array['method'] = $param['method'];
+                // HTTP路由独有参数
+                if (isset($param['method'])) $array['method'] = $param['method'];
                 // 限流注解
                 if (!empty($array['own']['Limit']) && !empty($param['own']['Limit'])) {
                     if (empty($array['own']['Limit']['peak']) && !empty($param['own']['peak'])) $array['own']['Limit']['peak'] = $param['own']['Limit']['peak'];
@@ -266,8 +265,6 @@ class Table {
      * @return void
     */
     private function every_file($dir, $list=[]) {
-        $this->table = \x\Route::readAll();
-
         $handle = opendir($dir);
         while ($line = readdir($handle)) {
             if ($line != '.' && $line != '..') {

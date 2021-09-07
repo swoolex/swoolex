@@ -38,7 +38,7 @@ class onReceive {
         try {
             $ip = $server->getClientInfo($fd)['remote_ip'];
             // 触发限流器
-            if (\x\Limit::ipVif($ip, 'mqtt') == false) {
+            if (\x\Limit::ipVif($server, $fd, $ip, 'mqtt') == false) {
                 return false;
             }
             
@@ -46,7 +46,7 @@ class onReceive {
             
             // 业务挂载
             $this->mqtt($server, $fd, $reactorId, $data);
-            
+
             // 调用二次转发，不做重载
             $on = new \box\event\server\onReceive;
             $on->run($server, $fd, $reactorId, $data);

@@ -51,12 +51,6 @@ class onRequest {
      * @return void
     */
     public function run($request, $response) {
-        $ip = $this->server->getClientInfo($request->fd)['remote_ip'];
-        // 触发限流器
-        if (\x\Limit::ipVif($ip, 'http') == false) {
-            return false;
-        }
-
         // 业务挂载
         \design\MonitorHttpEvent::start($this->server, $this->config, $request, $response);
     }

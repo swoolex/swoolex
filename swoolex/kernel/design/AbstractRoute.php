@@ -21,6 +21,32 @@ abstract class AbstractRoute {
     protected $session_name = 'PHPSESSID';
 
     /**
+     * 服务实例
+    */
+    protected $server;
+
+    /**
+     * 客户端标识
+    */
+    protected $fd;
+
+    /**
+     * 初始化参数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.5 + 2021-09-07
+     * @deprecated 暂不启用
+     * @global 无
+     * @param Swoole $server 服务实例
+     * @param string $fd 客户端标识
+     * @return void
+    */
+    public function __construct($server=null, $fd=null) {
+        $this->server = $server;
+        $this->fd = $fd;
+    }
+
+    /**
      * 启动项
      * @todo 无
      * @author 小黄牛

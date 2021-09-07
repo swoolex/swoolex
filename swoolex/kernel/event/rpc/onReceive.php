@@ -37,7 +37,7 @@ class onReceive {
         try {
             $ip = $server->getClientInfo($fd)['remote_ip'];
             // 触发限流器
-            if (\x\Limit::ipVif($ip, 'rpc') == false) {
+            if (\x\Limit::ipVif($server, $fd, $ip, 'rpc') == false) {
                 return false;
             }
 

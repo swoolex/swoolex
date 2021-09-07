@@ -92,22 +92,26 @@ class Route
                     // 先注册
                     $this->wildcard_prefix[$server_type][$v] = $prefix;
                     // 删除普通前缀
-                    foreach ($this->usual_prefix[$server_type] as $key => $value) {
-                        $num = stripos($key, $v);
-                        if ($num === 0) {
-                            unset($this->usual_prefix[$server_type][$key]);
-                            continue;
+                    if (isset($this->usual_prefix[$server_type])) {
+                        foreach ($this->usual_prefix[$server_type] as $key => $value) {
+                            $num = stripos($key, $v);
+                            if ($num === 0) {
+                                unset($this->usual_prefix[$server_type][$key]);
+                                continue;
+                            }
                         }
                     }
                 } else {
                     $v = $this->lrtrim($v);
                     // 先找通配符
                     $status = true;
-                    foreach ($this->wildcard_prefix[$server_type] as $key => $value) {
-                        $num = stripos($v, $key);
-                        if ($num === 0) {
-                            $status = false;
-                            break;
+                    if ($this->wildcard_prefix[$server_type]) {
+                        foreach ($this->wildcard_prefix[$server_type] as $key => $value) {
+                            $num = stripos($v, $key);
+                            if ($num === 0) {
+                                $status = false;
+                                break;
+                            }
                         }
                     }
                     if (!$status) continue;

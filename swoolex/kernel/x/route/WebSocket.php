@@ -60,7 +60,9 @@ class WebSocket extends AbstractRoute {
         // 注册注解类
 
         // 达到峰值由生命周期抛出错误信息
-        if (\x\Limit::routeVif('websocket', $request_uri) == false) return false;
+        $server = \x\context\Container::get('websocket_server');
+        $frame = \x\context\Container::get('websocket_frame');
+        if (\x\Limit::routeVif($server, $frame->fd, $request_uri, 'websocket') == false) return false;
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamWebSocket())->run($route);
         if ($ret !== true) return $ret;

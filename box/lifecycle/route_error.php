@@ -22,10 +22,12 @@ class route_error
      * @version v1.1.5 + 2020.07.15
      * @deprecated 暂不启用
      * @global 无
+     * @param Swoole $server 服务实例
+     * @param string $fd 客户端标识
      * @param string $status 错误事件状态码
      * @return bool
     */
-    public function run($status) {
+    public function run($server, $fd, $status) {
         $tips = 'Annotate：SW-X Status：'.$status.' ERROR ！';
 
         $type = \x\Config::get('server.sw_service_type');
@@ -35,8 +37,28 @@ class route_error
             $obj->fetch($tips);
         // websocket请求
         } else if($type == 'websocket') {
-            $obj = new \x\controller\WebSocket();
-            $obj->fetch('route_error', 'error', $tips);
+            if (\x\context\Container::get('websocket_frame')) {
+                $obj = new \x\controller\WebSocket();
+                $obj->fetch('annotate_param_error', 'error', $tips);
+            } else {
+                $obj = new \x\controller\Http();
+                $obj->fetch($tips);
+            }
+        // Rpc请求
+        } else if($type == 'rpc') {
+            $ServerCurrency = new \x\rpc\ServerCurrency();
+            $ServerCurrency->returnJson($server,  $fd, '200', 'route_error', $tips);
+        // MQTT请求
+        } else if($type == 'mqtt') {
+            $data = [
+                'type' => \x\mqtt\common\Types::DISCONNECT,
+                'msg' => $tips,
+            ];
+            if (\x\Config::get('mqtt.protocol_level') == 5) {
+                $server->send($fd, \x\mqtt\v5\Dc::pack($data));
+            } else {
+                $server->send($fd, \x\mqtt\v3\Dc::pack($data));
+            }
         }
         unset($obj);
         return true;

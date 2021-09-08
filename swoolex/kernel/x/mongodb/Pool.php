@@ -102,7 +102,7 @@ class Pool extends AbstractMongoDbPool {
     */
     public function timing_recovery($workerId) {
         // 5秒更新一次当前数据库连接数
-        if ($this->config['is_monitor']) {
+        if ($this->config['is_monitor'] && $this->config['pool_num'] > 0) {
             $time = $this->config['monitor_time']*1000;
             \Swoole\Timer::tick($time, function () use($workerId) {
                 // 10分钟没用就回收

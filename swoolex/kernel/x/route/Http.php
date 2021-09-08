@@ -78,37 +78,37 @@ class Http extends AbstractRoute {
         // 达到峰值由生命周期抛出错误信息
         if (\x\Limit::routeVif($this->server, $this->fd, $request_uri, 'http') == false) return false;
         // 参数过滤
-        $ret = (new \x\route\doc\lable\ParamHttp())->run($route);
+        $ret = (new \x\route\doc\lable\ParamHttp($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
         // Csrf
-        $ret = (new \x\route\doc\lable\Csrf())->run($route);
+        $ret = (new \x\route\doc\lable\Csrf($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
         // Jwt
-        $ret = (new \x\route\doc\lable\Jwt())->run($route);
+        $ret = (new \x\route\doc\lable\Jwt($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
         // 容器
-        $ret = (new \x\route\doc\lable\Ioc())->run($route);
+        $ret = (new \x\route\doc\lable\Ioc($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
         // 单元测试操作
-        $ret = (new \x\route\doc\lable\TestCase())->run($route, $request_uri);
+        $ret = (new \x\route\doc\lable\TestCase($this->server, $this->fd))->run($route, $request_uri);
         if ($ret !== true) return $ret;
         // 前置操作
-        $ret = (new \x\route\doc\lable\AopBefore())->run($route);
+        $ret = (new \x\route\doc\lable\AopBefore($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
         // 环绕操作
-        $ret = (new \x\route\doc\lable\AopAround())->run($route);
+        $ret = (new \x\route\doc\lable\AopAround($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
         // 自定义注解
-        $ret = $this->diy_annotation($route);
+        $ret = $this->diy_annotation($this->server, $this->fd, $route);
         if ($ret !== true) return $ret;
         // 异常操作 - 在这里触发控制器
-        $ret = (new \x\route\doc\lable\AopThrows())->run($route);
+        $ret = (new \x\route\doc\lable\AopThrows($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
         // 环绕操作
-        $ret = (new \x\route\doc\lable\AopAround())->run($route, 2);
+        $ret = (new \x\route\doc\lable\AopAround($this->server, $this->fd))->run($route, 2);
         if ($ret !== true) return $ret;
         // 后置操作
-        $ret = (new \x\route\doc\lable\AopAfter())->run($route);
+        $ret = (new \x\route\doc\lable\AopAfter($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
 
         return false;

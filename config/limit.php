@@ -17,7 +17,7 @@ return [
     // +-----------------------------
     'route' => [
         // 限流开关 true.开  false.关
-        'limit_switch' => true,
+        'limit_switch' => false,
         // 是否全部路由开启 true.开  false.关
         'global_switch' => false,
         // 统计器重置间隔时间【理解为每次统计的间隔时间】
@@ -37,7 +37,7 @@ return [
     // +-----------------------------
     'ip' => [
         // 限流开关 true.开  false.关
-        'limit_switch' => true,
+        'limit_switch' => false,
         // 统计器重置间隔时间【理解为每次统计的间隔时间】
         'reset_time' => (86400*7),
         // 限流峰值

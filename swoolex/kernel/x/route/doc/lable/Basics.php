@@ -18,6 +18,8 @@ class Basics
     /**
      * 初始化请求
     */
+    protected $server;
+    protected $fd;
     protected $request;
     protected $response;
     protected $websocket_server;
@@ -25,8 +27,10 @@ class Basics
     protected $controller_instance;
     protected $controller_method;
 
-    public function __construct() {
+    public function __construct($server=null, $fd=null) {
         // 获取容器
+        $this->server = $server;
+        $this->fd = $fd;
         $this->request = \x\context\Request::get();
         $this->response = \x\context\Response::get();
         $this->websocket_server = \x\context\Container::get('websocket_server');
@@ -69,7 +73,7 @@ class Basics
             return true;
         }
 		
-		\design\Lifecycle::annotate_param($callback, $tips, $name, $status, $attach);
+		\design\Lifecycle::annotate_param($this->server, $this->fd, $callback, $tips, $name, $status, $attach);
         
         return false;
     }
@@ -93,7 +97,7 @@ class Basics
             return true;
         }
 		
-        \design\Lifecycle::route_error($status);
+        \design\Lifecycle::route_error($this->server, $this->fd, $status);
         
         return false;
     }

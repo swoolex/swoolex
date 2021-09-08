@@ -27,7 +27,9 @@ class Mqtt extends AbstractRoute {
      * @global 无
      * @return void
     */
-    public function __construct($obj, $function, $controller, $action) {
+    public function __construct($server, $fd, $obj, $function, $controller, $action) {
+        $this->server = $server;
+        $this->fd = $fd;
         $this->obj = $obj;
         $this->function = $function;
         $this->controller = $controller;
@@ -82,28 +84,28 @@ class Mqtt extends AbstractRoute {
         // 注册注解类
 
         // 参数过滤
-        $ret = (new \x\route\doc\lable\ParamMqtt())->run($route);
+        $ret = (new \x\route\doc\lable\ParamMqtt($this->server, $this->fd))->run($route);
         if ($ret !== true) return $this->clean($ret);
         // 容器
-        $ret = (new \x\route\doc\lable\Ioc())->run($route);
+        $ret = (new \x\route\doc\lable\Ioc($this->server, $this->fd))->run($route);
         if ($ret !== true) return $this->clean($ret);
         // 前置操作
-        $ret = (new \x\route\doc\lable\AopBefore())->run($route);
+        $ret = (new \x\route\doc\lable\AopBefore($this->server, $this->fd))->run($route);
         if ($ret !== true) return $this->clean($ret);
         // 环绕操作
-        $ret = (new \x\route\doc\lable\AopAround())->run($route);
+        $ret = (new \x\route\doc\lable\AopAround($this->server, $this->fd))->run($route);
         if ($ret !== true) return $this->clean($ret);
         // 自定义注解
-        $ret = $this->diy_annotation($route);
+        $ret = $this->diy_annotation($this->server, $this->fd, $route);
         if ($ret !== true) return $this->clean($ret);
         // 异常操作 - 在这里触发控制器
-        $return = (new \x\route\doc\lable\AopThrows())->run($route, true);
+        $return = (new \x\route\doc\lable\AopThrows($this->server, $this->fd))->run($route, true);
         if ($return !== true) return $this->clean($return);
         // 环绕操作
-        $ret = (new \x\route\doc\lable\AopAround())->run($route, 2);
+        $ret = (new \x\route\doc\lable\AopAround($this->server, $this->fd))->run($route, 2);
         if ($ret !== true) return $this->clean($ret);
         // 后置操作
-        $ret = (new \x\route\doc\lable\AopAfter())->run($route);
+        $ret = (new \x\route\doc\lable\AopAfter($this->server, $this->fd))->run($route);
         if ($ret !== true) return $this->clean($ret);
 
         return $return;

@@ -101,6 +101,10 @@ abstract class Event {
             return false;
         }
 
+        // 请求注入容器
+        \x\context\Container::set('server', $this->server);
+        \x\context\Container::set('fd', $this->fd);
+
         // 先注入属性
         $obj = $ref->newInstance();
         $obj->setServer($this->server);
@@ -109,7 +113,12 @@ abstract class Event {
         $obj->setReactorId($this->reactorId);
 
         // 注解挂载
-        return (new \x\route\Mqtt($obj, $function, $controller, $action))->start();
+        $res = (new \x\route\Mqtt($this->server, $this->fd, $obj, $function, $controller, $action))->start();
+
+        // 销毁整个请求级容器
+        \x\context\Container::delete();
+
+        return $res;
     }
 
     /**

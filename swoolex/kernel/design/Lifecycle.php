@@ -121,6 +121,8 @@ class Lifecycle {
      * @version v2.5.0 + 2021.07.20
      * @deprecated 暂不启用
      * @global 无
+     * @param Swoole $server 服务实例
+     * @param string $fd 客户端标识
      * @param string $callback 回调事件
      * @param string $tips 自定义提示内容
      * @param string $name 参数名称
@@ -128,9 +130,9 @@ class Lifecycle {
      * @param string $attach 错误检测返回附加说明
      * @return void
     */
-    public static function annotate_param($callback, $tips, $name, $status, $attach=null) {
+    public static function annotate_param($server, $fd, $callback, $tips, $name, $status, $attach=null) {
         $obj = new \box\lifecycle\annotate_param();
-        $obj->run($tips, $name, $status, $attach);
+        $obj->run($server, $fd, $tips, $name, $status, $attach);
         unset($obj);
         return true;
     }
@@ -205,12 +207,14 @@ class Lifecycle {
      * @version v2.5.3 + 2021-08-25
      * @deprecated 暂不启用
      * @global 无
+     * @param Swoole $server 服务实例
+     * @param string $fd 客户端标识
      * @param string $status 错误事件状态码
      * @return void
     */
-    public static function route_error($status) {
+    public static function route_error($server, $fd, $status) {
         $obj = new \box\lifecycle\route_error();
-        $obj->run($status);
+        $obj->run($server, $fd, $status);
         return false;
     }
 

@@ -66,6 +66,7 @@ class onReceive {
     private function rpc($server, $fd, $reactorId, $data) {
         // 请求注入容器
         \x\context\Container::set('server', $server);
+        \x\context\Container::set('fd', $fd);
         \x\context\Container::set('reactorId', $reactorId);
         // 数据解密
         if (Config::get('rpc.aes_status') == true) {

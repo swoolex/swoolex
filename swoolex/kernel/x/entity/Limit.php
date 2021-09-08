@@ -613,11 +613,11 @@ class Limit
         // 日期判断
         if ($data['start']) {
             // 还没开始
-            if ($this->dateTurnTime($data['start']) > $time) return true;
+            if (\x\built\Time::dateTurnTime($data['start']) > $time) return true;
         }
         if ($data['end']) {
             // 已经结束
-            if ($this->dateTurnTime($data['end']) < $time) return true;
+            if (\x\built\Time::dateTurnTime($data['end']) < $time) return true;
         }
 
         // 读取
@@ -658,11 +658,11 @@ class Limit
         // 日期判断
         if ($data['start']) {
             // 还没开始
-            if ($this->dateTurnTime($data['start']) > $time) return true;
+            if (\x\built\Time::dateTurnTime($data['start']) > $time) return true;
         }
         if ($data['end']) {
             // 已经结束
-            if ($this->dateTurnTime($data['end']) < $time) return true;
+            if (\x\built\Time::dateTurnTime($data['end']) < $time) return true;
         }
         // 读取
         if ($this->ipAtomicGet($ip) > $data['peak']) {

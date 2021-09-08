@@ -29,30 +29,72 @@ class controller_error
     */
     public function run($e, $error, $source) {
         $type = \x\Config::get('server.sw_service_type');
+
         // HTTP请求
         if ($type == 'http') {
-            // 开启调试模式则记录错误日志
-            if (\x\Config::get('app.de_bug') == true) {
-                # 引入详细报错页面
-                $exceptionFile = EXAMPLES_PATH.'tpl/error_test.php';
-            } else {
-                # 引入简单报错页面
-                $exceptionFile = EXAMPLES_PATH.'tpl/error_formal.php';
-            }
-
-            // 引入文件
-            ob_start();
-            include $exceptionFile;
-            $html = ob_get_clean();
-
-            $obj = new \x\controller\Http();
-            $obj->fetch($html);
+            $obj = $this->http($e, $error, $source);
         // websocket请求
-        } else  if($type == 'websocket') {
-            $obj = new \x\controller\WebSocket();
-            $obj->fetch('route_error', 'error', $error);
+        } else if($type == 'websocket') {
+            if (\x\context\Container::get('websocket_frame')) {
+                $obj = new \x\controller\WebSocket();
+                $obj->fetch('route_error', 'error', $error);
+            } else {
+                $obj = $this->http($e, $error, $source);
+            }
+        // Rpc请求
+        } else if($type == 'rpc') {
+            $ServerCurrency = new \x\rpc\ServerCurrency();
+            $ServerCurrency->returnJson(
+                \x\context\Container::get('server'),  
+                \x\context\Container::get('fd'), 
+                '200', 
+                'route_error', 
+                $error
+            );
+        // MQTT请求
+        } else if($type == 'mqtt') {
+            $server = \x\context\Container::get('server');
+            $fd = \x\context\Container::get('fd');
+            $data = [
+                'type' => \x\mqtt\common\Types::DISCONNECT,
+                'msg' => $error,
+            ];
+            if (\x\Config::get('mqtt.protocol_level') == 5) {
+                $server->send($fd, \x\mqtt\v5\Dc::pack($data));
+            } else {
+                $server->send($fd, \x\mqtt\v3\Dc::pack($data));
+            }
         }
         unset($obj);
         return true;
+    }
+
+    /**
+     * HTTP服务的错误界面
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.5 + 2021-09-08
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function http($e, $error, $source) {
+        // 开启调试模式则记录错误日志
+        if (\x\Config::get('app.de_bug') == true) {
+            # 引入详细报错页面
+            $exceptionFile = EXAMPLES_PATH.'tpl/error_test.php';
+        } else {
+            # 引入简单报错页面
+            $exceptionFile = EXAMPLES_PATH.'tpl/error_formal.php';
+        }
+
+        // 引入文件
+        ob_start();
+        include $exceptionFile;
+        $html = ob_get_clean();
+
+        $obj = new \x\controller\Http();
+        $obj->fetch($html);
+        unset($obj);
     }
 }

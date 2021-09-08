@@ -77,10 +77,13 @@ abstract class AbstractRoute {
      * @version v1.2.16 + 2020.10.27
      * @deprecated 暂不启用
      * @global 无
+     * @param Swoole $server 服务实例
+     * @param string $fd 客户端标识
      * @param array $route 被找到的路由
      * @return bool
     */
-    protected final function diy_annotation($route) {
+    protected final function diy_annotation($server, $fd, $route) {
+
         /**
          * 内置注解标签大全
         */
@@ -108,7 +111,7 @@ abstract class AbstractRoute {
                 // 存在则载入
                 if (file_exists($file)) {
                     $class = '\box\annotation\\'.$k;
-                    $obj = new $class;
+                    $obj = new $class($server, $fd);
                     $ret = $obj->run($v, 1);
                     if ($ret !== true) return $ret;
                 }
@@ -122,7 +125,7 @@ abstract class AbstractRoute {
                 // 存在则载入
                 if (file_exists($file)) {
                     $class = '\box\annotation\\'.$k;
-                    $obj = new $class;
+                    $obj = new $class($server, $fd);
                     $ret = $obj->run($v, 2);
                     if ($ret !== true) return $ret;
                 }

@@ -64,31 +64,31 @@ class WebSocket extends AbstractRoute {
         $frame = \x\context\Container::get('websocket_frame');
         if (\x\Limit::routeVif($server, $frame->fd, $request_uri, 'websocket') == false) return false;
         // 参数过滤
-        $ret = (new \x\route\doc\lable\ParamWebSocket())->run($route);
+        $ret = (new \x\route\doc\lable\ParamWebSocket($server, $frame->fd))->run($route);
         if ($ret !== true) return $ret;
         // 容器
-        $ret = (new \x\route\doc\lable\Ioc())->run($route);
+        $ret = (new \x\route\doc\lable\Ioc($server, $frame->fd))->run($route);
         if ($ret !== true) return $ret;
         // 单元测试操作
-        $ret = (new \x\route\doc\lable\TestCase())->run($route, $request_uri);
+        $ret = (new \x\route\doc\lable\TestCase($server, $frame->fd))->run($route, $request_uri);
         if ($ret !== true) return $ret;
         // 前置操作
-        $ret = (new \x\route\doc\lable\AopBefore())->run($route);
+        $ret = (new \x\route\doc\lable\AopBefore($server, $frame->fd))->run($route);
         if ($ret !== true) return $ret;
         // 环绕操作
-        $ret = (new \x\route\doc\lable\AopAround())->run($route);
+        $ret = (new \x\route\doc\lable\AopAround($server, $frame->fd))->run($route);
         if ($ret !== true) return $ret;
         // 自定义注解
-        $ret = $this->diy_annotation($route);
+        $ret = $this->diy_annotation($server, $frame->fd, $route);
         if ($ret !== true) return $ret;
         // 异常操作 - 在这里触发控制器
-        $ret = (new \x\route\doc\lable\AopThrows())->run($route);
+        $ret = (new \x\route\doc\lable\AopThrows($server, $frame->fd))->run($route);
         if ($ret !== true) return $ret;
         // 环绕操作
-        $ret = (new \x\route\doc\lable\AopAround())->run($route, 2);
+        $ret = (new \x\route\doc\lable\AopAround($server, $frame->fd))->run($route, 2);
         if ($ret !== true) return $ret;
         // 后置操作
-        $ret = (new \x\route\doc\lable\AopAfter())->run($route);
+        $ret = (new \x\route\doc\lable\AopAfter($server, $frame->fd))->run($route);
         if ($ret !== true) return $ret;
 
         return false;

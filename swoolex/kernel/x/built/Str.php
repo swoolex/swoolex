@@ -27,7 +27,7 @@ class Str
      * @param bool $lower 是否只小写
      * @return bool
     */
-    public static function contain($cover, $condition, $lower=false) {
+    public static function iScontain($cover, $condition, $lower=false) {
         if ($lower == true) {
             if (strpos($cover, $condition) !== false) return true;
         } else {
@@ -48,7 +48,7 @@ class Str
      * @param bool $lower 是否只小写
      * @return bool
     */
-    public static function start($cover, $condition, $lower=false) {
+    public static function iSstart($cover, $condition, $lower=false) {
         if ($lower == true) {
             if (strpos($cover, $condition) === 0) return true;
         } else {
@@ -69,13 +69,30 @@ class Str
      * @param bool $lower 是否只小写
      * @return bool
     */
-    public static function end($cover, $condition, $lower=false) {
+    public static function iSend($cover, $condition, $lower=false) {
+        $length = strlen($cover)-strlen($condition);
         if ($lower == true) {
-            if (strpos($cover, $condition) === strlen($cover)) return true;
+            if (strrpos($cover, $condition) === $length) return true;
         } else {
-            if (stripos($cover, $condition) === strlen($cover)) return true;
+            if (strripos($cover, $condition) === $length) return true;
         }
         return false;
+    }
+
+    /**
+     * 替换字符串第一次出现的位置
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.5 + 2021-09-07
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $str 条件字符串
+     * @param string $condition 目标字符串
+     * @param string $cover 替换的字符串
+     * @return string
+    */
+    public static function replaceStart($str, $condition, $cover) {
+        return substr_replace($str, $cover, strpos($str, $condition), strlen($condition));
     }
 
     /**

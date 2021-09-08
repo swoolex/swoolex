@@ -87,39 +87,39 @@ class Rpc extends AbstractRoute {
         // 达到峰值由生命周期抛出错误信息
         if (\x\Limit::routeVif($this->server, $this->fd, $request_uri, 'rpc') == false) return false;
         // 参数过滤
-        $ret = (new \x\route\doc\lable\ParamRpc())->run($route);
+        $ret = (new \x\route\doc\lable\ParamRpc($this->server, $this->fd))->run($route);
         if ($ret !== true) {
             return $this->ServerCurrency->returnJson($this->server, $this->fd, '508', Tips::RPC_SERVER_ROUTE_8, $this->data);
         }
         // 容器
-        $ret = (new \x\route\doc\lable\Ioc())->run($route);
+        $ret = (new \x\route\doc\lable\Ioc($this->server, $this->fd))->run($route);
         if ($ret !== true) {
             return $this->ServerCurrency->returnJson($this->server, $this->fd, '509', Tips::RPC_SERVER_ROUTE_9, $this->data);
         }
         // 前置操作
-        $ret = (new \x\route\doc\lable\AopBefore())->run($route);
+        $ret = (new \x\route\doc\lable\AopBefore($this->server, $this->fd))->run($route);
         if ($ret !== true) {
             return $this->ServerCurrency->returnJson($this->server, $this->fd, '510', Tips::RPC_SERVER_ROUTE_10, $this->data);
         }
         // 环绕操作
-        $ret = (new \x\route\doc\lable\AopAround())->run($route);
+        $ret = (new \x\route\doc\lable\AopAround($this->server, $this->fd))->run($route);
         if ($ret !== true) {
             return $this->ServerCurrency->returnJson($this->server, $this->fd, '511', Tips::RPC_SERVER_ROUTE_11, $this->data);
         }
         // 自定义注解
-        $ret = $this->diy_annotation($route);
+        $ret = $this->diy_annotation($this->server, $this->fd, $route);
         if ($ret !== true) {
             return $this->ServerCurrency->returnJson($this->server, $this->fd, '512', Tips::RPC_SERVER_ROUTE_12, $this->data);
         }
         // 异常操作 - 在这里触发控制器
-        $return = (new \x\route\doc\lable\AopThrows())->run($route, true);
+        $return = (new \x\route\doc\lable\AopThrows($this->server, $this->fd))->run($route, true);
         // 环绕操作
-        $ret = (new \x\route\doc\lable\AopAround())->run($route, 2);
+        $ret = (new \x\route\doc\lable\AopAround($this->server, $this->fd))->run($route, 2);
         if ($ret !== true) {
             return $this->ServerCurrency->returnJson($this->server, $this->fd, '513', Tips::RPC_SERVER_ROUTE_13, $this->data);
         }
         // 后置操作
-        $ret = (new \x\route\doc\lable\AopAfter())->run($route);
+        $ret = (new \x\route\doc\lable\AopAfter($this->server, $this->fd))->run($route);
         if ($ret !== true) {
             return $this->ServerCurrency->returnJson($this->server, $this->fd, '514', Tips::RPC_SERVER_ROUTE_14, $this->data);
         }

@@ -149,6 +149,24 @@ class Route
         $controller = substr($class, 0, $length);
         $action = substr($class, $length+1);
 
+        switch ($server_type) {
+            case 'http':
+                if (\x\built\Str::iSstart($controller, 'app\\http') == false) {
+                    $controller = 'app\\http\\'.$controller;
+                }
+            break;
+            case 'websocket':
+                if (\x\built\Str::iSstart($controller, 'app\\websocket') == false) {
+                    $controller = 'app\\websocket\\'.$controller;
+                }
+            break;
+            case 'rpc':
+                if (\x\built\Str::iSstart($controller, 'app\\rpc') == false) {
+                    $controller = 'app\\rpc\\'.$controller;
+                }
+            break;
+        }
+
         $this->cache = [
             'server_type' => $server_type,
             'route' => $this->lrtrim($route),

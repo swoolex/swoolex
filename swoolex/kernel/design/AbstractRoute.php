@@ -104,30 +104,34 @@ abstract class AbstractRoute {
         ];
         // 注册自定义注解类
         // 控制器注解
-        foreach ($route['father'] as $k=>$v) {
-            if (in_array($k, $arr) == false) {
-                // 自定义注解类地址
-                $file = ROOT_PATH.'/box/annotation/'.$k.'.php';
-                // 存在则载入
-                if (file_exists($file)) {
-                    $class = '\box\annotation\\'.$k;
-                    $obj = new $class($server, $fd);
-                    $ret = $obj->run($v, 1);
-                    if ($ret !== true) return $ret;
+        if (isset($route['father'])) {
+            foreach ($route['father'] as $k=>$v) {
+                if (in_array($k, $arr) == false) {
+                    // 自定义注解类地址
+                    $file = ROOT_PATH.'/box/annotation/'.$k.'.php';
+                    // 存在则载入
+                    if (file_exists($file)) {
+                        $class = '\box\annotation\\'.$k;
+                        $obj = new $class($server, $fd);
+                        $ret = $obj->run($v, 1);
+                        if ($ret !== true) return $ret;
+                    }
                 }
             }
         }
         // 操作方法注解
-        foreach ($route['own'] as $k=>$v) {
-            if (in_array($k, $arr) == false) {
-                // 自定义注解类地址
-                $file = ROOT_PATH.'/box/annotation/'.$k.'.php';
-                // 存在则载入
-                if (file_exists($file)) {
-                    $class = '\box\annotation\\'.$k;
-                    $obj = new $class($server, $fd);
-                    $ret = $obj->run($v, 2);
-                    if ($ret !== true) return $ret;
+        if (isset($route['own'])) {
+            foreach ($route['own'] as $k=>$v) {
+                if (in_array($k, $arr) == false) {
+                    // 自定义注解类地址
+                    $file = ROOT_PATH.'/box/annotation/'.$k.'.php';
+                    // 存在则载入
+                    if (file_exists($file)) {
+                        $class = '\box\annotation\\'.$k;
+                        $obj = new $class($server, $fd);
+                        $ret = $obj->run($v, 2);
+                        if ($ret !== true) return $ret;
+                    }
                 }
             }
         }

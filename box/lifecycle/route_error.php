@@ -39,7 +39,7 @@ class route_error
         } else if($type == 'websocket') {
             if (\x\context\Container::get('websocket_frame')) {
                 $obj = new \x\controller\WebSocket();
-                $obj->fetch('annotate_param_error', 'error', $tips);
+                $obj->fetch('route_error', 'error', $tips);
             } else {
                 $obj = new \x\controller\Http();
                 $obj->fetch($tips);

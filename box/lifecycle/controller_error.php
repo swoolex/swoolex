@@ -37,7 +37,7 @@ class controller_error
         } else if($type == 'websocket') {
             if (\x\context\Container::get('websocket_frame')) {
                 $obj = new \x\controller\WebSocket();
-                $obj->fetch('route_error', 'error', $error);
+                $obj->fetch('controller_error', 'error', $error);
             } else {
                 $obj = $this->http($e, $error, $source);
             }
@@ -48,7 +48,7 @@ class controller_error
                 \x\context\Container::get('server'),  
                 \x\context\Container::get('fd'), 
                 '200', 
-                'route_error', 
+                'controller_error', 
                 $error
             );
         // MQTT请求

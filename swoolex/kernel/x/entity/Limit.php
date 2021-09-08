@@ -675,40 +675,6 @@ class Limit
         return $this->ipAtomicInc($ip);
     }
     /**
-     * 日期转换时间戳
-     * @todo 无
-     * @author 小黄牛
-     * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $date 时间格式
-     * @return int 时间戳
-    */
-    private function dateTurnTime($date) {
-        $date = str_replace('/', '-', $date);
-        // 年月日格式
-        if (strpos($date, '-') !== false) {
-            $arr = explode('-', $date);
-            // 缺少年
-            if (count($arr) == 1) {
-                $date = date('Y', time()).'-'.$date;
-            }
-            return strtotime($date); 
-        // 日格式
-        } else if (strpos($date, ' ') !== false) {
-            $date = date('Y-m', time()).'-'.$date;
-            return strtotime($date); 
-        }
-        // 时分秒格式
-        $arr = explode(':', $date);
-        $time = strtotime(date('Y-m-d', time()));
-        $time += $arr[0]*3600;
-        if (isset($arr[1])) $time += $arr[1]*60;
-        if (isset($arr[2])) $time += $arr[2];
-
-        return $time;
-    }
-    /**
      * 删除头尾路由分隔符
      * @todo 无
      * @author 小黄牛

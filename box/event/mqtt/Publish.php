@@ -1,7 +1,7 @@
 <?php
 /**
  * +----------------------------------------------------------------------
- * MQTT - 服务端 - Dc - 消息事件处理 - 【建立连接时】
+ * MQTT - 服务端 - Dc - 消息事件处理 - 【发布消息时】
  * +----------------------------------------------------------------------
  * 官网：https://www.sw-x.cn
  * +----------------------------------------------------------------------
@@ -11,19 +11,19 @@
  * +----------------------------------------------------------------------
 */
 
-namespace box\event\mqtt\v5;
+namespace box\event\mqtt;
 
 use x\mqtt\base\Event;
-use x\mqtt\v5\Dc;
 use x\mqtt\common\Types;
 
-class Connect extends Event {
+class Publish extends Event {
     /**
      * 说明：
      * $this->getServer() : 获取Swoole实例
      * $this->getFd() : 获取当前请求标示符
      * $this->getData() : 获取已解码后的数据包
      * $this->getReactorId : 获取当前请求所处的线程ID
+     * $this->getLevel : 获得协议类型信息
     */
     
     /**
@@ -36,23 +36,27 @@ class Connect extends Event {
      * @return void
     */ 
     public function run() {
+        // 这里可以使用controller，挂载控制器
+        // 控制器，方法[默认index]
+        // $this->controller('system/index');
 
-        // 处理完成后需要回复以下内容
-        $this->getServer()->send(
-            $this->getFd(),
-            Dc::pack([
-                'type' => Types::CONNACK,
-                'code' => 0,
-                'session_present' => 0,
-                'properties' => [
-                    'maximum_packet_size' => 2097152, // 最大数据包大小，默认2M
-                    'retain_available' => true, // retain保留消息状态
-                    'shared_subscription_available' => true, // 是否支持共享订阅
-                    'subscription_identifier_available' => true, // 是否支持订阅标识符
-                    'topic_alias_maximum' => 65535, // 最大订阅数
-                    'wildcard_subscription_available' => true, // 订阅时是否可以使用通配符主题
-                ],
-            ])
-        );
+        // 获得协议处理类
+        $arr = $this->getLevel();
+        $class = $arr['class'];
+
+        // 默认的广播示例控制器
+        $this->controller('system/index', 'run');
+
+        // // 处理完成后需要回复以下内容
+        $data = $this->getData();
+        if ($data['qos'] === 1) {
+            $this->getServer()->send(
+                $this->getFd(),
+                $class::pack([
+                    'type' => Types::PUBACK,
+                    'message_id' => $data['message_id'] ?? '',
+                ])
+            );
+        }
     }
 }

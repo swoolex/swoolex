@@ -402,7 +402,7 @@ class Http {
 	*/
 	public final function verify($num=1, $session=null, $type=null) {
         $Response = \x\context\Response::get();
-        \x\Verify::entry($num, $session, $type, $Response);
+        \x\verify\Figure::entry($num, $session, $type, $Response);
     }
 
     /**
@@ -417,7 +417,7 @@ class Http {
 	 * @param boool
 	*/
 	public final function verify_check($code, $session=null) {
-        return \x\Verify::check($code, $session);
+        return \x\verify\Figure::check($code, $session);
     }
 
     /**

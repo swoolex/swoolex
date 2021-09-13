@@ -1,7 +1,7 @@
 <?php
 /**
  * +----------------------------------------------------------------------
- * MQTT - 服务端 - Dc - 消息事件处理 - 【取消订阅时】
+ * MQTT - 服务端 - Dc - 消息事件处理 - 【心跳请求时】
  * +----------------------------------------------------------------------
  * 官网：https://www.sw-x.cn
  * +----------------------------------------------------------------------
@@ -11,19 +11,19 @@
  * +----------------------------------------------------------------------
 */
 
-namespace box\event\mqtt\v3;
+namespace box\event\mqtt;
 
 use x\mqtt\base\Event;
 use x\mqtt\common\Types;
-use x\mqtt\v3\Dc;
 
-class UnSubscribe extends Event {
+class Pingreq extends Event {
     /**
      * 说明：
      * $this->getServer() : 获取Swoole实例
      * $this->getFd() : 获取当前请求标示符
      * $this->getData() : 获取已解码后的数据包
      * $this->getReactorId : 获取当前请求所处的线程ID
+     * $this->getLevel : 获得协议类型信息
     */
     
     /**
@@ -36,14 +36,15 @@ class UnSubscribe extends Event {
      * @return void
     */ 
     public function run() {
-        $data = $this->getData();
-        
+        // 获得协议处理类
+        $arr = $this->getLevel();
+        $class = $arr['class'];
+
         // 处理完成后需要回复以下内容
         $this->getServer()->send(
-            $this->getFd(),
-            Dc::pack([
-                'type' => Types::UNSUBACK,
-                'message_id' => $data['message_id'] ?? '',
+            $this->getFd(), 
+            $class::pack([
+                'type' => Types::PINGRESP
             ])
         );
     }

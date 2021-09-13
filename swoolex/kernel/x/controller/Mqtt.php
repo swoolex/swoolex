@@ -63,6 +63,11 @@ class Mqtt {
     public final function getData() {
         return $this->data;
     }
+    public final function getLevel() {
+        $server = $this->getServer();
+        $fd = $this->getFd();
+        return $server->fds[$fd];
+    }
 
     /**
      * 获取某个主题下的全部设备信息
@@ -136,10 +141,8 @@ class Mqtt {
      * @return bool
     */
     protected final function send($fd, $data) {
-        if (\x\Config::get('mqtt.protocol_level') == 5) {
-            return  $this->server->send($fd, \x\mqtt\v5\Dc::pack($data));
-        } else {
-            return  $this->server->send($fd, \x\mqtt\v3\Dc::pack($data));
-        }
+        $arr = $this->getLevel();
+        $class = $arr['class'];
+        return $this->server->send($fd, $class::pack($data));
     }
 }

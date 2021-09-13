@@ -86,4 +86,12 @@ class UnPack {
 
         return substr($data, $headBytes, $remainingLength);
     }
+
+    // 获取协议类型
+    public static function getLevel($data) {
+        $remaining = static::getRemaining($data);
+        $length = unpack('n', $remaining)[1];
+
+        return ord($remaining[$length + 2]);
+    }
 }

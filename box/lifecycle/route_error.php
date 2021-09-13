@@ -54,11 +54,9 @@ class route_error
                 'type' => \x\mqtt\common\Types::DISCONNECT,
                 'msg' => $tips,
             ];
-            if (\x\Config::get('mqtt.protocol_level') == 5) {
-                $server->send($fd, \x\mqtt\v5\Dc::pack($data));
-            } else {
-                $server->send($fd, \x\mqtt\v3\Dc::pack($data));
-            }
+            $arr = $server->fds[$fd];
+            $class = $arr['class'];
+            $server->send($fd, $class::pack($data));
         }
         unset($obj);
         return true;

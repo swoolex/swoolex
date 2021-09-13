@@ -90,7 +90,10 @@ class Unpacking {
         $controller_path = APP_PATH.'http';
         $view_path = APP_PATH.'view';
 
-        if (!is_dir($controller_path)) mkdir($controller_path, 0755);
+        if (is_dir($controller_path)) return true;
+        
+        mkdir($controller_path, 0755);
+
         if (!is_dir($view_path)) mkdir($view_path, 0755);
 
         $dir = $controller_path.DS.'Index.php';
@@ -110,7 +113,9 @@ class Unpacking {
     public static function unpack_websocket() {
         $controller_path = APP_PATH.'websocket';
 
-        if (!is_dir($controller_path)) mkdir($controller_path, 0755);
+        if (is_dir($controller_path)) return true;
+        
+        mkdir($controller_path, 0755);
         
         $dir = $controller_path.DS.'Index.php';
         if (file_exists($dir)) return true;
@@ -129,7 +134,9 @@ class Unpacking {
     private static function unpack_rpc() {
         $controller_path = APP_PATH.'rpc';
 
-        if (!is_dir($controller_path)) mkdir($controller_path, 0755);
+        if (is_dir($controller_path)) return true;
+        
+        mkdir($controller_path, 0755);
 
         $controller_path = $controller_path.DS.'order';
         if (!is_dir($controller_path)) mkdir($controller_path, 0755);
@@ -151,7 +158,9 @@ class Unpacking {
     private static function unpack_mqtt() {
         $controller_path = APP_PATH.'mqtt';
 
-        if (!is_dir($controller_path)) mkdir($controller_path, 0755);
+        if (is_dir($controller_path)) return true;
+        
+        mkdir($controller_path, 0755);
 
         $controller_path = $controller_path.DS.'system';
         if (!is_dir($controller_path)) mkdir($controller_path, 0755);

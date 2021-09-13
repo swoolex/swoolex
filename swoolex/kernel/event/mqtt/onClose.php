@@ -38,6 +38,7 @@ class onClose {
         $on = new \box\event\server\onClose;
         $on->run($server, $fd, $reactorId);
         
+        unset($server->fds[$fd]);
         \x\context\Container::delete();
     }
 }

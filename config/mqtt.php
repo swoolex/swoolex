@@ -23,8 +23,6 @@ return [
     'user_name' => 'swoolex',
     // 密码
     'password' => 'swoolex',
-    // 版本
-    'protocol_level' => 3, // 支持传入3 | 5
     // 设备最大同时在线数
     'device_max_num' => 100000,
     // 判断设备心跳过期时间(S)

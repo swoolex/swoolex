@@ -66,6 +66,9 @@ abstract class Event {
     protected final function getData() {
         return $this->data;
     }
+    public final function getLevel() {
+        return $this->server->fds[$this->fd];
+    }
 
     /**
      * 挂载控制器

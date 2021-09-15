@@ -96,9 +96,6 @@ class Csrf extends Basics
         ) {
             return true;
         }
-        
-        $obj = new \other\lifecycle\csrf_error();
-        $obj->run($status);
-        return false;
+        return \design\Lifecycle::csrf_error($status);
     }
 }

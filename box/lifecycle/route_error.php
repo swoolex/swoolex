@@ -58,7 +58,6 @@ class route_error
             $class = $arr['class'];
             $server->send($fd, $class::pack($data));
         }
-        unset($obj);
         return true;
     }
 }

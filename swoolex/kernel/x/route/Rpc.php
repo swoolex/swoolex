@@ -91,6 +91,11 @@ class Rpc extends AbstractRoute {
         if ($ret !== true) {
             return $this->ServerCurrency->returnJson($this->server, $this->fd, '508', Tips::RPC_SERVER_ROUTE_8, $this->data);
         }
+        // 验证器
+        $ret = (new \x\route\doc\lable\Validate($this->server, $this->fd))->run($route, 'rpc');
+        if ($ret !== true) {
+            return $this->ServerCurrency->returnJson($this->server, $this->fd, '508', Tips::RPC_SERVER_ROUTE_15, $this->data);
+        }
         // 容器
         $ret = (new \x\route\doc\lable\Ioc($this->server, $this->fd))->run($route);
         if ($ret !== true) {

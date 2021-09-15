@@ -52,7 +52,16 @@ class ParamRpc extends Basics {
                     $param = $val['value'];
                     $rpc_list[$name] = $val['value'];
                 }
-
+                // 验证器
+                if (!empty($val['validate'])) {
+                    $alias = !empty($val['alias']) ? $val['alias'] : null;
+                    $Validate = new \x\Validate();
+                    if ($Validate->field($name)->alias($alias)->rule($val['validate'])->fails([$name => $param])) {
+                        $error = $Validate->errors()[0];
+                        // 中断
+                        return $this->param_error_callback($callback, $error['message'], $name, 'VALIDATE', $error['rule']);
+                    }
+                }
                 // 判断是否允许为空
                 $null = false;
                 if (isset($val['empty']) && $val['empty'] == 'true') {

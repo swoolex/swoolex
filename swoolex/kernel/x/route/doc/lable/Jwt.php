@@ -89,9 +89,6 @@ class Jwt extends Basics
         ) {
             return true;
         }
-        
-        $obj = new \other\lifecycle\jwt_error();
-        $obj->run($status);
-        return false;
+        return \design\Lifecycle::jwt_error($status);
     }
 }

@@ -54,8 +54,10 @@ class SystemTips {
     const RPC_SERVER_ROUTE_12 = '注解：自定义注解拦截！';
     const RPC_SERVER_ROUTE_13 = '注解：请求已执行完成，但被环绕操作拦截！';
     const RPC_SERVER_ROUTE_14 = '注解：请求已执行完成，但被后置操作拦截！';
+    const RPC_SERVER_ROUTE_15 = '注解：验证器拦截！';
     const HAVIOR_SERVER_1 = '指令错误：sw-x havior 缺少更多的命令参数';
     const HAVIOR_SERVER_2 = '指令错误：RPC服务中心正确的安装指令是：sw-x havior start';
     const CLICK_SERVER_1 = '指令错误：sw-x click 缺少更多的命令参数';
     const CLICK_SERVER_2 = '指令错误：RPC服务中心正确的安装指令是：sw-x click start';
+    const UNPACK_RPC_HTTP = '/rpc/map.php RPC服务配置文件创建失败!';
 }

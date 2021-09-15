@@ -36,6 +36,7 @@ class DocParser {
         'Csrf', // Csrf
         'Jwt', // Jwt
         'Limit', // Limit
+        'Validate', // 验证器
     ];
 
     private static $instance = null;

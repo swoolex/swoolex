@@ -26,13 +26,8 @@ class csrf_error
      * @return bool
     */
     public function run($tips) {
-        $type = \x\Config::get('server.sw_service_type');
-        // HTTP请求
-        if ($type == 'http') {
-            $obj = new \x\controller\Http();
-            $obj->fetch($tips);
-        }
-        unset($obj);
+        $obj = new \x\controller\Http();
+        $obj->fetch($tips);
         return true;
     }
 }

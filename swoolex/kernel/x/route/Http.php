@@ -80,6 +80,9 @@ class Http extends AbstractRoute {
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamHttp($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
+        // 验证器
+        $ret = (new \x\route\doc\lable\Validate($this->server, $this->fd))->run($route, 'http');
+        if ($ret !== true) return $ret;
         // Csrf
         $ret = (new \x\route\doc\lable\Csrf($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;

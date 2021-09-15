@@ -86,6 +86,9 @@ class Mqtt extends AbstractRoute {
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamMqtt($this->server, $this->fd))->run($route);
         if ($ret !== true) return $this->clean($ret);
+        // 验证器
+        $ret = (new \x\route\doc\lable\Validate($this->server, $this->fd))->run($route, 'mqtt');
+        if ($ret !== true) return $ret;
         // 容器
         $ret = (new \x\route\doc\lable\Ioc($this->server, $this->fd))->run($route);
         if ($ret !== true) return $this->clean($ret);

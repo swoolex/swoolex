@@ -291,4 +291,23 @@ class Lifecycle {
         $obj->run($server, $fd, $server_type, $ip, $data);
         return false;
     }
+
+    /**
+     * 验证器注解检测失败时，回调的处理函数
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.6 + 2021-09-15
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $server_type 服务类型 http/websocket/rpc/mqtt
+     * @param bool $batch 是否全部过滤
+     * @param array $errors 错误验证结果集
+     * @param string $callback 回调地址
+     * @return void
+    */
+    public static function validate_error($server_type, $batch, $errors, $callback) {
+        $obj = new $callback;
+        $obj->run($server_type, $batch, $errors);
+        return false;
+    }
 }

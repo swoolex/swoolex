@@ -44,9 +44,11 @@ class Unpacking {
         switch ($type) {
             case 'http':
                 self::unpack_http();
+                self::unpack_rpc_http();
             break;
             case 'websocket':
                 self::unpack_http();
+                self::unpack_rpc_http();
                 self::unpack_websocket();
             break;
             case 'rpc':
@@ -77,6 +79,63 @@ class Unpacking {
     }
 
     //----------------------------------- 以下为开箱动作 ---------------------------------
+    /**
+     * RPC服务中心所需配置文件 服务开箱
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.0 + 2021.07.20
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public static function unpack_rpc_http() {
+        if (\x\Config::get('rpc.http_rpc_is') == false) return true;
+        
+        $path = ROOT_PATH.'rpc';
+
+        if (!is_dir($path)) {
+            mkdir($path, 0755);
+        }
+        
+        $dir = $path.DS.'map.php';
+        if (!file_exists($dir)) {
+            $myfile = fopen($dir, "w");
+            if ($myfile == false) {
+                throw new \Exception(\design\SystemTips::UNPACK_RPC_HTTP);
+                return false;
+            }
+$html = "<?php
+/**
+ * +----------------------------------------------------------------------
+ * 客户端-微服务配置
+ * +----------------------------------------------------------------------
+ * 官网：https://www.sw-x.cn
+ * +----------------------------------------------------------------------
+ * 作者：小黄牛 <1731223728@qq.com>
+ * +----------------------------------------------------------------------
+ * 开源协议：http://www.apache.org/licenses/LICENSE-2.0
+ * +----------------------------------------------------------------------
+*/
+
+return array (
+    'order/create' => array(
+        'run' => array(
+            0 => array(
+                'title' => '通过',
+                'ip' => '127.0.0.1',
+                'port' => '9502',
+                'is_fault' => '0',
+                'status' => '0',
+            ),
+        ),
+    ),
+);";
+            fwrite($myfile, $html);
+            fclose($myfile);
+        }
+
+        return true;
+    }
     /**
      * HTTP 服务开箱
      * @todo 无

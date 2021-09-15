@@ -66,6 +66,9 @@ class WebSocket extends AbstractRoute {
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamWebSocket($server, $frame->fd))->run($route);
         if ($ret !== true) return $ret;
+        // 验证器
+        $ret = (new \x\route\doc\lable\Validate($server, $frame->fd))->run($route, 'websocket');
+        if ($ret !== true) return $ret;
         // 容器
         $ret = (new \x\route\doc\lable\Ioc($server, $frame->fd))->run($route);
         if ($ret !== true) return $ret;

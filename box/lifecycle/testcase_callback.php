@@ -37,7 +37,6 @@ class testcase_callback
             $obj = new \x\controller\WebSocket();
             $obj->fetch('route_error', 'error', $tips);
         }
-        unset($obj);
         return true;
     }
 }

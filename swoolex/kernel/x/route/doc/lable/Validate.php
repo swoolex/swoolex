@@ -52,11 +52,7 @@ class Validate extends Basics {
         foreach ($route['own']['Validate'] as $val) {
             $class = !empty($val['class']) ? $val['class'] : '/x/Validate';
             $class = str_replace('/', '\\', $class);
-            if (!empty($val['scene']) && ($val['scene'] =='true' || $val['scene'] == '1')) {
-                $scene = true;
-            } else {
-                $scene = false;
-            }
+            $scene = !empty($val['scene']) ? $val['scene'] : false;
             if (!empty($val['batch']) && ($val['batch'] =='true' || $val['batch'] == '1')) {
                 $batch = true;
             } else {
@@ -67,7 +63,7 @@ class Validate extends Basics {
             $callback = !empty($val['callback']) ? $val['callback'] : '\box\lifecycle\validate_error';
 
             $Validate = new $class();
-            if ($Validate->scene($scene)->batch($batch)->filter($filter)->addfield($filter)->fails($data)) {
+            if ($Validate->scene($scene)->batch($batch)->filter($filter)->addfield($field)->fails($data)) {
                 return $this->validate_error($server_type, $batch, $Validate->errors(), $callback);
             }
         }

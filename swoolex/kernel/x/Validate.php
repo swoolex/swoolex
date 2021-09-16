@@ -175,8 +175,13 @@ class Validate
      * @return void
     */
     public final function filter($str) {
-        if (!$this->use_scene) return $this;
-
+        if (!$this->use_scene || empty($str)) return $this;
+        // 只限制使用字段
+        if (isset($this->scene[$this->use_scene][0])) {
+            $list = $this->scene[$this->use_scene];
+            unset($this->scene[$this->use_scene]);
+            $this->scene[$this->use_scene]['field'] = $list;
+        } 
         $this->scene[$this->use_scene]['filter'] = explode(',', str_replace(' ', '', $str));
         return $this;
     }
@@ -191,7 +196,7 @@ class Validate
      * @return void
     */
     public final function addfield($str) {
-        if (!$this->use_scene) return $this;
+        if (!$this->use_scene || empty($str)) return $this;
 
         $this->scene[$this->use_scene]['field'] = explode(',', str_replace(' ', '', $str));
         return $this;

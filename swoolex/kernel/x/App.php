@@ -142,6 +142,8 @@ class App extends AbstractConsole {
         require_once BOX_PATH.'route.php';
         // 载入限流器注册
         require_once BOX_PATH.'limit.php';
+        // 载入验证器注册
+        require_once BOX_PATH.'validate.php';
         // 打印服务详情
         $this->start_yes();
         // 启动服务

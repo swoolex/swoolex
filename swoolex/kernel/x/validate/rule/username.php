@@ -30,7 +30,7 @@ class username
 		$rule = explode(',', str_replace(' ', '', $rule));
         [$min, $max] = $rule;
         
-        $reg = '/^[a-zA-Z][a-zA-Z0-9_]{'.$min.','.$max.'}$/';
+        $reg = '/^[a-zA-Z][a-zA-Z0-9_]{'.($min-1).','.($max-1).'}$/';
 
         return preg_match($reg, $param);
     }

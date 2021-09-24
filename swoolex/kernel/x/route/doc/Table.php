@@ -139,6 +139,8 @@ class Table {
      * @return array|false
     */
     public function get($url, $route_type) {
+        if ($url != '/') $url = rtrim($url, '/');
+        
         if (isset($this->table[$route_type][$url])) {
             return $this->table[$route_type][$url];
         }

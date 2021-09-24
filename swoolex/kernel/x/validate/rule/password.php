@@ -30,7 +30,7 @@ class password
 		$rule = explode(',', str_replace(' ', '', $rule));
         [$min, $max] = $rule;
         
-        $reg = '/^(?![^a-zA-Z]+$)(?!\D+$).{'.$min.','.$max.'}$/';
+        $reg = '/^(?![^a-zA-Z]+$)(?!\D+$).{'.($min-1).','.($max-1).'}$/';
 
         return preg_match($reg, $param);
     }

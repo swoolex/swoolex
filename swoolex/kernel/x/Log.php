@@ -15,6 +15,11 @@ namespace x;
 
 use design\Facade;
 
+/**
+ * Class Log
+ * @package x
+ * @method bool run() static启动方法
+*/
 class Log extends Facade
 {
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * +----------------------------------------------------------------------
- * 限流器操作类
+ * 语言包
  * +----------------------------------------------------------------------
  * 官网：https://www.sw-x.cn
  * +----------------------------------------------------------------------
@@ -16,11 +16,11 @@ namespace x;
 use design\Facade;
 
 /**
- * Class Limit
+ * Class Lang
  * @package x
  * @method bool run() static启动方法
 */
-class Limit extends Facade
+class Lang extends Facade
 {
 
 }

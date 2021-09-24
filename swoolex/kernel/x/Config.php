@@ -15,6 +15,11 @@ namespace x;
 
 use design\Facade;
 
+/**
+ * Class Config
+ * @package x
+ * @method bool run() static启动方法
+*/
 class Config extends Facade
 {
 

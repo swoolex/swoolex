@@ -15,6 +15,11 @@ namespace x;
 
 use x\Facade;
 
+/**
+ * Class Restful
+ * @package x
+ * @method bool run() static启动方法
+*/
 class Restful extends Facade
 {
     /**

@@ -15,6 +15,11 @@ namespace x;
 
 use design\Facade;
 
+/**
+ * Class Route
+ * @package x
+ * @method bool run() static启动方法
+*/
 class Route extends Facade
 {
 

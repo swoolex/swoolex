@@ -119,9 +119,10 @@ class Event
 
         // 闭包
         if (is_callable($function['class'])) {
-            return call_user_func_array($function['class'], $param);
+            $res = call_user_func_array($function['class'], $param);
+        } else {
+            $res = call_user_func_array([$function['class'][0], $function['class'][1] ?? 'run'], $param);
         }
-        $res = call_user_func_array([$function['class'][0], $function['class'][1] ?? 'run'], $param);
 
         return [
             'status' => $res,

@@ -17,7 +17,6 @@ use Swoole\Event;
 
 abstract class AbstractProcess
 {
-
     /**
      * 进程名称
      */
@@ -82,7 +81,7 @@ abstract class AbstractProcess
      * @return void
     */
     public function front() {
-
+        return true;
     }
 
     /**
@@ -171,19 +170,21 @@ abstract class AbstractProcess
         });
         try{
             // 先执行前置业务
-            $this->front();
-            // 执行业务代码
-            if ($this->onWhile == true) {
-                while (true) {
+            $status = $this->front();
+            if ($status) {
+                // 执行业务代码
+                if ($this->onWhile == true) {
+                    while (true) {
+                        $this->run();
+                        if ($this->sleepS) {
+                            usleep($this->sleepS * 1000);
+                        }
+                    }
+                } else {
                     $this->run();
                     if ($this->sleepS) {
                         usleep($this->sleepS * 1000);
                     }
-                }
-            } else {
-                $this->run();
-                if ($this->sleepS) {
-                    usleep($this->sleepS * 1000);
                 }
             }
         } catch (\Throwable $throwable) {

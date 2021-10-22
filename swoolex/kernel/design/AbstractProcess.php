@@ -115,6 +115,20 @@ abstract class AbstractProcess
     }
     
     /**
+     * 接收管道数据
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.8 + 2021-10-21
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $process
+     * @return void
+    */
+    public function read($process) {
+        $data = $process->read();
+    }
+    
+    /**
      * 启动进程
      * @todo 无
      * @author 小黄牛
@@ -140,8 +154,7 @@ abstract class AbstractProcess
      * @version v2.5.8 + 2021-10-21
      * @deprecated 暂不启用
      * @global 无
-     * @param string $
-     * @param mixed $
+     * @param Process $process
      * @return void
     */
     public final function _callback(Process $process){
@@ -203,7 +216,7 @@ abstract class AbstractProcess
      * @global 无
      * @return Process
     */
-    public function getProcessName() {
+    public final function getProcessName() {
         return $this->name;
     }
 
@@ -216,7 +229,7 @@ abstract class AbstractProcess
      * @global 无
      * @return Process
     */
-    public function getProcess() {
+    public final function getProcess() {
         return $this->process;
     }
 
@@ -229,22 +242,8 @@ abstract class AbstractProcess
      * @global 无
      * @return int
     */
-    public function getPid(){
+    public final function getPid(){
         return $this->pid;
-    }
-
-    /**
-     * 接收管道数据
-     * @todo 无
-     * @author 小黄牛
-     * @version v2.5.8 + 2021-10-21
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $process
-     * @return void
-    */
-    public function read($process) {
-        $data = $process->read();
     }
 
     /**

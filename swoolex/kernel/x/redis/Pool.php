@@ -129,10 +129,10 @@ class Pool {
      * @global 无
      * @return void
     */
-    public function timing_recovery($workerId) {
+    public function timing_recovery() {
         // 5秒更新一次当前Redis连接数
         if (\x\Config::get('redis.is_monitor')) {
-            \Swoole\Timer::tick(5000, function () use($workerId) {
+            \Swoole\Timer::tick(5000, function (){
                 $path = BOX_PATH.'env'.DS.'redis_pool_num.count';
                 $json = \Swoole\Coroutine\System::readFile($path);
                 $array = [];
@@ -143,7 +143,7 @@ class Pool {
                 foreach ($this->config as $key=>$value) {
                     $num += $value['pool_num'];
                 }
-                $array[$workerId] = $num;
+                $array[0] = $num;
                 \Swoole\Coroutine\System::writeFile($path, json_encode($array));
                 unset($json);
                 unset($array);

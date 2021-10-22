@@ -98,13 +98,9 @@ class MountEvent {
      * @deprecated 暂不启用
      * @global 无
      * @param Swoole $server
-     * @param int $workerId 进程ID
      * @return void
     */
-    public static function WorkerStart_Crontab($server, $workerId) {
-        // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
-        if ($workerId != 0) return false;
-
+    public static function WorkerStart_Crontab($server) {
         // 读取定时任务列表
         $crontab_list = \x\Config::get('crontab');
         foreach ($crontab_list as $v) {
@@ -178,13 +174,9 @@ class MountEvent {
      * @deprecated 暂不启用
      * @global 无
      * @param Swoole $server
-     * @param int $workerId 进程ID
      * @return void
     */
-    public static function WorkerStart_MqttStatus($server, $workerId) {
-        // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
-        if ($workerId != 0) return false;
-
+    public static function WorkerStart_MqttStatus($server) {
         $time = \x\Config::get('mqtt.ping_crontab_time')*1000;
         $ping_max_time = \x\Config::get('mqtt.ping_max_time');
 
@@ -270,13 +262,9 @@ class MountEvent {
      * @version v2.5.0 + 2021.07.20
      * @deprecated 暂不启用
      * @global 无
-     * @param int $workerId 进程ID
      * @return void
     */
-    public static function WorkerStart_RpcClient($workerId) {
-        // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
-        if ($workerId != 0) return false;
-
+    public static function WorkerStart_RpcClient() {
         // 初始化微服务
         if (\x\Config::get('rpc.http_rpc_is') != true) return false;
         
@@ -290,15 +278,14 @@ class MountEvent {
      * @version v2.5.0 + 2021.07.20
      * @deprecated 暂不启用
      * @global 无
-     * @param int $workerId 进程ID
      * @return void
     */
-    public static function WorkerStart_MysqlStart($workerId) {
+    public static function WorkerStart_MysqlStart() {
         if (\x\Config::get('mysql.driver') == 'mysql') {
             // 启动数据库连接池
             \x\db\mysql\Pool::run()->init();
             // 启动连接池检测定时器
-            \x\db\mysql\Pool::run()->timing_recovery($workerId);
+            \x\db\mysql\Pool::run()->timing_recovery();
         }
     }
     
@@ -309,14 +296,13 @@ class MountEvent {
      * @version v2.5.0 + 2021.07.20
      * @deprecated 暂不启用
      * @global 无
-     * @param int $workerId 进程ID
      * @return void
     */
-    public static function WorkerStart_RedisStart($workerId) {
+    public static function WorkerStart_RedisStart() {
         // 启动数据库连接池
         \x\redis\Pool::run()->init();
         // 启动连接池检测定时器
-        \x\redis\Pool::run()->timing_recovery($workerId);
+        \x\redis\Pool::run()->timing_recovery();
     }
 
     /**
@@ -326,14 +312,13 @@ class MountEvent {
      * @version v2.5.0 + 2021.07.20
      * @deprecated 暂不启用
      * @global 无
-     * @param int $workerId 进程ID
      * @return void
     */
-    public static function WorkerStart_MongoDbStart($workerId) {
+    public static function WorkerStart_MongoDbStart() {
         // 启动数据库连接池
         \x\mongodb\Pool::run()->init();
         // 启动连接池检测定时器
-        \x\mongodb\Pool::run()->timing_recovery($workerId);
+        \x\mongodb\Pool::run()->timing_recovery();
     }
     
     /**
@@ -346,9 +331,9 @@ class MountEvent {
      * @param int $workerId 进程ID
      * @return void
     */
-    public static function WorkerStart_SwooleTableStart($workerId) {
+    public static function WorkerStart_SwooleTableStart() {
         // 通知回调
-        \design\Lifecycle::swoole_table_start($workerId);
+        \design\Lifecycle::swoole_table_start();
     }
     
     /**
@@ -363,10 +348,7 @@ class MountEvent {
      * @param string $service_type 服务类型
      * @return void
     */
-    public static function WorkerStart_LimitRouteReset($server, $workerId, $service_type) {
-        // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
-        if ($workerId != 0) return false;
-        
+    public static function WorkerStart_LimitRouteReset($server, $service_type) {
         $list = \x\Limit::readRouteTimeAll($service_type);
         foreach ($list as $time => $array) {
             $ms = $time*1000;
@@ -386,13 +368,9 @@ class MountEvent {
      * @deprecated 暂不启用
      * @global 无
      * @param Swoole $server
-     * @param int $workerId 进程ID
      * @return void
     */
-    public static function WorkerStart_LimitIpReset($server, $workerId) {
-        // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
-        if ($workerId != 0) return false;
-        
+    public static function WorkerStart_LimitIpReset($server) {
         $list = \x\Limit::readIpTimeAll();
         foreach ($list as $time => $array) {
             $ms = $time*1000;

@@ -58,19 +58,5 @@ class onWorkerStart {
         \design\MountEvent::WorkerStart_RouteStart_Rpc();
         // 挂载PID-ENV更新
         \design\MountEvent::WorkerStart_PidENV($this->server, $workerId);
-        // 挂载DAO连接池
-        \design\MountEvent::WorkerStart_MysqlStart($workerId);
-        // 挂载Redis连接池
-        \design\MountEvent::WorkerStart_RedisStart($workerId);
-        // 挂载MongoDb连接池
-        \design\MountEvent::WorkerStart_MongoDbStart($workerId);
-        // 挂载Swoole/Table组件回调通知
-        \design\MountEvent::WorkerStart_SwooleTableStart($workerId);
-        // 载入路由限流器重置定时任务
-        \design\MountEvent::WorkerStart_LimitRouteReset($this->server, $workerId, 'rpc');
-        // 载入IP限流器重置定时任务
-        \design\MountEvent::WorkerStart_LimitIpReset($this->server, $workerId);
-        // 载入定时任务
-        \design\MountEvent::WorkerStart_Crontab($this->server, $workerId);
     }
 }

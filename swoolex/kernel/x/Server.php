@@ -79,8 +79,78 @@ class Server {
         }
         // 初始化Swoole/Table内存表
         $this->create_table();
+        // 挂载核心业务
+        $this->mount_event();
+        // 加载自定义进程
+        $this->custom_process();
         // 进行事件绑定
         $this->event_binding();
+    }
+
+    /**
+     * 挂载核心业务
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.8 + 2021-10-21
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function mount_event() {
+        // 挂载DAO连接池
+        \design\MountEvent::WorkerStart_MysqlStart();
+        // 挂载Redis连接池
+        \design\MountEvent::WorkerStart_RedisStart();
+        // 挂载MongoDb连接池
+        \design\MountEvent::WorkerStart_MongoDbStart();
+        // 挂载Swoole/Table组件回调通知
+        \design\MountEvent::WorkerStart_SwooleTableStart();
+        // 载入定时任务
+        \design\MountEvent::WorkerStart_Crontab($this->server);
+        // 载入IP限流器重置定时任务
+        \design\MountEvent::WorkerStart_LimitIpReset($this->server);
+        
+        // 服务独立挂载
+        switch ($this->server_type) {
+            case 'http':
+                // 挂载Rpc服务中心监测器
+                \design\MountEvent::WorkerStart_RpcClient();
+                // 载入路由限流器重置定时任务
+                \design\MountEvent::WorkerStart_LimitRouteReset($this->server, 'http');
+            break;
+            case 'websocket':
+                // 载入路由限流器重置定时任务
+                \design\MountEvent::WorkerStart_LimitRouteReset($this->server, 'http');
+                \design\MountEvent::WorkerStart_LimitRouteReset($this->server, 'websocket');
+            break;
+            case 'rpc':
+                // 载入路由限流器重置定时任务
+                \design\MountEvent::WorkerStart_LimitRouteReset($this->server, 'rpc');
+            break;
+            case 'mqtt':
+                // 暂无
+            break;
+        }
+    }
+
+    /**
+     * 加载自定义进程
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.8 + 2021-09-29
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function custom_process() {
+        $list = \x\Config::get('process');
+        foreach ($list as $class) {
+            $processTool = new $class;
+            $process = $processTool->start();
+            $process_name = $processTool->getProcessName();
+            $this->service->addProcess($process);
+            \x\common\Process::register($class, $process);
+        }
     }
 
     /**

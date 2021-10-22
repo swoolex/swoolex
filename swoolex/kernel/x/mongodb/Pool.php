@@ -100,11 +100,11 @@ class Pool extends AbstractMongoDbPool {
      * @global 无
      * @return void
     */
-    public function timing_recovery($workerId) {
+    public function timing_recovery() {
         // 5秒更新一次当前数据库连接数
         if ($this->config['is_monitor'] && $this->config['pool_num'] > 0) {
             $time = $this->config['monitor_time']*1000;
-            \Swoole\Timer::tick($time, function () use($workerId) {
+            \Swoole\Timer::tick($time, function () {
                 // 10分钟没用就回收
                 $spare_time = $this->config['spare_time'];
 
@@ -140,7 +140,7 @@ class Pool extends AbstractMongoDbPool {
                 if ($json) {
                     $array = json_decode($json, true);
                 }
-                $array[$workerId] = $num;
+                $array[0] = $num;
                 \Swoole\Coroutine\System::writeFile($path, json_encode($array));
                 unset($list);
                 unset($json);

@@ -12,6 +12,7 @@
 */
 
 namespace x;
+use Swoole\Coroutine\Client;
 
 class Rpc {
     private static $instance = null;
@@ -141,20 +142,23 @@ class Rpc {
                         $vif = filter_var($val['ip'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
                         if ($vif === false) {
                             // 再查看端口是否挂了
-                            $shell = 'netstat -anp|grep '.$val['port'];
-                            $arr = \Swoole\Coroutine\System::exec($shell);
-                            if (empty($arr['output'])) {
+                            $client = new Client(SWOOLE_SOCK_TCP);
+                            $starttime = explode(' ',microtime());
+                            $res = $client->connect($val['ip'], $val['port'], 1);
+                            $endtime = explode(' ',microtime());
+                            $client->close();
+                            // 失败
+                            if (!$res) {
                                 $val['is_fault'] = 1;
                                 $redis->HMSET($redis_key.$key, $val);
                                 $redis->SET($redis_key.$peaks_key, 999);
                                 self::ping_error($val, 2);
                                 continue;
                             }
-
-                            $val['is_fault'] = 0;
-                            $arr = explode('time=', $str);
-                            $arr = explode(' ms', $arr[1]);
-                            $ms = $arr[0];
+                            // 成功
+                            $thistime = $endtime[0]+$endtime[1]-($starttime[0]+$starttime[1]);
+                            // 耗时
+                            $ms = round($thistime, 6) * 1000;
                             $score = $redis->get($redis_key.$score_key);
                             if ($ms > 460) {
                                 $redis->DECRBY($redis_key.$score_key, 50);

@@ -60,5 +60,12 @@ class onWorkerStart {
         \design\MountEvent::WorkerStart_RouteStart_WebSocket();
         // 挂载PID-ENV更新
         \design\MountEvent::WorkerStart_PidENV($this->server, $workerId);
+        // 载入路由限流器重置定时任务
+        \design\MountEvent::WorkerStart_LimitRouteReset($this->server, $workerId, 'http');
+        \design\MountEvent::WorkerStart_LimitRouteReset($this->server, $workerId, 'websocket');
+        // 载入IP限流器重置定时任务
+        \design\MountEvent::WorkerStart_LimitIpReset($this->server, $workerId);
+        // 载入定时任务
+        \design\MountEvent::WorkerStart_Crontab($this->server, $workerId);
     }
 }

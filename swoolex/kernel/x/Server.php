@@ -105,32 +105,6 @@ class Server {
         \design\MountEvent::WorkerStart_MongoDbStart();
         // 挂载Swoole/Table组件回调通知
         \design\MountEvent::WorkerStart_SwooleTableStart();
-        // 载入定时任务
-        \design\MountEvent::WorkerStart_Crontab($this->server);
-        // 载入IP限流器重置定时任务
-        \design\MountEvent::WorkerStart_LimitIpReset($this->server);
-        
-        // 服务独立挂载
-        switch ($this->server_type) {
-            case 'http':
-                // 挂载Rpc服务中心监测器
-                \design\MountEvent::WorkerStart_RpcClient();
-                // 载入路由限流器重置定时任务
-                \design\MountEvent::WorkerStart_LimitRouteReset($this->server, 'http');
-            break;
-            case 'websocket':
-                // 载入路由限流器重置定时任务
-                \design\MountEvent::WorkerStart_LimitRouteReset($this->server, 'http');
-                \design\MountEvent::WorkerStart_LimitRouteReset($this->server, 'websocket');
-            break;
-            case 'rpc':
-                // 载入路由限流器重置定时任务
-                \design\MountEvent::WorkerStart_LimitRouteReset($this->server, 'rpc');
-            break;
-            case 'mqtt':
-                // 暂无
-            break;
-        }
     }
 
     /**

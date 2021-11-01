@@ -58,6 +58,8 @@ class onWorkerStart {
         \design\MountEvent::WorkerStart_RouteStart_Http();
         // 挂载PID-ENV更新
         \design\MountEvent::WorkerStart_PidENV($this->server, $workerId);
+        // 载入雪花分布式ID组件
+        \design\MountEvent::WorkerStart_Snowflake($workerId);
         // 挂载Rpc服务中心监测器
         \design\MountEvent::WorkerStart_RpcClient($workerId);
         // 载入路由限流器重置定时任务

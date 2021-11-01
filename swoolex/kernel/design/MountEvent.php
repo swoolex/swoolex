@@ -401,4 +401,18 @@ class MountEvent {
             });
         }
     }
+
+    /**
+     * 载入雪花分布式ID组件
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.8 + 2021-11-01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $workerId
+     * @return void
+    */
+    public static function WorkerStart_Snowflake($workerId) {
+        \x\Snowflake::setWorkerId($workerId);
+    }
 }

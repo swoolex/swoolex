@@ -70,7 +70,7 @@ class Enum
         if (isset(self::$cache_list[$class][$field])) {
             return self::$cache_list[$class][$field];
         }
-        $content = preg_replace("/[\s]{2,}/","", preg_replace("/\s(?=\s)/","\\1", file_get_contents($obj->getFileName()))); 
+        $content = preg_replace("/[\s]{2,}/","", preg_replace("/\s(?=\s)/","\\1", \Swoole\Coroutine\System::readFile($obj->getFileName()))); 
         $length = stripos($content, '*/ const '.$field.' =');
         $i = $length;
         $doc = false;

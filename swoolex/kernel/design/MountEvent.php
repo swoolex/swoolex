@@ -335,6 +335,22 @@ class MountEvent {
     }
     
     /**
+     * 打开RabbitMQ连接池
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.0 + 2021.07.20
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+     */
+    public static function WorkerStart_RabbitMqStart() {
+        // 启动数据库连接池
+        \x\rabbitmq\Pool::run()->init();
+        // 启动连接池检测定时器
+        \x\rabbitmq\Pool::run()->timing_recovery();
+    }
+    
+    /**
      * Swoole/Table组件回调通知挂载
      * @todo 无
      * @author 小黄牛

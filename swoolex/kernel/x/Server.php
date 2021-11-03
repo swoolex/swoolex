@@ -103,6 +103,8 @@ class Server {
         \design\MountEvent::WorkerStart_RedisStart();
         // 挂载MongoDb连接池
         \design\MountEvent::WorkerStart_MongoDbStart();
+        // 挂载RabbitMQ连接池
+        \design\MountEvent::WorkerStart_RabbitMqStart();
         // 挂载Swoole/Table组件回调通知
         \design\MountEvent::WorkerStart_SwooleTableStart();
         // 载入内存缓存组件

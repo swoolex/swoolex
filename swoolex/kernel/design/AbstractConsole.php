@@ -122,6 +122,7 @@ class AbstractConsole {
             echo "Mysql_connect_count（5S）：".$this->create_mysql_pool_log().PHP_EOL;
             echo "Redis_connect_count（5S）：".$this->create_redis_pool_log().PHP_EOL;
             echo "MongoDb_connect_count（5S）：".$this->create_mongodb_pool_log().PHP_EOL;
+            echo "RabbitMQ_connect_count（5S）：".$this->create_rabbitmq_pool_log().PHP_EOL;
             
             echo PHP_EOL;
         });
@@ -239,6 +240,30 @@ class AbstractConsole {
     private function create_mongodb_pool_log() {
         //Redis连接数
         $path = BOX_PATH.'env'.DS.'mongodb_pool_num.count';
+        $json = file_get_contents($path);
+        $array = [];
+        if ($json) {
+            $array = json_decode($json, true);
+        }
+        $pool_num = 0;
+        foreach ($array as $v) {
+            $pool_num += $v;
+        }
+        return $pool_num;
+    }
+
+    /**
+     * 读取RabbitMQ连接数日志
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.4 + 2021-09-01
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    private function create_rabbitmq_pool_log() {
+        //Redis连接数
+        $path = BOX_PATH.'env'.DS.'rabbitmq_pool_num.count';
         $json = file_get_contents($path);
         $array = [];
         if ($json) {

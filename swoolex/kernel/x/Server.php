@@ -105,6 +105,8 @@ class Server {
         \design\MountEvent::WorkerStart_MongoDbStart();
         // 挂载Swoole/Table组件回调通知
         \design\MountEvent::WorkerStart_SwooleTableStart();
+        // 载入内存缓存组件
+        \x\cache\parts\Memory::run();
     }
 
     /**

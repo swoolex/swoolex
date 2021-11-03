@@ -99,9 +99,10 @@ class Redis extends AbstractCacheDriver
      * @deprecated 暂不启用
      * @global 无
      * @param string $key 键
+     * @param mixed $default 不存在时默认返回值
      * @return mixed
     */
-    public function get($key) {
+    public function get($key, $default=null) {
         $key = $this->config['prefix'].$key;
         $val = $this->Redis->get($key);
         if ($val !== false) {
@@ -110,6 +111,8 @@ class Redis extends AbstractCacheDriver
             } 
             return $val;
         }
+        
+        if ($default !== null ) return $default;
         return false;
     }
 

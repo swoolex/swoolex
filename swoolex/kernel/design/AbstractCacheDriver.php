@@ -52,9 +52,10 @@ abstract class AbstractCacheDriver {
      * @deprecated 暂不启用
      * @global 无
      * @param string $key 键
+     * @param mixed $default 不存在时默认返回值
      * @return mixed
     */
-    abstract public function get($key);
+    abstract public function get($key, $default=null);
 
     /**
      * 数字类型自增

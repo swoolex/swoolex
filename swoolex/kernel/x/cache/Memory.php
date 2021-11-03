@@ -77,11 +77,17 @@ class Memory extends AbstractCacheDriver
      * @deprecated 暂不启用
      * @global 无
      * @param string $key 键
+     * @param mixed $default 不存在时默认返回值
      * @return mixed
     */
-    public function get($key) {
+    public function get($key, $default=null) {
         $key = $this->config['prefix'].$key;
-        return Parts::run()->read($key);
+        $ret = Parts::run()->read($key);
+
+        if ($ret !== false) return $ret;
+        if ($default !== null ) return $default;
+
+        return false;
     }
 
     /**

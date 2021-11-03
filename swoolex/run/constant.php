@@ -14,7 +14,7 @@
 namespace x;
 
 // 框架当前版本
-define('VERSION', 'v2.5.8');
+define('VERSION', 'v2.5.9');
 // 目录分割符
 define('DS', DIRECTORY_SEPARATOR);
 // 框架核心包目录

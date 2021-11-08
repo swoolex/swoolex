@@ -15,7 +15,6 @@ namespace x\mongodb;
 use design\AbstractMongoDbPool;
 
 class Pool extends AbstractMongoDbPool {
-
     /**
      * 启动连接池
      * @todo 无
@@ -32,12 +31,10 @@ class Pool extends AbstractMongoDbPool {
 
         $this->min = ($this->config['pool_num']>1) ? ceil($this->config['pool_num']/2) : 1;
         $this->max = $this->config['pool_num'];
-        $this->connections = new \Swoole\Coroutine\Channel($this->max + 1);
-
+        
         for ($i=0; $i<$this->min; $i++) {
-            $obj = $this->create();
             $this->count++;
-            $this->connections->push($obj);
+            $this->connections[] = $this->create();
         }
         \design\StartRecord::mongodb_reload($start_time);
         
@@ -51,21 +48,18 @@ class Pool extends AbstractMongoDbPool {
      * @version v1.2.8 + 2020.07.29
      * @deprecated 暂不启用
      * @global 无
-     * @param int $timeOut 出队最大等待时间
      * @return obj
     */
-    public function pop($timeOut = 3) {
-        if ($this->connections->isEmpty()) {
+    public function pop() {
+        // 队列被取空
+        if (!$this->connections) {
             // 连接数没达到最大，新建连接入池
             if ($this->count < $this->max) {
                 $this->count++;
                 $obj = $this->create();
-            } else {
-                // timeout为出队的最大的等待时间
-                $obj = $this->connections->pop($timeOut);
             }
         } else {
-            $obj = $this->connections->pop($timeOut);
+            $obj = array_pop($this->connections);
         }
         return $obj['db'];
     }
@@ -86,7 +80,7 @@ class Pool extends AbstractMongoDbPool {
                 'last_used_time' => time(),
                 'db' => $db,
             ];
-            return $this->connections->push($obj);
+            return $this->connections[] = $obj;
         }
         return false;
     }
@@ -110,13 +104,13 @@ class Pool extends AbstractMongoDbPool {
 
                 $list = [];
                 # 一半最大进程为界限
-                if ($this->connections->length() < intval($this->max * 0.5)) {
+                if (count($this->connections) < intval($this->max * 0.5)) {
                     return false;
                 }
                 # 堵塞循环
                 while (true) {
-                    if (!$this->connections->isEmpty()) {
-                        $obj = $this->connections->pop(0.001);
+                    if ($this->connections) {
+                        $obj = array_pop($this->connections);
                         # 拿出最近一次使用时间
                         $last_used_time = $obj['last_used_time'];
                         # 判断回收超期时间
@@ -131,7 +125,7 @@ class Pool extends AbstractMongoDbPool {
                 }
                 $num = count($list);
                 foreach ($list as $item) {
-                    $this->connections->push($item);
+                    $this->connections[] = $item;
                 }
                 
                 $path = BOX_PATH.'env'.DS.'mongodb_pool_num.count';

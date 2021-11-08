@@ -30,11 +30,15 @@ abstract class Job
     private $pool;
     // 队列前缀
     private $channel;
-    // pop 消息的超时时间（S）
+    // 消费的超时时间（S）
     private $timeout;
     // 消费失败后的间隔次数+间隔时间
     private $retry_seconds;
     
+    // 等待确认投递时间（S）
+    private $wait_time = 0;
+    // 等待确认超时时间
+    private $wait_end_time;
     // 延迟队列投递时间（S）
     private $delay_time = 0;
     // 投递数据集
@@ -78,21 +82,33 @@ abstract class Job
      * @return void
     */
     final public function run() {
-        $QueueDriver = new $this->DriverClass;
+        $config = \x\Config::get('queue.'.$this->DriverName);
+        $QueueDriver = new $this->DriverClass($config);
         
         try{
+            // 计算消费耗时
+            $start_time = microtime(true); 
             $res = $this->handle();
-            // 如果消费返回false，则进入重试通知
-            if ($res === false) {
-                if (count($this->retry_seconds) != $this->retry_num) {
-                    $this->retry_num++;
-                    $QueueDriver->JobRetry($this);
+            $end_time = microtime(true); 
+            // 记录到超时队列
+            if ($this->timeout < ($end_time-$start_time)) {
+                $QueueDriver->JobOuttime($this);
+            } else {
+                // 如果消费返回false，则进入重试通知
+                if ($res === false) {
+                    if (count($this->retry_seconds) != $this->retry_num) {
+                        $this->retry_num++;
+                        $QueueDriver->JobRetry($this);
+                    } else {
+                        // 消费逻辑发生错误要通知到驱动
+                        $QueueDriver->JobError($this);
+                    }
                 } else {
-                    // 消费逻辑发生错误要通知到驱动
-                    $QueueDriver->JobError($this);
+                    // 消费成功
+                    $QueueDriver->JobSuccess($this);
                 }
             }
-            return true;
+            return $res;
         }catch (\Throwable $throwable){
             throw $throwable;
             if (count($this->retry_seconds) != $this->retry_num) {
@@ -123,7 +139,7 @@ abstract class Job
     }
     
     /**
-     * 设置pop超时时间
+     * 设置消费超时时间
      * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
@@ -150,6 +166,61 @@ abstract class Job
     final function delayTime($s) {
         $this->delay_time = $s;
         return $this;
+    }
+
+    /**
+     * 获取延迟投递时间
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-04
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    final function getDelayTime() {
+        return $this->delay_time;
+    }
+
+    /**
+     * 设置等待投递时间
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-04
+     * @deprecated 暂不启用
+     * @global 无
+     * @param int $s 秒
+     * @return void
+    */
+    final function waitTime($s) {
+        $this->wait_time = $s;
+        $this->wait_end_time = time()+$s;
+        return $this;
+    }
+
+    /**
+     * 获取等待投递时间
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-04
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    final function getWaitTime() {
+        return $this->wait_time;
+    }
+
+    /**
+     * 获取等待超时时间
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-04
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    final function getWaitEndTime() {
+        return $this->wait_end_time;
     }
 
     /**
@@ -220,7 +291,7 @@ abstract class Job
     */
     final public function retry_time() {
         $key = $this->retry_num-1; 
-        return $this->retry_seconds[$key];
+        return $this->retry_seconds[$key] ?? false;
     }
 
     /**
@@ -234,12 +305,11 @@ abstract class Job
     */
     private function saveConfig() {
         $config = \x\Config::get('queue.'.$this->DriverName);
-
+        $this->config = $config;
         $this->DriverClass = '\x\queue\driver\\'. ucfirst(strtolower($config['type']));
         $this->pool = $config['pool'];
         $this->channel = $config['channel'];
         $this->timeout = $config['timeout'];
-        $this->handle_timeout = $config['handle_timeout'];
         $this->retry_seconds = $config['retry_seconds'];
     }
 }

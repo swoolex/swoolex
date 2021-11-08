@@ -48,7 +48,7 @@ abstract class AbstractRabbitMQPool {
      * 必须要实现的抽象
     */
     public abstract function init();
-    public abstract function pop($timeOut);
+    public abstract function pop();
     public abstract function free($obj);
     protected abstract function create();
 

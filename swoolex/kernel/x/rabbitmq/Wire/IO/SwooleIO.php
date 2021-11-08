@@ -108,7 +108,7 @@ class SwooleIO extends AbstractIO
      */
     public function connect()
     {
-        $sock = new Swoole\Coroutine\Client(SWOOLE_SOCK_TCP);
+        $sock = new Swoole\Client(SWOOLE_SOCK_TCP);
         if (!$sock->connect($this->host, $this->port, $this->connection_timeout))
         {
             throw new AMQPRuntimeException(

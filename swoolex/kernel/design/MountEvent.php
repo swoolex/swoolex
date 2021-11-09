@@ -137,7 +137,7 @@ class MountEvent {
             // Linux风格
             if (is_array($rule)) {
                 // 1秒一次
-                \Swoole\Timer::tick(1000, function ($timer_id) use ($server, $obj, $v) {
+                \Swoole\Timer::tick(1000, function ($timer_id) use ($server, $obj, $v, $path) {
                     // 查看任务是否达到执行时间
                     $status = $obj->task_vif($v['rule']);
                     if ($status) {
@@ -154,7 +154,7 @@ class MountEvent {
                 });
             // 自定义毫秒
             } else {
-                \Swoole\Timer::tick($rule, function ($timer_id) use ($server, $obj, $v) {
+                \Swoole\Timer::tick($rule, function ($timer_id) use ($server, $obj, $v, $path) {
                     // 写入任务ID
                     $obj->setTimerId($timer_id);
                     // 开始任务

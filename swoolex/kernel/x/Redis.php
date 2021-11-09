@@ -136,4 +136,19 @@ class Redis {
         $obj = $ref->getmethod($name);
         return $obj->invokeArgs($ins, $arguments);
     }
+
+    // 修复scan方法
+    public function sScan($key, &$iterator, $pattern = '', $count = 0) {
+        return $this->pool->sScan($this->prefix.$key,$iterator,$pattern,$count);
+    }
+    public function scan( &$iterator, $pattern = null, $count = 0 ) {
+        return $this->pool->scan($iterator,$pattern,$count);
+    }
+    public function zScan($key, &$iterator, $pattern = '', $count = 0) {
+        return $this->pool->zScan($this->prefix.$key,$iterator,$pattern,$count);
+    }
+    public function hScan($key, &$iterator, $pattern = '', $count = 0) {
+        return $this->pool->hScan($this->prefix.$key,$iterator,$pattern,$count);
+    }
+
 }

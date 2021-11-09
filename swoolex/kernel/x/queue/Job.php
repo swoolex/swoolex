@@ -152,6 +152,19 @@ abstract class Job
         $this->timeout = $s;
         return $this;
     }
+
+    /**
+     * 获取消费超时时间
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-04
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    final function getOutTime() {
+        return $this->timeout;
+    }
     
     /**
      * 设置延迟投递时间
@@ -236,6 +249,20 @@ abstract class Job
     final function retrySeconds($array_time) {
         $this->retry_seconds = $array_time;
         return $this;
+    }
+
+    /**
+     * 获取消费失败后的重试次数+间隔时间
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-04
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array [$s] 秒
+     * @return void
+    */
+    final function getRetrySeconds() {
+        return $this->retry_seconds;
     }
 
     /**

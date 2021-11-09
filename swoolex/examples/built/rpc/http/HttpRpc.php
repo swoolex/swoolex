@@ -24,7 +24,7 @@ class HttpRpc extends Http {
     public function login() {
         return $this->display();
     }
-
+    
     /**
      * @RequestMapping(route="/debug_send", method="post", title="HTTP-RPC调试发送")
     */

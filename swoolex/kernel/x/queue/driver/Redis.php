@@ -49,6 +49,8 @@ class Redis extends AbstractQueueDriver
      * @return void
     */
     public function push($Job) {
+        // 投递时间
+        $Job->push_time = time();
         $uuid = $Job->uuid();
         $this->Redis->hSet($this->_key_entity, $uuid, serialize($Job));
 
@@ -117,10 +119,6 @@ class Redis extends AbstractQueueDriver
         // 获得实体
         $Job = $this->Redis->hGet($this->_key_entity, $uuid);
         if (!$Job) {
-            $this->Redis->return();
-            return null;
-        }
-        if(!$Job){
             $this->Redis->return();
             return null;
         }
@@ -235,5 +233,245 @@ class Redis extends AbstractQueueDriver
         $res = $this->Redis->hDel($this->_key_reserved, $uuid);
         $this->Redis->return();
         return $res;
+    }
+
+    //------------------------------ 透析队列支持 -------------------------------
+    /**
+     * 获得某个Job的详情
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-08
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $uuid 生产者ID
+     * @return Job
+    */
+    public function info($uuid) {
+        $Job = $this->Redis->hGet($this->_key_entity, $uuid);
+        $this->Redis->return();
+        if (!$Job) return null;
+        return unserialize($Job);
+    }
+
+    /**
+     * 查看队列数量
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-08
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $type 队列名称
+     * @return int
+    */
+    public function count($type) {
+        $type = strtolower($type);
+        $key = '_key_'.$type;
+
+        switch ($type) {
+            case 'waiting': $count = $this->Redis->lLen($this->$key);break;
+            case 'delayed':$count = $this->Redis->zCard($this->$key);break;
+            default: $count = $this->Redis->hLen($this->$key);break;
+        }
+
+        $this->Redis->return();
+        return $count;
+    }
+     /**
+     * 队列记录分页查询
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-09
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $type 队列名称
+     * @param int $page 当前页数
+     * @param int $limit 记录数
+     * @return array
+    */
+    public function page($type, $page, $limit) {
+        $type = strtolower($type);
+        $key = '_key_'.$type;
+        $ret = [];
+
+        $page = ($page>0) ? ($page-1) : 0;
+        $left = $page*$limit;
+        switch ($type) {
+            case 'waiting': 
+                $list = $this->Redis->lRange($this->$key, $left, ($left+$limit-1)); 
+                foreach ($list as $key => $uuid) {
+                    $Job = $this->Redis->hGet($this->_key_entity, $uuid);
+                    if ($Job) {
+                        $ret[] = unserialize($Job);
+                    }
+                }
+            break;
+            case 'delayed':
+                $list = $this->Redis->zRange($this->$key, $left, ($left+$limit-1));
+                foreach ($list as $time => $uuid) {
+                    $Job = $this->Redis->hGet($this->_key_entity, $uuid);
+                    if ($Job) {
+                        $ret[] = unserialize($Job);
+                    }
+                }
+            break;
+            default: 
+                $list = $this->Redis->hKeys($this->$key);
+                $i = 0;
+                $max = $left+$limit;
+                foreach ($list as $time => $uuid) {
+                    if ($i >= $left && $i < $max) {
+                         $Job = $this->Redis->hGet($this->_key_entity, $uuid);
+                        if ($Job) {
+                            $ret[] = unserialize($Job);
+                        }
+                    } else if ($i >= $max){
+                        break;
+                    }
+                    $i++;
+                }
+            break;
+        }
+        $this->Redis->return();
+        return $ret;
+    }
+    /**
+     * 删除某条队列
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-09
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $type 队列名称
+     * @param string $uuid 生产者ID
+     * @return bool
+    */
+    public function delete($type, $uuid) {
+        $type = strtolower($type);
+        $key = '_key_'.$type;
+
+        switch ($type) {
+            case 'waiting': $res = $this->Redis->lRem($this->$key, -1, $uuid);break;
+            case 'delayed':$res = $this->Redis->zRem($this->$key, $uuid);break;
+            default: $res = $this->Redis->hDel($this->$key, $uuid);break;
+        }
+        if ($res) {
+            $res = $this->Redis->hDel($this->_key_reserved, $uuid);
+        }
+        $this->Redis->return();
+        return $res;
+    }
+    /**
+     * 清除整个队列
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-09
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $type 队列名称
+     * @return 无
+    */
+    public function clear($type) {
+        $type = strtolower($type);
+        $key = '_key_'.$type;
+
+        switch ($type) {
+            case 'waiting': 
+                $list = $this->Redis->lRange($this->$key, 0, -1); 
+                foreach ($list as $key => $uuid) {
+                    $res = $this->Redis->lRem($this->$key, -1, $uuid);
+                    if ($res) $this->Redis->hDel($this->_key_reserved, $uuid);
+                }
+            break;
+            case 'delayed':
+                $list = $this->Redis->zRange($this->$key, 0, -1);
+                foreach ($list as $time => $uuid) {
+                    $res = $this->Redis->zRem($this->$key, $uuid);
+                    if ($res) $this->Redis->hDel($this->_key_reserved, $uuid);
+                }
+            break;
+            default: 
+                $list = $this->Redis->hKeys($this->$key);
+                foreach ($list as $k => $uuid) {
+                    $res = $this->Redis->hDel($this->$key, $uuid);
+                    if ($res) $this->Redis->hDel($this->_key_reserved, $uuid);
+                }
+            break;
+        }
+        $this->Redis->return();
+        return true;
+    }
+
+    /**
+     * 把某条队列加入待处理队列中
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-09
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $type 队列名称
+     * @param string $uuid 生产者ID
+     * @return bool
+    */
+    public function move($type, $uuid) {
+        $type = strtolower($type);
+        $key = '_key_'.$type;
+
+        switch ($type) {
+            case 'delayed':
+                $res = $this->Redis->zRem($this->$key, $uuid);
+                if ($res) {
+                    // 插入到队列头
+                    $res = $this->Redis->lPush($this->_key_waiting, $uuid);
+                }
+            break;
+            default: 
+                $res = $this->Redis->hDel($this->$key, $uuid);
+                if ($res) {
+                    // 插入到队列头
+                    $res = $this->Redis->lPush($this->_key_waiting, $uuid);
+                }
+            break;
+        }
+        $this->Redis->return();
+        return $res;
+    }
+    /**
+     * 把整个队列加入待处理队列中
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-09
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $type 队列名称
+     * @return 无
+    */
+    public function moves($type) {
+        $type = strtolower($type);
+        $key = '_key_'.$type;
+
+        switch ($type) {
+            case 'delayed':
+                $list = $this->Redis->zRange($this->$key, 0, -1);
+                foreach ($list as $time => $uuid) {
+                    $res = $this->Redis->zRem($this->$key, $uuid);
+                    if ($res) {
+                        // 插入到队列头
+                        $res = $this->Redis->lPush($this->_key_waiting, $uuid);
+                    }
+                }
+            break;
+            default: 
+                $list = $this->Redis->hKeys($this->$key);
+                foreach ($list as $k => $uuid) {
+                    $res = $this->Redis->hDel($this->$key, $uuid);
+                    if ($res) {
+                        // 插入到队列头
+                        $res = $this->Redis->lPush($this->_key_waiting, $uuid);
+                    }
+                }
+            break;
+        }
+        $this->Redis->return();
+        return true;
     }
 }

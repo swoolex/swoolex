@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="zh-tw">
+	<head>
+		<meta charset="utf-8" />
+		<title>消息队列监控台 | SW-X</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<link rel="shortcut icon " type="images/x-icon" href="https://www.sw-x.cn/favicon.ico">
+		<link href="https://www.sw-x.cn/assets/css/bootstrap.min.css" id="bootstrap-stylesheet" rel="stylesheet" type="text/css" />
+		<link href="https://www.sw-x.cn/assets/css/icon.css" rel="stylesheet" type="text/css" />
+		<link href="https://www.sw-x.cn/assets/css/style.css" rel="stylesheet" type="text/css" />
+	</head>
+
+    <body class="authentication-bg">
+         <div class="product-nsma">
+			消息队列监控台
+		 </div>
+      
+		<div class="card">
+			<div class="card-body p-4">
+				<div class="text-center mb-4">
+					<h2 class="text-uppercase mt-0">欢迎登入</h2>
+				</div>
+
+				<form action="#">
+
+					<div class="form-group mb-3">
+						<label >账号</label>
+						<input class="form-control" id="username" type="text" placeholder="请输入账号">
+					</div>
+
+					<div class="form-group mb-3">
+						<label >密码</label>
+						<input class="form-control" id="password" type="password"  placeholder="请输入密码">
+					</div>
+					<div class="form-group mb-3">
+						<label >验证</label>
+						<div class="junphp_geetest_captcha"></div>
+					</div>
+
+					<div class="form-group mb-0 text-center">
+						<button class="btn btn-primary btn-block" type="button">进入</button>
+					</div>
+				</form>
+
+			</div>
+		</div>
+
+		<div class="product-foot">
+			<p>由 <a href="https://www.sw-x.cn" target="_blank">sw-x</a> 高性能企业级PHP框架 | 提供技术支持</p>
+		</div>
+
+        <script src="https://www.sw-x.cn/assets/js/vendor.min.js"></script>
+		<!--引入captcha SDK-->
+		<script type="text/javascript" src="https://blog.junphp.com/api/geetest_captcha/php/junphp_geetest_captcha.js"></script>
+		<!--引入captcha css SDK-->
+		<link href="https://blog.junphp.com/api/geetest_captcha/php/junphp_geetest_captcha.css" rel="stylesheet">
+    </body>
+</html>
+
+
+<script>
+if (Math.random()>0.5) {
+	$('body').css('background-image', 'url(https://www.sw-x.cn/assets/images/big/bg-light-img.jpg)')
+}else{
+	$('body').css('background-image', 'url(https://www.sw-x.cn/assets/images/big/bg-light-img2.jpg)')
+}
+
+//送出
+$('.btn-block').click(function() {
+	$.ajax({
+		type: "POST",
+		url: "/HttpQueue/login_send",
+		data: {
+			'username': $('#username').val(),
+			'password': $('#password').val(),
+			appid:'blog.junphp.com',
+			junphp_session_id:$('#junphp_geetest_session_id').val(),
+			junphp_appkey:$('#junphp_geetest_appkey').val(),
+			junphp_sign:$('#junphp_geetest_sign').val(),
+			junphp_time:$('#junphp_geetest_time').val(),
+			junphp_geetest:$('#junphp_geetest').val(),
+			junphp_yes:$('#junphp_geetest_yes').val(),
+		},
+		success: function(data) {
+			var array = eval('(' + data + ')');
+			if (array['code'] == '00') {
+                dialog(array['msg'], 'success');
+				setTimeout(function() {
+					window.location.href = '/HttpQueue/index'
+				}, 1200);
+			} else {
+                dialog(array['msg'], 'error');
+                // 过期，刷新验证码
+                junphp_vif_captcha();
+			}
+		}
+	});
+});
+</script>

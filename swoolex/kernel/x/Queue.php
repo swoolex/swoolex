@@ -78,7 +78,6 @@ class Queue
     private function saveConfig() {
         $config = \x\Config::get('queue.'.$this->DriverName);
         $class = '\x\queue\driver\\'. ucfirst(strtolower($config['type']));
-        var_dump($class);
         $this->QueueDriver = new $class($config);
     }
 }

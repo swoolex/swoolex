@@ -20,7 +20,7 @@ use x\controller\Http;
 class HttpQueue extends Http {
     private function vif() {
         if (!\x\Session::get('httpqueue')) {
-            return $this->display('HttpQueue/error'); 
+            return $this->display('HttpQueue/login'); 
         }
         return true;
     }
@@ -98,6 +98,7 @@ class HttpQueue extends Http {
             $list[$k]['delayed'] = $Queue->count('delayed');
             $list[$k]['failed'] = $Queue->count('failed');
             $list[$k]['timeout'] = $Queue->count('timeout');
+            $list[$k]['entity'] = $Queue->count('entity');
         }
         $this->assign('list', $list);
         return $this->display(); 
@@ -125,6 +126,9 @@ class HttpQueue extends Http {
             $array[$k]['push_time'] = isset($Job->push_time) ? date('Y-m-d H:i:s', $Job->push_time) : '';
             $array[$k]['delay_time'] = $Job->getDelayTime();
             $array[$k]['wait_time'] = $Job->getWaitTime();
+            if ($array[$k]['wait_time']) {
+                $array[$k]['wait_time'] = date('Y-m-d H:i:s', strtotime($array[$k]['push_time'])+$array[$k]['wait_time']);
+            }
             $array[$k]['out_time'] = $Job->getOutTime();
             $array[$k]['retry_seconds'] = $Job->getRetrySeconds();
             $array[$k]['retry_time'] = $Job->retry_time();
@@ -159,6 +163,20 @@ class HttpQueue extends Http {
         return $this->returnJson('00', '清空完成');
     }
     /**
+     * @RequestMapping(route="/clear", method="get", title="清空队列-单条")
+    */
+    public function clear() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $param = \x\Request::get();
+        $Queue = new \x\Queue($param['node']);
+        $res = $Queue->delete($param['type'], $param['uuid']);
+        if (!$res) return $this->returnJson('01', '删除失败');
+
+        return $this->returnJson('00', '删除成功');
+    }
+    /**
      * @RequestMapping(route="/retrys", method="get", title="重试队列-全部")
     */
     public function retrys() {
@@ -172,7 +190,48 @@ class HttpQueue extends Http {
 
         return $this->returnJson('00', '转入完成');
     }
+    /**
+     * @RequestMapping(route="/retry", method="get", title="重试队列-单条")
+    */
+    public function retry() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $param = \x\Request::get();
+        $Queue = new \x\Queue($param['node']);
+        $res = $Queue->move($param['type'], $param['uuid']);
+        if (!$res) return $this->returnJson('01', '转入失败');
 
+        return $this->returnJson('00', '转入完成');
+    }
+    /**
+     * @RequestMapping(route="/initialize", method="get", title="初始化队列")
+    */
+    public function initialize() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $param = \x\Request::get();
+        $Queue = new \x\Queue($param['node']);
+        $res = $Queue->initialize();
+        if (!$res) return $this->returnJson('01', '初始化失败');
+
+        return $this->returnJson('00', '初始化完成');
+    }
+    /**
+     * @RequestMapping(route="/info", method="get", title="队列详情")
+    */
+    public function info() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $param = \x\Request::get();
+        $Queue = new \x\Queue($param['node']);
+        $Job = $Queue->info($param['uuid']);
+        if (!$Job) return $this->returnJson('01', '获取失败');
+        
+        return $this->returnJson('00', '获取完成', dd($Job->param()));
+    }
 
     /**
      * 输出Json到页面

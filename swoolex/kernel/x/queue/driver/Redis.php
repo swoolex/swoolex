@@ -355,7 +355,7 @@ class Redis extends AbstractQueueDriver
             default: $res = $this->Redis->hDel($this->$key, $uuid);break;
         }
         if ($res) {
-            $res = $this->Redis->hDel($this->_key_reserved, $uuid);
+            $res = $this->Redis->hDel($this->_key_entity, $uuid);
         }
         $this->Redis->return();
         return $res;
@@ -379,21 +379,21 @@ class Redis extends AbstractQueueDriver
                 $list = $this->Redis->lRange($this->$key, 0, -1); 
                 foreach ($list as $key => $uuid) {
                     $res = $this->Redis->lRem($this->$key, -1, $uuid);
-                    if ($res) $this->Redis->hDel($this->_key_reserved, $uuid);
+                    if ($res) $this->Redis->hDel($this->_key_entity, $uuid);
                 }
             break;
             case 'delayed':
                 $list = $this->Redis->zRange($this->$key, 0, -1);
                 foreach ($list as $time => $uuid) {
                     $res = $this->Redis->zRem($this->$key, $uuid);
-                    if ($res) $this->Redis->hDel($this->_key_reserved, $uuid);
+                    if ($res) $this->Redis->hDel($this->_key_entity, $uuid);
                 }
             break;
             default: 
                 $list = $this->Redis->hKeys($this->$key);
                 foreach ($list as $k => $uuid) {
                     $res = $this->Redis->hDel($this->$key, $uuid);
-                    if ($res) $this->Redis->hDel($this->_key_reserved, $uuid);
+                    if ($res) $this->Redis->hDel($this->_key_entity, $uuid);
                 }
             break;
         }
@@ -472,6 +472,26 @@ class Redis extends AbstractQueueDriver
             break;
         }
         $this->Redis->return();
+        return true;
+    }
+    
+    /**
+     * 初始化队列
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-09
+     * @deprecated 暂不启用
+     * @global 无
+     * @return bool
+    */
+    public function initialize() {
+        $this->Redis->del($this->_key_confirm);
+        $this->Redis->del($this->_key_waiting);
+        $this->Redis->del($this->_key_reserved);
+        $this->Redis->del($this->_key_delayed);
+        $this->Redis->del($this->_key_failed);
+        $this->Redis->del($this->_key_timeout);
+        $this->Redis->del($this->_key_entity);
         return true;
     }
 }

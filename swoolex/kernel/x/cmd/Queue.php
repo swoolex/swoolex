@@ -1,7 +1,7 @@
 <?php
 /**
  * +----------------------------------------------------------------------
- * 自定义CMD命令 - HTTP 请求监控组件创建
+ * 自定义CMD命令 - HTTP-Queue 控制台组件创建
  * +----------------------------------------------------------------------
  * 官网：https://www.sw-x.cn
  * +----------------------------------------------------------------------
@@ -15,7 +15,7 @@ namespace x\cmd;
 use design\AbstractConsole;
 use design\SystemTips;
 
-class Monitor {
+class Queue {
     /**
      * 命令行参数
     */
@@ -33,19 +33,19 @@ class Monitor {
     */
     public function run($argv) {
         $this->argv = $argv;
-        if (empty($argv[2])) return AbstractConsole::exit_error(SystemTips::HTTP_MONITOR_1 . PHP_EOL);
-        if ($argv[2] != 'start') return AbstractConsole::exit_error(SystemTips::HTTP_MONITOR_2 . PHP_EOL);
+        if (empty($argv[2])) return AbstractConsole::exit_error(SystemTips::QUEUE_SERVER_1 . PHP_EOL);
+        if ($argv[2] != 'start') return AbstractConsole::exit_error(SystemTips::QUEUE_SERVER_2 . PHP_EOL);
 
         // 需要先创建开箱目录
         \x\common\Unpacking::create_app();
         \x\common\Unpacking::unpack_http(false);
-        
+
         $this->copy_controller();
         $this->copy_view();
 
-        $html  = 'HTTP请求监控Web组件安装完成！'.PHP_EOL.PHP_EOL;
-        $html .= 'HTTP监控台-WEB路由地址：/HttpMonitor/login'.PHP_EOL;
-        $html .= '初始化账号密码在：/config/server.php 文件中进行修改。'.PHP_EOL;
+        $html  = '消息队列控制台Web组件安装完成！'.PHP_EOL.PHP_EOL;
+        $html .= 'HTTP-Queue控制台-WEB路由地址：/HttpQueue/login'.PHP_EOL;
+        $html .= '初始化账号密码在：/config/queue.php 文件中进行修改。'.PHP_EOL;
 
         return AbstractConsole::exit_error($html, false);
     }
@@ -60,10 +60,10 @@ class Monitor {
      * @return void
     */
     private function copy_controller() {
-        $dir = APP_PATH.'http'.DS.'HttpMonitor.php';
+        $dir = APP_PATH.'http/HttpQueue.php';
         if (file_exists($dir)) return false;
 
-        return copy(BUILT_PATH.'monitor/http/HttpMonitor.php', $dir);
+        return copy(BUILT_PATH.'/queue/http/HttpQueue.php', $dir);
     }
 
     /**
@@ -76,11 +76,11 @@ class Monitor {
      * @return void
     */
     private function copy_view() {
-        $dir = APP_PATH.'view'.DS.'HttpMonitor'.DS;
+        $dir = APP_PATH.'view'.DS.'HttpQueue'.DS;
         if (file_exists($dir)) return false;
         mkdir($dir, 0755);
 
-        $file = BUILT_PATH.'monitor/view/';
+        $file = BUILT_PATH.'queue'.DS.'view'.DS;
         $temp = scandir($file);
         //遍历文件夹
         foreach ($temp as $v){

@@ -45,7 +45,7 @@ class Havior {
             $html  = 'HTTP行为验证码组件已存在，请勿重复安装！'.PHP_EOL;
         }
 
-        return AbstractConsole::exit_error($html);
+        return AbstractConsole::exit_error($html, false);
     }
 
     /**

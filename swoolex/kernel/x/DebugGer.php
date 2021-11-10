@@ -109,7 +109,7 @@ class DebugGer
      * @return void
     */
     private function set_header() {
-        $this->html .= '<style>.swoole_div{width: 100%;height: 35px;line-height: 35px;padding: 0 10px;border-bottom: 1px solid #eaeaea;font-size: 14px;color: #333;text-align: left;}</style>
+        $this->html .= '<meta charset="utf-8"><style>.swoole_div{width: 100%;height: 35px;line-height: 35px;padding: 0 10px;border-bottom: 1px solid #eaeaea;font-size: 14px;color: #333;text-align: left;}</style>
 		<div id="swoolex_debug_btn" style="position: fixed;bottom: 0;right: 0;z-index: 999999999999;width: 180px;height: 40px;box-shadow: 1px 1px 50px rgba(0,0,0,.3);cursor: pointer;display: flex;line-height: 40px;color: #333;font-size: 15px;">
 			<img src="https://www.sw-x.cn/img/lg.png" width="25" style="margin: 0 10px;">
 			SwooleX 调试器

@@ -143,7 +143,7 @@ class Index extends Http
             return AbstractConsole::exit_error('['.$file.']' . SystemTips::HTTP_CONTROLLER_8 . PHP_EOL);
         }
 
-        return AbstractConsole::exit_error(SystemTips::HTTP_CONTROLLER_9 . PHP_EOL);
+        return AbstractConsole::exit_error(SystemTips::HTTP_CONTROLLER_9 . PHP_EOL, false);
     }
 
     
@@ -202,7 +202,7 @@ class Index extends WebSocket
             return AbstractConsole::exit_error('['.$file.']' . SystemTips::HTTP_CONTROLLER_8 . PHP_EOL);
         }
 
-        return AbstractConsole::exit_error(SystemTips::HTTP_CONTROLLER_9 . PHP_EOL);
+        return AbstractConsole::exit_error(SystemTips::HTTP_CONTROLLER_9 . PHP_EOL, false);
     }
 
     

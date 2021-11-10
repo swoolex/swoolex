@@ -60,4 +60,6 @@ class SystemTips {
     const CLICK_SERVER_1 = '指令错误：sw-x click 缺少更多的命令参数';
     const CLICK_SERVER_2 = '指令错误：RPC服务中心正确的安装指令是：sw-x click start';
     const UNPACK_RPC_HTTP = '/rpc/map.php RPC服务配置文件创建失败!';
+    const QUEUE_SERVER_1 = '指令错误：sw-x queue 缺少更多的命令参数';
+    const QUEUE_SERVER_2 = '指令错误：消息队列监控台Web组件正确的安装指令是：sw-x queue start';
 }

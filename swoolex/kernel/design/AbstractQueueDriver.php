@@ -224,4 +224,14 @@ abstract class AbstractQueueDriver {
      * @return bool
     */
     abstract public function moves($type);
+    /**
+     * 初始化队列
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.9 + 2021-11-09
+     * @deprecated 暂不启用
+     * @global 无
+     * @return bool
+    */
+    abstract public function initialize();
 }

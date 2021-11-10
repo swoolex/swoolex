@@ -51,7 +51,7 @@ class Rpc {
         $html .= 'HTTP-RPC服务中心-WEB路由地址：/HttpRpc/login'.PHP_EOL;
         $html .= '初始化账号密码在：/config/rpc.php 文件中进行修改。'.PHP_EOL;
 
-        return AbstractConsole::exit_error($html);
+        return AbstractConsole::exit_error($html, false);
     }
 
     /**

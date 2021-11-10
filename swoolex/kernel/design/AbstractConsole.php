@@ -73,11 +73,13 @@ class AbstractConsole {
      * @deprecated 暂不启用
      * @global 无
      * @param string $error
+     * @param string $status 是否输出头
      * @return void
     */
-    public static function exit_error($error) {
+    public static function exit_error($error, $status=true) {
         self::head_description();
-        echo 'SwooleX-ERROR，'.$error.PHP_EOL.PHP_EOL;
+        if ($status) echo 'SwooleX-ERROR，';
+        echo $error.PHP_EOL.PHP_EOL;
         exit;
     }
 

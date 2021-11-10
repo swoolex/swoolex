@@ -98,7 +98,7 @@
 																		<th>uuid</th>
 																		<th>投递日期</th>
 																		<th>延迟投递时间(S)</th>
-																		<th>确认最大时间(S)</th>
+																		<th>最迟确认时间(S)</th>
 																		<th>消费超时时间(S)</th>
 																		<th>消费失败重试间隔(S)</th>
 																		<th>下一次重试时间(S)</th>
@@ -111,15 +111,21 @@
 																		<td>{$k+1}</td>
 																		<td style="color: #FF3366;">{$v.uuid}</td>
 																		<td>{$v.push_time}</td>
-																		<td>{$v.delay_time}</td>
+																		<td>
+																		    {if (empty($v.wait_time))}
+																		    {$v.delay_time}
+																		    {/if}
+																		</td>
 																		<td>{$v.wait_time}</td>
 																		<td>{$v.out_time}</td>
 																		<td>{$v.retry_seconds|json_encode}</td>
 																		<td>{$v.retry_time}</td>
 																		<td>
-																			<button type="button" class="btn btn-info waves-effect waves-light btn-sm" style="padding: 2px 10px;" data-toggle="modal" data-target="#memo" onclick="iframes('{$v.node}','{$v.type}')"> 详情</button>
-																			<button type="button" class="btn btn-primary waves-effect waves-light btn-sm" style="padding: 2px 10px;" data-toggle="modal" data-target="#clear" onclick="setVal('{$v.node}','{$v.type}')">删除</button>
-																			<button type="button" class="btn btn-danger waves-effect waves-light btn-sm" style="padding: 2px 10px;" data-toggle="modal" data-target="#delete" onclick="setVal('{$v.node}','{$v.type}')">重试</button>
+																			<button type="button" class="btn btn-info waves-effect waves-light btn-sm" style="padding: 2px 10px;" onclick="iframes('{$v.node}', '{$v.uuid}')"> 详情</button>
+																			<button type="button" class="btn btn-primary waves-effect waves-light btn-sm" style="padding: 2px 10px;" data-toggle="modal" data-target="#clear" onclick="setVal('{$v.node}','{$v.type}', '{$v.uuid}')">删除</button>
+																			{if ($v.type=='failed' || $v.type=='timeout')}
+																			<button type="button" class="btn btn-danger waves-effect waves-light btn-sm" style="padding: 2px 10px;" data-toggle="modal" data-target="#delete" onclick="setVal('{$v.node}','{$v.type}', '{$v.uuid}')">重试</button>
+																		    {/if}
 																		</td>
 																	</tr>
 																	{/foreach}
@@ -203,9 +209,35 @@
 		<script src="https://www.sw-x.cn/assets/libs/datatables/dataTables.responsive.min.js"></script>
 		<!-- Datatables init -->
 		<script src="https://www.sw-x.cn/assets/js/datatables.init.js"></script>
+        <script src="https://www.sw-x.cn/assets/js/iframe.js?v=3" type="text/javascript"></script>
 	</body>
 </html>
 <script>
+function iframes(node, uuid) {
+    dialog('信息拉取中...', 'success');
+    $.ajax({
+        type: 'get',
+        data: {
+            'node':node,
+            'uuid':uuid,
+        },
+        url: "/HttpQueue/info",
+        success: function(data) {
+            var array = eval('('+data+')');
+            if (array['code'] == '00') {
+                dialog(array['msg'], 'success');
+                iframe.createIframe('生产者详情', '<div>投递参数：</div><br><div style="height: calc(88vh);;overflow: hidden;overflow-y: auto;">'+array['data']+'</div>', {
+                    'width':'700px',
+                    'height':'600px',
+                    'footer':'none',
+                    'type':2
+                })
+            } else {
+                dialog(array['msg'], 'error');
+            }
+        }
+    });
+}
 function setVal(node, type, uuid) {
     $('#node').val(node);
     $('#type').val(type);

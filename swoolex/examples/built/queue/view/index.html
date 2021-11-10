@@ -106,6 +106,8 @@
 																		<th>延迟消费队列</th>
 																		<th>消费失败队列</th>
 																		<th>消费超时队列</th>
+																		<th>Job序列化队列</th>
+																		<th>操作</th>
 																	</tr>
 																</thead>
 																<tbody>
@@ -148,9 +150,16 @@
 																		</td>
 																		<td>
 																			<a style="color: #990000;" href="/HttpQueue/showlist?node={$key}&type=timeout">{$v.timeout|number_format}</a>
-																			
+																			{if ($v.timeout > 0)}
 																			<button type="button" class="btn btn-primary waves-effect waves-light btn-sm" style="padding: 2px 10px;" data-toggle="modal" data-target="#clear" onclick="setVal('{$key}','timeout)">清空</button>
 																			<button type="button" class="btn btn-danger waves-effect waves-light btn-sm" style="padding: 2px 10px;" data-toggle="modal" data-target="#delete" onclick="setVal('{$key}','timeout')">重试</button>
+																			{/if}
+																		</td>
+																		<td>
+																			<a>{$v.entity|number_format}</a>
+																		</td>
+																		<td>
+																			<button type="button" class="btn btn-danger waves-effect waves-light btn-sm" style="padding: 2px 10px;" data-toggle="modal" data-target="#initialize" onclick="setVal('{$key}', 0)">初始化</button>
 																			
 																		</td>
 																	</tr>
@@ -219,6 +228,26 @@
 				</div>
 			</div>
 		</div>
+		<!-- 初始化彈框 -->
+		<div class="modal fade" id="initialize" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">提示</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p class="tips-info">你确定初始化该队列？<br/>该操作会将整个队列清空！</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary initialize">确认</button>
+					</div>
+				</div>
+			</div>
+		</div>
 		
 		<input type="hidden" id="node" value=""><!--节点-->
 		<input type="hidden" id="type" value=""><!--驱动-->
@@ -281,6 +310,30 @@ $('.retry').click(function() {
         }
     });
 })
+$('.initialize').click(function() {
+    dialog('系统执行中，请勿刷新页面...', 'success');
+    $('.close').click();
+    $.ajax({
+        type: 'get',
+        data: {
+            'node':$('#node').val(),
+        },
+        url: "/HttpQueue/initialize",
+        success: function(data) {
+            var array = eval('('+data+')');
+            if (array['code'] == '00') {
+                dialog(array['msg'], 'success');
+                setTimeout(function() {
+					window.location.reload();
+				}, 800);
+            } else {
+                dialog(array['msg'], 'error');
+            }
+        }
+    });
+})
+
+
 var fresh;
 var stop = false;
 $("#autoReflush").click(function(){

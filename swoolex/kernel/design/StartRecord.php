@@ -132,6 +132,13 @@ class StartRecord {
         self::insert_log('MongoDb连接数统计监控器启动成功');
     }
     /**
+     * memcache连接池
+     */
+    public static function memcached_reload($time) {
+        self::$start_time = $time;
+        self::insert_log('MongoDb连接池解析完成');
+    }
+    /**
      * Rpc服务中心监控器
     */
     public static function rpc_service_monitor() {

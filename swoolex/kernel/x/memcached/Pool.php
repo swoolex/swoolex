@@ -1,10 +1,14 @@
 <?php
-namespace x\rabbitmq ;
+namespace x\memcached;
+use design\AbstractMemcachedPool;
 
-use design\AbstractRabbitMQPool;
-use x\rabbitmq\Connection\AMQPSwooleConnection;
-
-class Pool extends AbstractRabbitMQPool
+/**
+ * Created by PhpStorm.
+ * User: f
+ * Date: 2021/11/4
+ * Time: 14:45
+ */
+class Pool extends AbstractMemcachedPool
 {
     /**
      * 启动连接池
@@ -23,14 +27,12 @@ class Pool extends AbstractRabbitMQPool
 
         $this->min = ($this->config['pool_num']>1) ? ceil($this->config['pool_num']/2) : 1;
         $this->max = $this->config['pool_num'];
-        $this->connections = [];
 
         for ($i=0; $i<$this->min; $i++) {
-            $obj = $this->create();
             $this->count++;
-            $this->connections[] = $obj;
+            $this->connections[] = $this->create();
         }
-        \design\StartRecord::mongodb_reload($start_time);
+        \design\StartRecord::memcached_reload($start_time);
 
         return $this;
     }
@@ -45,6 +47,7 @@ class Pool extends AbstractRabbitMQPool
      * @return obj
      */
     public function pop() {
+        // 队列被取空
         if (!$this->connections) {
             // 连接数没达到最大，新建连接入池
             if ($this->count < $this->max) {
@@ -121,7 +124,7 @@ class Pool extends AbstractRabbitMQPool
                     $this->connections[] = $item;
                 }
 
-                $path = BOX_PATH.'env'.DS.'rabbitmq_pool_num.count';
+                $path = BOX_PATH.'env'.DS.'memcache_pool_num.count';
                 $json = \Swoole\Coroutine\System::readFile($path);
                 $array = [];
                 if ($json) {
@@ -135,7 +138,7 @@ class Pool extends AbstractRabbitMQPool
                 unset($path);
             });
 
-            \design\StartRecord::rabbitmq_monitor();
+            \design\StartRecord::mongodb_monitor();
         }
     }
 
@@ -146,20 +149,32 @@ class Pool extends AbstractRabbitMQPool
      * @version v1.2.8 + 2020.07.29
      * @deprecated 暂不启用
      * @global 无
-     * @return \MongoDB\Driver\Manager
+     * @return Db
      */
-    protected function create() {
-        $config = $this->config;
-
+    protected function create()
+    {
         try {
-            $manager = new AMQPSwooleConnection($config['host'],$config['port'],$config['user'],$config['password'],$config['vhost']);
+            $db = new \Memcache();
+            //集群模式
+            if(count($this->config['host'])>1){
+
+                foreach ($this->config['host'] as $v)
+                {
+                    list($host,$port) = explode(":",$v);
+                    $db->addServer($host,$port);
+                }
+
+            }else{  //单机模式
+                list($host,$port) = explode(":",$this->config['host']);
+                $db->connect($host,$port,$this->config['time_out']);
+            }
         } catch(\Exception $e){
-            throw new \Exception("new RabbitMQ Error ".$e->getMessage());
+            throw new \Exception("new Memcache Error ".$e->getMessage());
             return false;
         }
         return [
             'last_used_time' => time(),
-            'db' => $manager,
+            'db' => $db,
         ];
     }
 }

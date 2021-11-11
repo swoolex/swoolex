@@ -105,6 +105,8 @@ class Server {
         \design\MountEvent::WorkerStart_MongoDbStart();
         // 挂载RabbitMQ连接池
         \design\MountEvent::WorkerStart_RabbitMqStart();
+        // 挂载memcache连接池
+        \design\MountEvent::WorkerStart_MemcacheStart();
         // 挂载Swoole/Table组件回调通知
         \design\MountEvent::WorkerStart_SwooleTableStart();
         // 载入内存缓存组件

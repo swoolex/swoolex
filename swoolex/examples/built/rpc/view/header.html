@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8" />
+		<title>RPC服务中心 | SW-X</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<link rel="shortcut icon " type="images/x-icon" href="https://www.sw-x.cn/favicon.ico">
+		<link href="https://www.sw-x.cn/assets/css/bootstrap.min.css" id="bootstrap-stylesheet" rel="stylesheet" type="text/css" />
+		<link href="https://www.sw-x.cn/assets/css/icon.css" rel="stylesheet" type="text/css" />
+		<link href="https://www.sw-x.cn/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+		<link href="https://www.sw-x.cn/assets/iconfont/iconfont.css" rel="stylesheet" type="text/css" />
+		<link href="https://www.sw-x.cn/assets/libs/datatables/dataTables.bootstrap4.css" rel="stylesheet" type="text/css" />
+		<link href="https://www.sw-x.cn/assets/libs/datatables/responsive.bootstrap4.css" rel="stylesheet" type="text/css" />
+		<link href="https://www.sw-x.cn/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+		<link href="https://www.sw-x.cn/assets/css/style.css" rel="stylesheet" type="text/css" />
+		<script src="https://www.sw-x.cn/assets/js/vendor.min.js"></script>
+		<script src="https://www.sw-x.cn/assets/libs/datatables/jquery.dataTables.min.js"></script>
+		<script src="https://www.sw-x.cn/assets/libs/datatables/dataTables.bootstrap4.js"></script>
+		<script src="https://www.sw-x.cn/assets/libs/datatables/dataTables.responsive.min.js"></script>
+		<!-- Datatables init -->
+		<script src="https://www.sw-x.cn/assets/js/datatables.init.js"></script>
+        <script src="https://www.sw-x.cn/assets/js/iframe.js?v=3" type="text/javascript"></script>
+	</head>
+	<body data-sidebar="dark">
+		<div id="wrapper">
+			<!-- 頂部 -->
+			<div class="navbar-custom">
+				<ul class="list-unstyled topnav-menu float-right mb-0">
+					<!-- 用戶資訊 -->
+					<li class="dropdown notification-list">
+						<a class="nav-link dropdown-toggle nav-user mr-0 waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+							<span class="pro-user-name ml-1"> 管理 <i class="mdi mdi-chevron-down"></i></span>
+						</a>
+						<div class="dropdown-menu dropdown-menu-right profile-dropdown ">
+							<!-- item-->
+							<a href="javascript:out();" class="dropdown-item notify-item">
+								<i class="fe-log-out"></i>
+								<span>登出</span>
+							</a>
+						</div>
+					</li>
+				</ul>
+				<!-- LOGO -->
+				<div class="logo-box">
+					<a href="/HttpRpc/index" class="logo logo-light text-center"> 服务中心 </a>
+				</div>
+				<ul class="list-unstyled topnav-menu topnav-menu-left mb-0">
+					<li>
+						<button class="button-menu-mobile disable-btn waves-effect">
+							<i class="fe-menu"></i>
+						</button>
+					</li>
+				</ul>
+			</div>
+			<!-- 側邊欄 -->
+			<div class="left-side-menu">
+				<div class="slimscroll-menu">
+					<div id="sidebar-menu">
+						<ul class="metismenu" id="side-menu">
+							<li>
+								<a href="/HttpRpc/index">
+									<i class="iconfont iconhome"></i>
+									<span> 服务列表 </span>
+								</a>
+							</li>
+							{if ($auth.item)}
+							<li>
+								<a href="/HttpRpc/item">
+									<i class="iconfont iconsetting"></i>
+									<span> 项目管理 </span>
+								</a>
+							</li>
+							{/if}
+							{if ($auth.group)}
+							<li>
+								<a href="/HttpRpc/group">
+									<i class="iconfont iconsetting"></i>
+									<span> 分组管理 </span>
+								</a>
+							</li>
+							{/if}
+							{if ($auth.error)}
+							<li>
+								<a href="/HttpRpc/error_list">
+									<i class="iconfont iconad"></i>
+									<span> 错误日志 </span>
+								</a>
+							</li>
+							{/if}
+						</ul>
+					</div>
+					<div class="clearfix"></div>
+				</div>
+			</div>

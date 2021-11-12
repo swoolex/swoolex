@@ -1,126 +1,108 @@
-<!doctype html>
-<html>
-<head>
-    <meta content="webkit" name="renderer" />
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>HTTP-RPC 控制台 - SW-X</title>
-    <style>
-    body,html{margin:0;padding:0;background: #f1f2f7; font-family: "微软雅黑";font-size: 16px;}
-    .card-header {padding: .75rem 1.25rem;margin-bottom: 0;background-color: #fff;border-bottom: 1px solid rgba(0,0,0,.125);width:100%;}
-    .card-title {margin-bottom: .75rem;}
-    .table {width: 100%;margin-bottom: 1rem;background-color: transparent;}
-    .table td {color: #343a40;font-size: 14px;font-weight: 600;vertical-align: middle;}
-    .table th, .table td {border: none;border-bottom: 1px solid #e8e9ef;color: #868e96;font-size: 13px;font-weight: normal;padding: .25em 1.25em;}
-    .table th{padding: .75em 1.25em;}
-    .header td{padding: 2px 5px;}
-    .content td, .content th{text-align: left;}
-    .badge-complete {background: #00c292;}
-    .badge {display: inline-block;padding: 10PX;font-size:13px; line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;border-radius: .25rem;text-decoration: none;}
-    select,input,button{padding: 5px 7px; border: 1px solid #ccc;border-radius: 5px;background: #fff;}
+{include file="HttpRpc/header" /}
 
-    ul,li{list-style: none;margin: 0;padding: 0;float: left;}
-    ul{padding: 5px 10px; background: #fff; width: 99%;}
-    ul li{margin: 0 10px;}
-    ul li a{    color: #fff;
-    border: 1px solid #00c292;
-    text-decoration: none;
-    padding: 2px 10px;
-    border-radius: 5px;
-    background: #00c292;
-    font-family: '微软雅黑';
-    font-size: 14px;}
-    ul .current a{color: #333;background: #fff;border: 1px solid #00c292;}
-    
-    </style>
-    <!--依赖JQ-->
-    <script src="https://blog.junphp.com/public/js/jquery.min.js"></script>
-    <link href="https://blog.junphp.com/public/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://blog.junphp.com/public/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="https://blog.junphp.com/public/js/iframe.js" type="text/javascript"></script>
-    <style>
-    .modal-content{width: 600px;}
-    .modal-title{ position: absolute;}
-    .button{font-size: 13px;padding: 2px 10px;}
-    .blue{border-color: #00c292; background: #00c292; color: #fff;}
-    .orange{border-color: orange; background: orange; color: #fff;}
-    pre{
-        word-break: break-all; 
-        word-wrap:break-word;
-        white-space: pre-wrap;
-    }
-    .table tr:hover{background: #f3f3f3;cursor: pointer;}
-    </style>
-</head>
+			<div class="content-page">
+				<div class="content">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-12">
+								<div class="card-box">
+									<div class="row">
+										<div class="col-12">
+											<div class="filter-list">
+											    <form  action="">
+												<div class="row">
+													
+													<div class="col-md-2 col-xs-6">
+														<label>服务路由</label>
+														<input type="text" class="form-control" name="class" value="{$param.class|default=''}">
+													</div>
+													<div class="col-md-2 col-xs-6">
+														<label>服务方法</label>
+														<input type="text" class="form-control" name="function" value="{$param.function|default=''}">
+													</div>
+													<div class="col-md-3 col-xs-12">
+														<label style="color: #FFF;">1</label>
+														<div>
+															<button class="btn btn-primary waves-effect waves-light btn-sm" style="float:left;margin: 0 6px 0 0;"> 查詢 </button>
+															<button type="button" id="autoReflush" class="btn btn-danger waves-effect waves-light btn-sm" style="float:left">开启自动刷新</button>
+                                                            <div id="ms" style="width: auto;float: left;font-size: 13px;margin: 6px;"></div>
+														</div>
+													</div>
+												</div>
+												
+												<div class="row">
+													<div class="col-md-2 col-xs-12">
+														<div style="margin-top:5px">
+														
+														</div>
+													</div>
+												</div>
+												</form>
+											</div>
+											<div style="margin-top: 20px;">
+												<div class="responsive-table-plugin">
+													<div class="table-rep-plugin">
+														<div class="table-responsive">
+															<table id="datatable" class="table table-bordered dt-responsive nowrap">
+																<thead>
+																	<tr>
+                                                                        <th>序号</th>
+                                                                        <th>服务地址</th>
+                                                                        <th>TC-IP</th>
+                                                                        <th>端口</th>
+                                                                        <th>是否异步</th>
+                                                                        <th>异步通知地址</th>
+                                                                        <th>异步类型</th>
+                                                                        <th>发生时间</th>
+                                                                        <th>操作</th>
+																	</tr>
+																</thead>
+																<tbody>
+																    {php}$i=0;{/php}
+                                                                    {foreach $list as $v}
+                                                                        {foreach $v as $key=>$vv}
+                                                                        {php}$vv = json_decode($vv, true);{/php}
+                                                                        <tr>
+                                                                            <td>{$i+1}</td>
+                                                                            <td><font color="#005aff">{$vv.config.class}->{$vv.config.function}</font></td>
+                                                                            <td>{$vv.config.ip}</td>
+                                                                            <td>{$vv.config.port}</td>
+                                                                            <td>{if (isset($vv['config']['task']) && $vv.config.task==1)}<font color="red">是</font>{else /}否{/if}</td>
+                                                                            <td>{$vv.config.callback|default=''}</td>
+                                                                            <td>{$vv.config.callback_type|default=''}</td>
+                                                                            <td>{$vv.config.date|default=''}</td>
+                                                                            <td>
+                                                                                <input type="hidden" id="{$i}_{$key}_head" value='{:json_encode($vv['config']['headers'], JSON_UNESCAPED_UNICODE)}'>
+                                                                                <input type="hidden" id="{$i}_{$key}_param" value='{:json_encode($vv['config']['param'], JSON_UNESCAPED_UNICODE)}'>
+                                                                                <input type="hidden" id="{$i}_{$key}_ret" value='{:json_encode($vv['return'], JSON_UNESCAPED_UNICODE)}'>
+                                                            
+                                                                            <button type="button" class="btn btn-warning waves-effect waves-light btn-sm btn-ty" style="padding: 2px 10px;" onclick="heads('{$i}_{$key}_head')">请求头</button>
+																			<button type="button" class="btn btn-warning waves-effect waves-light btn-sm btn-ty" style="padding: 2px 10px;" onclick="param('{$i}_{$key}_param')">请求参数</button>
+																			<button type="button" class="btn btn-warning waves-effect waves-light btn-sm btn-ty" style="padding: 2px 10px;" onclick="ret('{$i}_{$key}_ret')">执行结果</button>
+																			<button type="button" class="btn btn-primary waves-effect waves-light btn-sm" style="padding: 2px 10px;" onclick="repeat('{$vv.config.class}', '{$vv.config.function}', '{$i}_{$key}')">重发</button>
+																			<button type="button" class="btn btn-danger waves-effect waves-light btn-sm" style="padding: 2px 10px;" onclick="deletes('{$vv.config.class}', '{$vv.config.function}', '{$key}')">删除</button>
+                                                                            </td>
+                                                                        </tr>
+                                                                        {php} $i++; {/php}
+                                                                        {/foreach}
+                                                                    {/foreach}
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+{include file="HttpRpc/footer" /}
 
-<body>
-
-<div>
-    <div class="card-header">
-        <strong class="card-title">错误日志</strong>
-        <button type="button" style="font-size: 13px;" onclick="window.location.href='/HttpRpc/index';">返回-控制台</button>
-
-        <button type="button" id="autoReflush" style="float: right;font-size: 13px;">开启自动刷新</button>
-        <div id="ms" style="width: auto;float: right;font-size: 13px;margin: 6px;"></div>
-    </div>
-    <form action="/HttpRpc/error_list">
-        <div style="padding: 5px 10px;">
-            服务路由：
-            <input type="text" name="class" style="width: 450px;" value="{$param.class|default=''}">
-            服务方法：
-            <input type="text" name="function" style="width: 200px;" value="{$param.function|default=''}">
-            <button type="submit">搜索</button>
-        </div>
-    </form>
-    <table class="table content">
-        <tr>
-            <th style="text-align: center;" width=60>序号</th>
-            <th style="text-align: center;" >服务地址</th>
-            <th style="text-align: center;" >TC-IP</th>
-            <th style="text-align: center;" >端口</th>
-            <th style="text-align: center;" >是否异步</th>
-            <th style="text-align: center;" >异步通知地址</th>
-            <th style="text-align: center;" >异步类型</th>
-            <th style="text-align: center;" >发生时间</th>
-            <th style="text-align: center;" >操作</th>
-        </tr>
-        {php}$i=0;{/php}
-        {foreach $list as $v}
-            {foreach $v as $key=>$vv}
-            {php}$vv = json_decode($vv, true);{/php}
-            <tr>
-                <td>{$i+1}</td>
-                <td style="text-align: center;"><font color="#005aff">{$vv.config.class}->{$vv.config.function}</font></td>
-                <td style="text-align: center;">{$vv.config.ip}</td>
-                <td style="text-align: center;">{$vv.config.port}</td>
-                <td style="text-align: center;">{if (isset($vv['config']['task']) && $vv.config.task==1)}<font color="red">是</font>{else /}否{/if}</td>
-                <td style="text-align: center;">{$vv.config.callback|default=''}</td>
-                <td style="text-align: center;">{$vv.config.callback_type|default=''}</td>
-                <td style="text-align: center;">{$vv.config.date|default=''}</td>
-                <td style="text-align: center;">
-                    <input type="hidden" id="{$i}_{$key}_head" value='{:json_encode($vv['config']['headers'], JSON_UNESCAPED_UNICODE)}'>
-                    <input type="hidden" id="{$i}_{$key}_param" value='{:json_encode($vv['config']['param'], JSON_UNESCAPED_UNICODE)}'>
-                    <input type="hidden" id="{$i}_{$key}_ret" value='{:json_encode($vv['return'], JSON_UNESCAPED_UNICODE)}'>
-
-                    <button type="button" class="button" onclick="heads('{$i}_{$key}_head')">请求头</button>
-                    <button type="button" class="button" onclick="param('{$i}_{$key}_param')">请求参数</button>
-                    <button type="button" class="button" onclick="ret('{$i}_{$key}_ret')">执行结果</button>
-
-                    <button type="button" class="button blue" onclick="repeat('{$vv.config.class}', '{$vv.config.function}', '{$i}_{$key}')">重发</button>
-                    <button type="button" class="button orange" onclick="deletes('{$vv.config.class}', '{$vv.config.function}', '{$key}')">删除</button>
-
-                </td>
-            </tr>
-            {php} $i++; {/php}
-            {/foreach}
-        {/foreach}
-    </table>
-</div>
-
-</body>
-</html>
 <script>
-
 function repeat(cla, func, id) {
     if (confirm('重发并不会在该错误节点下执行！你确定测试【重发】？')) {
         $.ajax({

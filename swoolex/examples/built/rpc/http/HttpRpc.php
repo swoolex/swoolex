@@ -18,6 +18,13 @@ use x\controller\Http;
  * @Controller(prefix="HttpRpc")
 */
 class HttpRpc extends Http {
+    private function vif() {
+        if (!\x\Session::get('httprpc')) {
+            return $this->display('HttpRpc/error'); 
+        }
+        $this->assign('auth', \x\Session::get('httprpc'));
+        return true;
+    }
     /**
      * @RequestMapping(route="/login", method="get", title="HTTP-RPC控制台登录页")
     */
@@ -29,9 +36,8 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/debug_send", method="post", title="HTTP-RPC调试发送")
     */
     public function debug_send() {
-        if (!\x\Session::get('httprpc')) {
-            return $this->display('HttpRpc/error'); 
-        }
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
 
         $param = \x\Request::post();
 
@@ -75,9 +81,8 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/debug_save", method="post", title="HTTP-RPC保存参数文档")
     */
     public function debug_save() {
-        if (!\x\Session::get('httprpc')) {
-            return $this->display('HttpRpc/error'); 
-        }
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
 
         $param = \x\Request::post();
 
@@ -97,9 +102,8 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/debug", method="get", title="HTTP-RPC调试节点")
     */
     public function debug() {
-        if (!\x\Session::get('httprpc')) {
-            return $this->display('HttpRpc/error'); 
-        }
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
 
         $param = \x\Request::get();
         $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
@@ -127,9 +131,8 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/create", method="get", title="HTTP-RPC添加节点")
     */
     public function create() {
-        if (!\x\Session::get('httprpc')) {
-            return $this->display('HttpRpc/error'); 
-        }
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
 
         $param = \x\Request::get();
 
@@ -138,8 +141,25 @@ class HttpRpc extends Http {
             $redis_key = \x\Config::get('rpc.redis_key').'_hash_'.$md5;
             $redis = new \x\Redis();
             $info = $redis->hGetAll($redis_key);
+
+            $redis_key = \x\Config::get('rpc.redis_key');
+            $list = $redis->hKeys($redis_key.'_item');
+            $this->assign('item', $list);
+            $list = $redis->hKeys($redis_key.'_group');
+            $this->assign('group', $list);
+
             $redis->return();
             $this->assign('info', $info);
+        } else {
+            $redis = new \x\Redis();
+            
+            $redis_key = \x\Config::get('rpc.redis_key');
+            $list = $redis->hKeys($redis_key.'_item');
+            $this->assign('item', $list);
+            $list = $redis->hKeys($redis_key.'_group');
+            $this->assign('group', $list);
+
+            $redis->return();
         }
         
         return $this->display();
@@ -149,16 +169,20 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/create_ajax", method="post", title="HTTP-RPC添加节点处理")
     */
     public function create_ajax() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
         $param = \x\Request::post();
         if (empty($param['class'])) return $this->returnJson('01', '请先输入路由地址');
         if (empty($param['function'])) return $this->returnJson('01', '请先输入接口名称');
         if (empty($param['title'])) return $this->returnJson('01', '请先输入节点名称');
         if (empty($param['ip'])) return $this->returnJson('01', '请先输入TCP-IP');
         if (empty($param['port'])) return $this->returnJson('01', '请先输入端口');
+        
 
         $redis_key = \x\Config::get('rpc.redis_key');
         $redis = new \x\Redis();
-
+        
         // 判断节点是否存在
         $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
         $hash_key = '_hash_'.$md5;
@@ -178,9 +202,16 @@ class HttpRpc extends Http {
             'title' => $param['title'],
             'ip' => $param['ip'],
             'port' => $param['port'],
+            'item' => $param['item'],
+            'group' => $param['group'],
+            'route_minute' => $param['route_minute'],
+            'route_limit' => $param['route_limit'],
+            'ip_minute' => $param['ip_minute'],
+            'ip_limit' => $param['ip_limit'],
             'is_fault' => 0,
             'status' => 0,
         ];
+
         $redis->HMSET($redis_key.$hash_key, $data);
 
         $score_key = '_score_'.$md5;
@@ -205,9 +236,8 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/update", method="get", title="HTTP-RPC编辑节点")
     */
     public function update() {
-        if (!\x\Session::get('httprpc')) {
-            return $this->display('HttpRpc/error'); 
-        }
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
 
         $param = \x\Request::get();
 
@@ -215,6 +245,13 @@ class HttpRpc extends Http {
         $redis_key = \x\Config::get('rpc.redis_key').'_hash_'.$md5;
         $redis = new \x\Redis();
         $info = $redis->hGetAll($redis_key);
+
+        $redis_key = \x\Config::get('rpc.redis_key');
+        $list = $redis->hKeys($redis_key.'_item');
+        $this->assign('item', $list);
+        $list = $redis->hKeys($redis_key.'_group');
+        $this->assign('group', $list);
+
         $redis->return();
 
         $this->assign('info', $info);
@@ -225,6 +262,9 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/update_ajax", method="post", title="HTTP-RPC编辑节点处理")
     */
     public function update_ajax() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
         $param = \x\Request::post();
         if (empty($param['class'])) return $this->returnJson('01', '请先输入路由地址');
         if (empty($param['function'])) return $this->returnJson('01', '请先输入接口名称');
@@ -237,6 +277,12 @@ class HttpRpc extends Http {
             'title' => $param['title'],
             'ip' => $param['ip'],
             'port' => $param['port'],
+            'item' => $param['item'],
+            'group' => $param['group'],
+            'route_minute' => $param['route_minute'],
+            'route_limit' => $param['route_limit'],
+            'ip_minute' => $param['ip_minute'],
+            'ip_limit' => $param['ip_limit'],
             'is_fault' => 0,
             'status' => 0,
         ];
@@ -316,6 +362,9 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/login_send", method="post", title="HTTP-RPC登录处理")
     */
     public function send() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
         $param = \x\Request::post();
         if (empty($param['username'])) return $this->returnJson('01', '账号或密码错误');
         if (empty($param['password'])) return $this->returnJson('01', '账号或密码错误');
@@ -341,13 +390,13 @@ class HttpRpc extends Http {
         $status = false;
         foreach ($list as $v) {
             if ($param['username'] == $v['username'] && $param['password'] == $v['password']) {
-                $status = true;
+                $status = $v['auth'];
                 break;
             }
         }
         if ($status == false) return $this->returnJson('01', '账号或密码错误');
 
-        \x\Session::set('httprpc', '1');
+        \x\Session::set('httprpc', $status);
 
         $url = '/HttpRpc/index';
         return $this->returnJson('00', '登录成功', $url);
@@ -357,9 +406,8 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/index", method="get", title="HTTP-RPC台主页")
     */
     public function index() {
-        if (!\x\Session::get('httprpc')) {
-            return $this->display('HttpRpc/error'); 
-        }
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
         $param = \x\Request::get();
 
         $redis_key = \x\Config::get('rpc.redis_key');
@@ -391,10 +439,72 @@ class HttpRpc extends Http {
                 }
             }
         }
+        // 项目
+        if (!empty($param['item'])) {
+            foreach ($arr as $k => $v) {
+                if (stripos($v['item'], $param['item']) === false) {
+                    unset($arr[$k]);
+                }
+            }
+        }
+        // 分组
+        if (!empty($param['group'])) {
+            foreach ($arr as $k => $v) {
+                if (stripos($v['group'], $param['group']) === false) {
+                    unset($arr[$k]);
+                }
+            }
+        }
+        // 标题
+        if (!empty($param['title'])) {
+            foreach ($arr as $k => $v) {
+                if (stripos($v['title'], $param['title']) === false) {
+                    unset($arr[$k]);
+                }
+            }
+        }
+        // 服务地址
+        if (!empty($param['route'])) {
+            foreach ($arr as $k => $v) {
+                if (stripos($v['url'], $param['route']) === false) {
+                    unset($arr[$k]);
+                }
+            }
+        }
+        // 状态
+        if (!empty($param['status'])) {
+            foreach ($arr as $k => $v) {
+                switch ($param['status']) {
+                    case 1: 
+                        if ((isset($v['status']) && $v['status'] == 2) || (isset($v['is_fault']) && $v['is_fault'] == 1)) {
+                            unset($arr[$k]);
+                        }
+                    break;
+                    case 2: 
+                        if ((isset($v['status']) && $v['status'] == 0)) {
+                            unset($arr[$k]);
+                        }
+                    break;
+                    case 3: 
+                        if (!isset($v['is_fault']) || (isset($v['is_fault']) && $v['is_fault'] == 0)) {
+                            unset($arr[$k]);
+                        }
+                    break;
+                }
+            }
+        }
+
+        $list = $redis->hKeys($redis_key.'_item');
+        $this->assign('item', $list);
+        $list = $redis->hKeys($redis_key.'_group');
+        $this->assign('group', $list);
+
         $redis->return();
 
         $this->assign('param', $param);
         $this->assign('arr', $arr);
+
+
         return $this->display();
     }
     
@@ -402,9 +512,8 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/update_status", method="post", title="HTTP-RPC状态切换")
     */
     public function update_status() {
-        if (!\x\Session::get('httprpc')) {
-            return $this->display('HttpRpc/error'); 
-        }
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
         $param = \x\Request::post();
 
         // 先读
@@ -424,12 +533,36 @@ class HttpRpc extends Http {
     }
 
     /**
+     * @RequestMapping(route="/input_save", method="post", title="HTTP-RPC单个字段修改")
+    */
+    public function input_save() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        $param = \x\Request::post();
+
+        // 先读
+        $md5 = md5($param['class'].$param['function'].$param['ip'].$param['port']);
+        $redis_key = \x\Config::get('rpc.redis_key').'_hash_'.$md5;
+        $redis = new \x\Redis();
+        $res = $redis->HMSET($redis_key, [
+            $param['field'] => $param['num']
+        ]);
+        $redis->return();
+        
+        if ($res !== false) {
+            $this->save_map();
+            return $this->returnJson('00', '修改成功');
+        }
+        return $this->returnJson('01', '修改失败');
+    }
+
+
+    /**
      * @RequestMapping(route="/delete", method="post", title="HTTP-RPC节点删除")
     */
     public function delete() {
-        if (!\x\Session::get('httprpc')) {
-            return $this->display('HttpRpc/error'); 
-        }
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
         $param = \x\Request::post();
         $redis_key = \x\Config::get('rpc.redis_key');
         $redis = new \x\Redis();
@@ -456,9 +589,9 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/error_list", method="get", title="HTTP-RPC错判日志列表")
     */
     public function error_list() {
-        if (!\x\Session::get('httprpc')) {
-            return $this->display('HttpRpc/error'); 
-        }
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
         $param = \x\Request::get();
         $key = 'err_';
         if (!empty($param['class'])) {
@@ -491,9 +624,8 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/error_delete", method="post", title="HTTP-RPC错误日志删除")
     */
     public function error_delete() {
-        if (!\x\Session::get('httprpc')) {
-            return $this->display('HttpRpc/error'); 
-        }
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
         
         $param = \x\Request::post();
         $key = 'err_';
@@ -520,6 +652,9 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/repeat", method="post", title="HTTP-RPC错判记录重发")
     */
     public function repeat() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
         $param = \x\Request::post();
         $class = $param['class'];
         $function = $param['function'];
@@ -551,6 +686,126 @@ class HttpRpc extends Http {
         $html = '耗时：'.($thistime*1000).'ms<br/>'.dd($res);
 
         return $this->fetch($html);
+    }
+
+    /**
+     * @RequestMapping(route="/item", method="get", title="HTTP-RPC项目列表")
+    */
+    public function item() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $redis_key = \x\Config::get('rpc.redis_key');
+        $redis = new \x\Redis();
+        $list = $redis->hKeys($redis_key.'_item');
+        $redis->return();
+        $this->assign('list', $list);
+        return $this->display();
+    }
+
+    /**
+     * @RequestMapping(route="/item_save", method="get", title="HTTP-RPC项目编辑")
+    */
+    public function item_save() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $param = \x\Request::get();
+        $redis = new \x\Redis();
+        if (empty($param['title'])) {
+            return $this->returnJson('01', '请先输入项目名称！');
+        }
+        $redis_key  = \x\Config::get('rpc.redis_key');
+        $redis_key .= '_item';
+        // 先删除
+        if (!empty($param['id'])) {
+            $redis->hDel($redis_key, $param['id']);
+        }
+        $res = $redis->hSet($redis_key, $param['title'], 1);
+        $redis->return();
+        if ($res) {
+            return $this->returnJson('00', '编辑成功！');
+        }
+        return $this->returnJson('01', '编辑失败！');
+    }
+
+    /**
+     * @RequestMapping(route="/item_delete", method="get", title="HTTP-RPC项目删除")
+    */
+    public function item_delete() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $param = \x\Request::get();
+        $redis = new \x\Redis();
+        $redis_key  = \x\Config::get('rpc.redis_key');
+        $redis_key .= '_item';
+        $res = $redis->hDel($redis_key, $param['id']);
+        $redis->return();
+        if ($res) {
+            return $this->returnJson('00', '删除成功！');
+        }
+        return $this->returnJson('01', '删除失败！');
+    }
+
+    /**
+     * @RequestMapping(route="/group", method="get", title="HTTP-RPC分组列表")
+    */
+    public function group() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $redis_key = \x\Config::get('rpc.redis_key');
+        $redis = new \x\Redis();
+        $list = $redis->hKeys($redis_key.'_group');
+        $redis->return();
+        $this->assign('list', $list);
+        return $this->display();
+    }
+
+    /**
+     * @RequestMapping(route="/group_save", method="get", title="HTTP-RPC分组编辑")
+    */
+    public function group_save() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $param = \x\Request::get();
+        $redis = new \x\Redis();
+        if (empty($param['title'])) {
+            return $this->returnJson('01', '请先输入分组名称！');
+        }
+        $redis_key  = \x\Config::get('rpc.redis_key');
+        $redis_key .= '_group';
+        // 先删除
+        if (!empty($param['id'])) {
+            $redis->hDel($redis_key, $param['id']);
+        }
+        $res = $redis->hSet($redis_key, $param['title'], 1);
+        $redis->return();
+        if ($res) {
+            return $this->returnJson('00', '编辑成功！');
+        }
+        return $this->returnJson('01', '编辑失败！');
+    }
+
+    /**
+     * @RequestMapping(route="/group_delete", method="get", title="HTTP-RPC分组删除")
+    */
+    public function group_delete() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $param = \x\Request::get();
+        $redis = new \x\Redis();
+        $redis_key  = \x\Config::get('rpc.redis_key');
+        $redis_key .= '_group';
+        $res = $redis->hDel($redis_key, $param['id']);
+        $redis->return();
+        if ($res) {
+            return $this->returnJson('00', '删除成功！');
+        }
+        return $this->returnJson('01', '删除失败！');
     }
 
     //------------------------------------ 助手函数 ---------------------------------------

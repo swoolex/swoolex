@@ -1,106 +1,212 @@
-<!doctype html>
-<html>
-<head>
-    <meta content="webkit" name="renderer" />
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>HTTP-RPC 控制台 - SW-X</title>
-    <style>
-    body,html{margin:0;padding:0;background: #f1f2f7; font-family: "微软雅黑";font-size: 16px;}
-    .card-header {padding: .75rem 1.25rem;margin-bottom: 0;background-color: #fff;border-bottom: 1px solid rgba(0,0,0,.125);width:100%;}
-    .card-title {margin-bottom: .75rem;}
-    .table {width: 100%;margin-bottom: 1rem;background-color: transparent;}
-    .table td {color: #343a40;font-size: 14px;font-weight: 600;vertical-align: middle;}
-    .table th, .table td {border: none;border-bottom: 1px solid #e8e9ef;color: #868e96;font-size: 13px;font-weight: normal;padding: .25em 1.25em;}
-    .table th{padding: .75em 1.25em;}
-    .header td{padding: 2px 5px;}
-    .content td, .content th{text-align: left;}
-    .badge-complete {background: #00c292;}
-    .badge {display: inline-block;padding: 10PX;font-size:13px; line-height: 1;text-align: center;white-space: nowrap;vertical-align: baseline;border-radius: .25rem;text-decoration: none;}
-    select,input,button{padding: 5px 7px; border: 1px solid #ccc;border-radius: 5px;background: #fff;}
+{include file="HttpRpc/header" /}
 
-    ul,li{list-style: none;margin: 0;padding: 0;float: left;}
-    ul{padding: 5px 10px; background: #fff; width: 99%;}
-    ul li{margin: 0 10px;}
-    ul li a{    color: #fff;
-    border: 1px solid #00c292;
-    text-decoration: none;
-    padding: 2px 10px;
-    border-radius: 5px;
-    background: #00c292;
-    font-family: '微软雅黑';
-    font-size: 14px;}
-    ul .current a{color: #333;background: #fff;border: 1px solid #00c292;}
-    
-    </style>
-    <!--依赖JQ-->
-    <script src="https://blog.junphp.com/public/js/jquery.min.js"></script>
-    <link href="https://blog.junphp.com/public/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://blog.junphp.com/public/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="https://blog.junphp.com/public/js/iframe.js?v=3" type="text/javascript"></script>
-    <style>
-    .modal-content{width: 600px;}
-    .modal-title{ position: absolute;}
-    .button{font-size: 13px;padding: 2px 10px;}
-    .table tr:hover{background: #f3f3f3;cursor: pointer;}
-    </style>
-</head>
+			<div class="content-page">
+				<div class="content">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-12">
+								<div class="card-box">
+									<div class="row">
+										<div class="col-12">
+											<div class="filter-list">
+											    <form  action="">
+												<div class="row">
+													<div class="col-md-2 col-xs-6">
+														<div class="form-group">
+															<label>项目</label>
+															<select class="form-control" name="item">
+																<option value="">全部</option>
+																{foreach $item as $i=>$name}
+																    <option value="{$name}" {if (isset($param.item) && $param.item==$name)} selected{/if}>{$name}</option>
+																{/foreach}
+															</select>
+														</div>
+													</div>
+													<div class="col-md-2 col-xs-6">
+														<div class="form-group">
+															<label>分组</label>
+															<select class="form-control" name="group">
+																<option value="">全部</option>
+																{foreach $group as $i=>$name}
+																    <option value="{$name}" {if (isset($param.group) && $param.group==$name)} selected{/if}>{$name}</option>
+																{/foreach}
+															</select>
+														</div>
+													</div>
+													<div class="col-md-2 col-xs-6">
+														<label>状态</label>
+														<select class="form-control" name="status">
+															<option value="">全部</option>
+															<option value="1" {if (isset($param.status) && $param.status==1)} selected{/if}>正常</option>
+															<option value="2" {if (isset($param.status) && $param.status==2)} selected{/if}>关闭</option>
+															<option value="3" {if (isset($param.status) && $param.status==3)} selected{/if}>故障</option>
+														</select>
+													</div>
+													<div class="col-md-2 col-xs-6">
+														<label>服务名称</label>
+														<input type="text" class="form-control" name="title" value="{$param.title|default=''}">
+													</div>
+													<div class="col-md-2 col-xs-6">
+														<label>服务地址</label>
+														<input type="text" class="form-control" name="route" value="{$param.route|default=''}">
+													</div>
+													<div class="col-md-2 col-xs-12">
+														<label style="color: #FFF;">1</label>
+														<div>
+															<button class="btn btn-primary waves-effect waves-light btn-sm"> 查詢 </button>
+															{if ($auth.insert)}
+															<button type="button" class="btn btn-success waves-effect waves-light btn-sm btn-sm mr-1" onclick="add('','','')"> 添加服务 </button>
+															{/if}
+														</div>
+													</div>
+													<div class="col-md-2 col-xs-12">
+														<div style="margin-top:5px">
+															<button type="button" id="autoReflush" class="btn btn-danger waves-effect waves-light btn-sm">开启自动刷新</button>
+                                                                <div id="ms" style="width: auto;float: right;font-size: 13px;margin: 6px;"></div>
+														</div>
+													</div>
+												</div>
+												</form>
+											</div>
+											<div style="margin-top: 20px;">
+												<div class="responsive-table-plugin">
+													<div class="table-rep-plugin">
+														<div class="table-responsive">
+															<table id="datatable" class="table table-bordered dt-responsive nowrap">
+																<thead>
+																	<tr>
+																		<th>序号</th>
+																		<th>项目</th>
+																		<th>分组</th>
+																		<th>服务名称</th>
+																		<th>服务地址</th>
+																		<th>TCP-IP</th>
+																		<th>端口</th>
+																		<th>故障</th>
+																		<th>当前请求数</th>
+																		<th>评分</th>
+																		<th>当前延迟</th>
+																		<th>限制延迟(ms)</th>
+																		<th>状态</th>
 
-<body>
+																		<th>每 * 分钟内</th>
+																		<th>限制当前服务，最大接收 * 次请求</th>
+																		<th>每 * 分钟内</th>
+																		<th>限制单个IP，最大接收 * 次请求</th>
+																		<th>操作</th>
+																	</tr>
+																</thead>
+																<tbody>
+                                                                    {foreach $arr as $k=>$v}
+																	<tr>
+																		<td>{$k+1}</td>
+																		<td>{$v.item|default=''}</td>
+																		<td>{$v.group|default=''}</td>
+																		<td>{$v.title}</td>
+																		<td><font color="#005aff">{$v.url}</font></td>
+																		<td>{$v.ip}</td>
+																		<td>{$v.port}</td>
+																		<td>
+																		    {if (isset($v['is_fault']) && $v.is_fault==1)}
+																		        <font color="red">是</font>
+																		    {else /}
+																		        否
+																		    {/if}
+																		</td>
+																		<td>{$v.request_num}</td>
+																		<td>
+																			{$v.score|default='100'}
+																		</td>
+																		<td>{$v.ping_ms|default='0'}ms</td>
+																		<td>
+																		    {if ($auth.update)}
+																			    <input type="text" class="form-control" name="max_ms" value="{$v.max_ms|default='0'}" style="width:70px" onblur="input_save('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}', this)">
+																			{else /}
+																			    {$v.max_ms|default='0'}
+																			{/if}
+																		</td>
+																		<td>
+																		    {if ($auth.update)}
+    																			<span class="tg-list-item">
+    																			     {if (isset($v['status']) && $v.status==2)}
+    																			     <input class="tgl tgl-light" id="cb{$k}" type="checkbox">
+    																				<label class="tgl-btn" for="cb{$k}" onclick="tab('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}', this)" data-id="0"></label>
+    																			     {else /}
+    																			     <input class="tgl tgl-light" id="cb{$k}" type="checkbox" checked>
+    																				<label class="tgl-btn" for="cb{$k}" onclick="tab('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}', this)" data-id="2"></label>
+    																			     {/if}
+    																			</span>
+    																		{else /}
+																			     {if (isset($v['status']) && $v.status==2)}
+																			     禁用
+																			     {else /}
+																			     启用
+																			     {/if}
+																			{/if}
+																		</td>
 
-<div>
-    <div class="card-header">
-        <strong class="card-title">RPC列表</strong>
-        <button type="button" style="font-size: 13px;" onclick="out()">退出</button>
-        <button type="button" style="font-size: 13px;" onclick="add('','','')">添加节点</button>
-        <button type="button" style="font-size: 13px;" onclick="window.location.href='/HttpRpc/error_list';">错误日志</button>
+																		<td>
+																		    {if ($auth.update)}
+																			<input type="text" class="form-control" name="route_minute" value="{$v.route_minute|default=''}" onblur="input_save('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}', this)">
+																			{else /}
+																			{$v.route_minute|default=''}
+																			{/if}
+																		</td>
+																		<td>
+																		    {if ($auth.update)}
+																			<input type="text" class="form-control" name="route_limit" value="{$v.route_limit|default=''}" onblur="input_save('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}', this)">
+																			{else /}
+																			{$v.route_limit|default=''}
+																			{/if}
+																		</td>
+																		<td>
+																		    {if ($auth.update)}
+																			<input type="text" class="form-control" name="ip_minute" value="{$v.ip_minute|default=''}" onblur="input_save('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}', this)">
+																			{else /}
+																			{$v.ip_minute|default=''}
+																			{/if}
+																		</td>
+																		<td>
+																		    {if ($auth.update)}
+																			<input type="text" class="form-control" name="ip_limit" value="{$v.ip_limit|default=''}" onblur="input_save('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}', this)">
+																			{else /}
+																			{$v.ip_limit|default=''}
+																			{/if}
+																		</td>
 
-        <button type="button" id="autoReflush" style="float: right;font-size: 13px;">开启自动刷新</button>
-        <div id="ms" style="width: auto;float: right;font-size: 13px;margin: 6px;"></div>
-    </div>
-    <table class="table content">
-        <tr>
-            <th style="text-align: center;" width=60>序号</th>
-            <th style="text-align: center;" >状态</th>
-            <th style="text-align: center;" >服务地址</th>
-            <th style="text-align: center;" >服务名称</th>
-            <th style="text-align: center;" >TC-IP</th>
-            <th style="text-align: center;" >端口</th>
-            <th style="text-align: center;" >节点是否已故障</th>
-            <th style="text-align: center;" >当前请求数</th>
-            <th style="text-align: center;" >评分</th>
-            <th style="text-align: center;" >延迟</th>
-            <th style="text-align: center;" >正常最大延迟</th>
-            <th style="text-align: center;" >操作</th>
-        </tr>
-        {foreach $arr as $k=>$v}
-        <tr title="{$v.title}">
-            <td>{$k+1}</td>
-            <td style="text-align: center;">
-                {if (isset($v['status']) && $v.status==2)}关闭[<font color="red" style="cursor: pointer;" onclick="tab('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}', 0)">启用</font>]{else /}启用[<font color="red" style="cursor: pointer;" onclick="tab('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}', 2)">关闭</font>]{/if}
-            </td>
-            <td style="text-align: center;"><font color="#005aff">{$v.url}</font></td>
-            <td style="text-align: center;">{$v.title}</td>
-            <td style="text-align: center;">{$v.ip}</td>
-            <td style="text-align: center;">{$v.port}</td>
-            <td style="text-align: center;">{if (isset($v['is_fault']) && $v.is_fault==1)}<font color="red">是</font>{else /}否{/if}</td>
-            <td style="text-align: center;">{$v.request_num}</td>
-            <td style="text-align: center;">{$v.score|default='100'}</td>
-            <td style="text-align: center;">{$v.ping_ms|default='0'}ms</td>
-            <td style="text-align: center;">{$v.max_ms|default='0'}ms</td>
-            <td style="text-align: center;">
-                <button type="button" class="button" onclick="debug('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')">调试</button>
-                <button type="button" class="button" onclick="add('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')">复制</button>
-                <button type="button" class="button" onclick="update('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')">修改</button>
-                <button type="button" class="button" onclick="deletes('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')">删除</button>
-            </td>
-        </tr>
-        {/foreach}
-    </table>
-</div>
+																		<td>
+																		    {if ($auth.debug)}
+																			<button type="button" class="btn btn-warning waves-effect waves-light btn-sm" style="padding: 2px 10px;" onclick="debug('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')">调试</button>
+																			{/if}
+																			{if ($auth.copy)}
+																			<button type="button" class="btn btn-info waves-effect waves-light btn-sm" style="padding: 2px 10px;" onclick="add('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')">复制</button>
+																			{/if}
+																			{if ($auth.update)}
+																			<button type="button" class="btn btn-primary waves-effect waves-light btn-sm" style="padding: 2px 10px;" onclick="update('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')">修改</button>
+																			{/if}
+																			{if ($auth.delete)}
+																			<button type="button" class="btn btn-danger waves-effect waves-light btn-sm" style="padding: 2px 10px;" onclick="deletes('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')">删除</button>
+																			{/if}
+																		</td>
+																	</tr>
+																	{/foreach}
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			
+{include file="HttpRpc/footer" /}
 
-</body>
-</html>
+
 <script>
 function debug(clas, fun, ip, port) {
     iframe.createIframe('调试节点', '/HttpRpc/debug?class='+clas+'&function='+fun+'&ip='+ip+'&port='+port, {
@@ -111,8 +217,8 @@ function debug(clas, fun, ip, port) {
 }
 function add(clas, fun, ip, port) {
     iframe.createIframe('添加新节点', '/HttpRpc/create?class='+clas+'&function='+fun+'&ip='+ip+'&port='+port, {
-        'width':'600px',
-        'height':'450px',
+        'width':'800px',
+        'height':'500px',
         'function':'ajaxs'
     })
 }
@@ -126,31 +232,14 @@ function ajaxs() {
 }
 function update(clas, fun, ip, port) {
     iframe.createIframe('编辑节点', '/HttpRpc/update?class='+clas+'&function='+fun+'&ip='+ip+'&port='+port, {
-        'width':'600px',
-        'height':'450px',
+        'width':'800px',
+        'height':'500px',
         'function':'ajaxs'
     })
 }
-function out() {
-    if (confirm('你确认退出吗?')) {
-        $.ajax({
-            type: 'get',
-            data: {
-            },
-            url: "/HttpRpc/out",
-            success: function(data) {
-                var array = eval('('+data+')');
-                if (array['code'] == '00') {
-                    window.location.href="/HttpRpc/login";
-                } else {
-                    alert(array['msg']);
-                }
-            }
-        });
-    }
-}
-function tab(clas, fun, ip, port, status) {
-    if (confirm('你确认切换该节点状态吗?')) {
+function tab(clas, fun, ip, port, _this) {
+    // if (confirm('你确认切换该节点状态吗?')) {
+        var status = $(_this).attr('data-id');
         $.ajax({
             type: 'post',
             data: {
@@ -164,13 +253,41 @@ function tab(clas, fun, ip, port, status) {
             success: function(data) {
                 var array = eval('('+data+')');
                 if (array['code'] == '00') {
-                    window.location.reload();
+                    dialog(array['msg'], 'success');
+                    if (status == 2) {
+                        $(_this).attr('data-id', 0)
+                    } else {
+                        $(_this).attr('data-id', 2)
+                    }
                 } else {
-                    alert(array['msg']);
+                    dialog(array['msg'], 'error');
                 }
             }
         });
-    }
+    // }
+}
+function input_save(clas, fun, ip, port, _this) {
+    var field = $(_this).attr('name');
+    $.ajax({
+        type: 'post',
+        data: {
+            class:clas,
+            function:fun,
+            ip:ip,
+            port:port,
+            field:field,
+            num:$(_this).val(),
+        },
+        url: "/HttpRpc/input_save",
+        success: function(data) {
+            var array = eval('('+data+')');
+            if (array['code'] == '00') {
+                dialog(array['msg'], 'success');
+            } else {
+                dialog(array['msg'], 'error');
+            }
+        }
+    });
 }
 function deletes(clas, fun, ip, port) {
     if (confirm('你确认删除该节点状态吗?')) {
@@ -189,7 +306,7 @@ function deletes(clas, fun, ip, port) {
                 if (array['code'] == '00') {
                     window.location.reload();
                 } else {
-                    alert(array['msg']);
+                    dialog(array['msg'], 'error');
                 }
             }
         });

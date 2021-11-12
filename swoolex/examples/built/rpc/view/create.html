@@ -38,7 +38,7 @@
     <style>
     .form-group{padding: 10px;}
     .col-md-12{width: 90%;}
-    label{width: 130px;text-align: right;display: block;float: left;}
+    label{width: 260px;text-align: right;display: block;float: left;}
     </style>
 </head>
 
@@ -46,6 +46,24 @@
     
 <div>
     <form id="myForm">
+        <div class="form-group col-md-12">
+            <label>项目：</label>
+            <select style="width: 355px;" name="item">
+				<option value="">未定</option>
+				{foreach $item as $i=>$name}
+				    <option value="{$name}" {if (isset($info.item) && $info.item==$name)} selected{/if}>{$name}</option>
+				{/foreach}
+			</select>
+        </div>
+        <div class="form-group col-md-12">
+            <label>分组：</label>
+            <select style="width: 355px;" name="group">
+				<option value="">未定</option>
+				{foreach $group as $i=>$name}
+				    <option value="{$name}" {if (isset($info.group) && $info.group==$name)} selected{/if}>{$name}</option>
+				{/foreach}
+			</select>
+        </div>
         <div class="form-group col-md-12">
             <label>路由：</label>
             <input type="text" style="width: 340px;" name="class" value="{$info.class|default=''}">
@@ -78,6 +96,22 @@
             <label>状态：</label>
             <input type="radio" name="status" value="0" {if (!isset($info['status']) || $info['status']==0)}checked{/if}>开启
             <input type="radio" name="status" value="2" {if (isset($info['status']) && $info['status']!=0)}checked{/if}>关闭
+        </div>
+        <div class="form-group col-md-12">
+            <label>每 * 分钟内：</label>
+            <input type="number" style="width: 340px;" name="route_minute" min="0" max="100000" value="{$info.route_minute|default=''}">
+        </div>
+        <div class="form-group col-md-12">
+            <label>限制当前服务，最大接收 * 次请求：</label>
+            <input type="number" style="width: 340px;" name="route_limit" min="0" value="{$info.route_limit|default=''}">
+        </div>
+        <div class="form-group col-md-12">
+            <label>每 * 分钟内：</label>
+            <input type="number" style="width: 340px;" name="ip_minute" min="0" max="100000" value="{$info.ip_minute|default=''}">
+        </div>
+        <div class="form-group col-md-12">
+            <label>限制单个IP，最大接收 * 次请求：</label>
+            <input type="number" style="width: 340px;" name="ip_limit" min="0" value="{$info.ip_limit|default=''}">
         </div>
     </form>
 </div>

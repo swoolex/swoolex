@@ -1,0 +1,155 @@
+{include file="HttpRpc/header" /}
+
+			<div class="content-page">
+				<div class="content">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-12">
+								<div class="card-box">
+									<div class="row">
+										<div class="col-12">
+											<div class="filter-list">
+												<div class="row">
+													<div class="col-md-2">
+														<div>
+															<button class="btn btn-success waves-effect waves-light btn-sm mr-1" data-toggle="modal" data-target="#add" onclick="$('#id').val('');$('#title').val('');$('#ts').html('新增');"> 添加项目 </button>
+														</div>
+													</div>
+												</div>
+											</div>
+											<div style="margin-top: 20px;">
+												<div class="responsive-table-plugin">
+													<div class="table-rep-plugin">
+														<div class="table-responsive">
+															<table id="datatable" class="table table-bordered dt-responsive nowrap">
+																<thead>
+																	<tr>
+																		<th>序号</th>
+																		<th>项目名称</th>
+																		<th>操作</th>
+																	</tr>
+																</thead>
+																<tbody>
+																    {php} $k=0;{/php}
+                                                                    {foreach $list as $i=>$name}
+																	<tr>
+																		<td>{$k+1}</td>
+																		<td>{$name}</td>
+																		<td>
+																			<button type="button" class="btn btn-primary waves-effect waves-light btn-sm" style="padding: 2px 10px;" data-toggle="modal" data-target="#add" onclick="$('#id').val('{$name}');$('#title').val('{$name}');$('#ts').html('编辑');">修改</button>
+																			<button type="button" class="btn btn-danger waves-effect waves-light btn-sm" style="padding: 2px 10px;" data-toggle="modal" data-target="#delete" onclick="$('#id').val('{$name}');">删除</button>
+																		</td>
+																	</tr>
+																    {php} $k++;{/php}
+																	{/foreach}
+																</tbody>
+															</table>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+        <!-- 刪除彈框 -->
+		<div class="modal fade" id="delete" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">提示</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<p class="tips-info">你确定删除该项目名称?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary delete">确认</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 新增彈框 -->
+		<div class="modal fade" id="add" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel"><span id="ts">新增</span>项目</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label>项目名称</label>
+								<input type="text" placeholder="项目名称" class="form-control" id="title" value="">
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary save">确认</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<input type="hidden" id="id" value="">
+{include file="HttpRpc/footer" /}
+
+<script>
+$('.save').click(function() {
+    dialog('系统执行中，请勿刷新页面...', 'success');
+    $('.close').click();
+    $.ajax({
+        type: 'get',
+        data: {
+            'id':$('#id').val(),
+            'title':$('#title').val(),
+        },
+        url: "/HttpRpc/item_save",
+        success: function(data) {
+            var array = eval('('+data+')');
+            if (array['code'] == '00') {
+                dialog(array['msg'], 'success');
+                setTimeout(function() {
+					window.location.reload();
+				}, 800);
+            } else {
+                dialog(array['msg'], 'error');
+            }
+        }
+    });
+})
+$('.delete').click(function() {
+    dialog('系统执行中，请勿刷新页面...', 'success');
+    $('.close').click();
+    $.ajax({
+        type: 'get',
+        data: {
+            'id':$('#id').val(),
+        },
+        url: "/HttpRpc/item_delete",
+        success: function(data) {
+            var array = eval('('+data+')');
+            if (array['code'] == '00') {
+                dialog(array['msg'], 'success');
+                setTimeout(function() {
+					window.location.reload();
+				}, 800);
+            } else {
+                dialog(array['msg'], 'error');
+            }
+        }
+    });
+})
+</script>

@@ -53,12 +53,25 @@ return [
     // | HTTP-RPC服务中心相关
     // +-----------------------------
     // 当前应用是否为服务中心
-    'http_rpc_is'      => false,
+    'http_rpc_is'      => true,
     // 服务中心-控制台账号密码
     'http_rpc_user_list' => [
         [
+            // 账号
             'username' => 'swoolex',
+            // 密码
             'password' => 'swoolex',
+            // 权限
+            'auth' => [
+                'item' => true, // 项目管理
+                'group' => true, // 分组管理 
+                'error' => true, // 错误日志
+                'debug' => true, // 服务调试
+                'insert' => true, // 服务创建
+                'update'=> true, // 服务编辑
+                'copy' => true, // 复制服务
+                'delete' => true, // 删除服务
+            ]
         ]
     ],
 ];

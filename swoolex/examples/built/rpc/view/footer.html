@@ -1,0 +1,37 @@
+        <!-- 底部 -->
+				<footer class="footer">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-12"> 由 <a href="https://www.sw-x.cn" target="_blank">sw-x</a> 高性能企业级PHP框架 | 提供技术支持 </div>
+						</div>
+					</div>
+				</footer>
+			</div>
+		</div>
+		
+
+	</body>
+</html>
+<script>
+function out() {
+    if (confirm('你确认退出吗?')) {
+        $.ajax({
+            type: 'get',
+            data: {
+            },
+            url: "/HttpRpc/out",
+            success: function(data) {
+                var array = eval('('+data+')');
+                if (array['code'] == '00') {
+                    dialog(array['msg'], 'success');
+                    setTimeout(function() {
+    					window.location.href = '/HttpRpc/login'
+    				}, 800);
+                } else {
+                    dialog(array['msg'], 'error');
+                }
+            }
+        });
+    }
+}
+</script>

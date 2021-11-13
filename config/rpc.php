@@ -53,7 +53,7 @@ return [
     // | HTTP-RPC服务中心相关
     // +-----------------------------
     // 当前应用是否为服务中心
-    'http_rpc_is'      => true,
+    'http_rpc_is'      => false,
     // 服务中心-控制台账号密码
     'http_rpc_user_list' => [
         [

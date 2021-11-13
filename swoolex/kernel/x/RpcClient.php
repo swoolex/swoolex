@@ -311,6 +311,8 @@ class RpcClient {
             'class' => $this->class,
             'function' => $this->function,
             'headers' => $this->headers,
+            'ip' => $config['ip'],
+            'port' => $config['port'],
             'param' => $this->param,
             'task' => $this->task,
             'callback' => $this->callback,

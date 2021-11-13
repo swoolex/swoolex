@@ -55,6 +55,7 @@ class SystemTips {
     const RPC_SERVER_ROUTE_13 = '注解：请求已执行完成，但被环绕操作拦截！';
     const RPC_SERVER_ROUTE_14 = '注解：请求已执行完成，但被后置操作拦截！';
     const RPC_SERVER_ROUTE_15 = '注解：验证器拦截！';
+    const RPC_SERVER_ROUTE_16 = '注解：已达到限流峰值！';
     const HAVIOR_SERVER_1 = '指令错误：sw-x havior 缺少更多的命令参数';
     const HAVIOR_SERVER_2 = '指令错误：RPC服务中心正确的安装指令是：sw-x havior start';
     const CLICK_SERVER_1 = '指令错误：sw-x click 缺少更多的命令参数';

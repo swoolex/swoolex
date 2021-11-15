@@ -362,9 +362,6 @@ class HttpRpc extends Http {
      * @RequestMapping(route="/login_send", method="post", title="HTTP-RPC登录处理")
     */
     public function send() {
-        $vif = $this->vif();
-        if ($vif !== true) return $vif;
-        
         $param = \x\Request::post();
         if (empty($param['username'])) return $this->returnJson('01', '账号或密码错误');
         if (empty($param['password'])) return $this->returnJson('01', '账号或密码错误');

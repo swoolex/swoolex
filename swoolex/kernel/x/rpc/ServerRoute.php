@@ -38,7 +38,7 @@ class ServerRoute
         $class = '\app\rpc\\'.str_replace('/', '\\', ltrim(rtrim($data['class'], '/'), '/'));
         if (!class_exists($class)) return $ServerCurrency->returnJson($server, $fd, '504', Tips::RPC_SERVER_ROUTE_4, $data);
 
-        $res = \x\Rpc::limit($data);
+        $res = \x\Rpc::limit($data, $fd);
         if (!$res) return $ServerCurrency->returnJson($server, $fd, '516', Tips::RPC_SERVER_ROUTE_16, $data);
 
         $ref = new \ReflectionClass($class);

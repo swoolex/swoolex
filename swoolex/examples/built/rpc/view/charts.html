@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="utf-8" />
+		<title>RPC服务中心 | SW-X</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<link rel="shortcut icon " type="images/x-icon" href="https://www.sw-x.cn/favicon.ico">
+		<link href="https://www.sw-x.cn/assets/css/bootstrap.min.css" id="bootstrap-stylesheet" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="https://www.sw-x.cn/assets/css/frappe_theme.css" media="screen">
+	</head>
+	<body data-sidebar="dark">
+
+
+    <div class="content-page">
+				<div class="content">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-12">
+								<div class="card-box">
+									<div class="row">
+										<div class="col-12">
+											<div class="filter-list">
+											    <form action="">
+											    <input type="hidden" name="class" value="{$param.class}">
+											    <input type="hidden" name="function" value="{$param.function}">
+											    <input type="hidden" name="ip" value="{$param.ip}">
+											    <input type="hidden" name="port" value="{$param.port}">
+												<div class="row">
+													<div class="col-md-2 col-xs-6">
+														<label>日期</label>
+														<select class="form-control" name="type">
+															<option value="1" {if ($type==1)} selected{/if}>今天</option>
+															<option value="2" {if ($type==2)} selected{/if}>昨天</option>
+														</select>
+													</div>
+													<div class="col-md-2 col-xs-12">
+														<label style="color: #FFF;">1</label>
+														<div>
+															<button class="btn btn-primary waves-effect waves-light btn-sm"> 查詢 </button>
+														</div>
+													</div>
+												</div>
+												</form>
+											</div>
+											<div style="margin-top: 20px;">
+												<div class="responsive-table-plugin">
+													<div class="table-rep-plugin">
+														<div class="table-responsive">
+                                                              <div id="chart-composite-1" class="border"><svg></svg></div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				
+				
+    
+    <script src="https://www.sw-x.cn/assets/js/frappe-charts.min.js"></script>
+    <script>
+  let lineCompositeData = {
+	labels: {$date|json_encode|raw},
+	yMarkers: [
+		{
+			label: "间隔 / 1小时",
+			value: {$max},
+		}
+	],
+	datasets: [{
+		"name": "预览量",
+		"values": {$data|json_encode|raw}
+	}]
+};
+
+let c1 = document.querySelector("#chart-composite-1");
+
+let lineCompositeChart = new Chart (c1, {
+	title: "请求数统计",
+	data: lineCompositeData,
+	type: 'line',
+	height: 470,
+	colors: ['green'],
+	isNavigable: 1,
+	valuesOverPoints: 1,
+
+	lineOptions: {
+		dotSize: 8
+	},
+});
+    </script>
+  </body>
+</html>

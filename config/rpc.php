@@ -67,6 +67,7 @@ return [
                 'group' => true, // 分组管理 
                 'error' => true, // 错误日志
                 'debug' => true, // 服务调试
+                'charts' => true, // 请求统计
                 'insert' => true, // 服务创建
                 'update'=> true, // 服务编辑
                 'copy' => true, // 复制服务

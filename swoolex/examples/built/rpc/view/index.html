@@ -178,6 +178,9 @@
 																		    {if ($auth.debug)}
 																			<button type="button" class="btn btn-warning waves-effect waves-light btn-sm" style="padding: 2px 10px;" onclick="debug('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')">调试</button>
 																			{/if}
+																		    {if ($auth.charts)}
+																			<button type="button" class="btn btn-success waves-effect waves-light btn-sm" style="padding: 2px 10px;" onclick="charts('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')"> 统计 </button>
+																			{/if}
 																			{if ($auth.copy)}
 																			<button type="button" class="btn btn-info waves-effect waves-light btn-sm" style="padding: 2px 10px;" onclick="add('{$v.class}', '{$v.function}', '{$v.ip}', '{$v.port}')">复制</button>
 																			{/if}
@@ -210,6 +213,13 @@
 <script>
 function debug(clas, fun, ip, port) {
     iframe.createIframe('调试节点', '/HttpRpc/debug?class='+clas+'&function='+fun+'&ip='+ip+'&port='+port, {
+        'width':'100%',
+        'height':'',
+        'footer':'none'
+    })
+}
+function charts(clas, fun, ip, port) {
+    iframe.createIframe('请求统计', '/HttpRpc/charts?class='+clas+'&function='+fun+'&ip='+ip+'&port='+port, {
         'width':'100%',
         'height':'',
         'footer':'none'

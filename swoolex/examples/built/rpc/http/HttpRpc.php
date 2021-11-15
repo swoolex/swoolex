@@ -808,6 +808,65 @@ class HttpRpc extends Http {
         return $this->returnJson('01', '删除失败！');
     }
 
+    
+    /**
+     * @RequestMapping(route="/charts", method="get", title="HTTP-RPC请求统计")
+    */
+    public function charts() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
+        $param = \x\Request::get();
+        $redis_key = \x\Config::get('rpc.redis_key').'_sta_'.md5($param['class'].$param['function'].$param['ip'].$param['port']);
+        $redis = new \x\Redis();
+        
+        $type = $param['type'] ?? 1;
+        if ($type == 1) {
+            $time = time();
+            $start = strtotime(date('Y-m-d', time()));
+        } else {
+            $time = strtotime(date('Y-m-d', time()));
+            $start = $time-86400;
+        }
+        $this->assign('type', $type);
+        
+        $list = [];
+        for ($i=$start; $i <= $time; $i+=3600) { 
+            $list[] = $i;
+        }
+        $num = count($list)-1;
+        $date = [];
+        $data = [];
+        $max = 10;
+        foreach ($list as $k => $v) {
+            if ($k == 0) {
+                $date[] = date('H:i', $v);
+                $data[] = 0;
+                continue;
+            }
+            if ($k == $num && $type == 1) {
+                $date[] = date('H:i', time());
+                $start = $v;
+                $end = time();
+            } else {
+                $date[] = date('H:i', $v);
+                $start = $list[$k-1];
+                $end = $v;
+            }
+            $count = $redis->zCount($redis_key, $start, $end);
+            $data[] = $count;
+            if ($max < $count) $max = $count;
+        }
+        
+        $redis->return();
+        
+        $this->assign('date', $date);
+        $this->assign('data', $data);
+        $this->assign('param', $param);
+        $this->assign('max', $max);
+        return $this->display();
+    }
+
     //------------------------------------ 助手函数 ---------------------------------------
 
     /**

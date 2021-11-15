@@ -276,7 +276,7 @@ class Rpc {
      * @global 无
      * @return void
     */
-    public static function limit($config) {
+    public static function limit($config, $fd) {
         if (!isset($config['ip']) || !isset($config['port'])) return true;
         $redis_key = \x\Config::get('rpc.redis_key');
         $md5 = md5($config['class'].$config['function'].$config['ip'].$config['port']);
@@ -290,7 +290,7 @@ class Rpc {
 
         // 统计
         $sta_key = $redis_key.'_sta_'.$md5;
-        $redis->zAdd($sta_key, time(), 1);
+        $redis->zAdd($sta_key, time(), $fd);
         
         // 节点限流
         if ($config['route_minute'] > 0 && $config['route_limit'] > 0) {

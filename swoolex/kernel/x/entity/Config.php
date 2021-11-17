@@ -80,24 +80,17 @@ class Config
      * @global 无
      * @param array $array 设置层级
      * @param mixed $val 设置内容
-     * @param array $list 最终组装出来的配置项
      * @return array|false
     */
-    private static function loop_set($array, $val) {
-        $list = [];
-        foreach ($array as $k=>$v) {
-            if (!isset($array[$k+1])) {
-                $list[$v] = $val;
-            } else {
-                unset($array[$k]);
-                $list[$v] = self::loop_set($array, $val);
-            }
-            return $list;
-        } 
-
-        return false;
+    private static function loop_set(&$config, $array, $val) {
+        if (count($array) == 1 ){
+            $config[array_shift($array)] = $val;
+        }else{
+            //每次弹出一个元素，并且把新的data传递进去
+            self::loop_set($config[array_shift($array)], $array, $val);
+        }
+        return $config;
     }
-
     /**
      * 获取参数
      * @todo 无
@@ -132,28 +125,11 @@ class Config
      * @return bool
     */
     public function set($key, $val) {
-        $array = explode('.', $key);
-        if (!isset($array[1])) {
-            $keys = $array[0];
-            self::$config[$keys] = $val;
-            unset($keys);
-            unset($array);
-            return true;
-        }
-
-        $list = self::loop_set($array, $val);
-        if ($list) {
-            foreach ($list as $key=>$val) {
-                $config = array_merge(self::$config[$key], $val);
-                self::$config[$key] = $config;
-                unset($keys);
-                unset($array);
-                unset($config);
-                return true;
-            }
-        }
-
-        return false;
+        $key_arr = explode( '.' , $key);
+        $old_config = self::$config;
+        self::$config = self::loop_set($old_config, $key_arr , $val);
+        unset($old_config);
+        return true;
     }
 
     /**

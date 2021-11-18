@@ -204,6 +204,7 @@ class HttpRpc extends Http {
             'port' => $param['port'],
             'item' => $param['item'],
             'group' => $param['group'],
+            'max_ms' => $param['max_ms'],
             'route_minute' => $param['route_minute'],
             'route_limit' => $param['route_limit'],
             'ip_minute' => $param['ip_minute'],

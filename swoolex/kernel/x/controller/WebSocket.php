@@ -92,6 +92,28 @@ class WebSocket {
     }
 
     /**
+     * 更新参数
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.0.1 + 2020.1.13
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public final function set_data($data) {
+        $config = \x\Config::get('websocket');
+        // 启用加密方式
+        if ($config['aes_key']) {
+            $data = self::encrypt(json_encode($data, JSON_UNESCAPED_UNICODE));
+        }
+
+        $websocket_frame = \x\context\Container::get('websocket_frame');
+        $websocket_frame->data = $data;
+        
+        return \x\context\Container::set('websocket_frame', $websocket_frame);
+    }
+
+    /**
      * 获取当前客户端fd标识
      * @todo 无
      * @author 小黄牛

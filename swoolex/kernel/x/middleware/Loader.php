@@ -37,7 +37,7 @@ class Loader
         if (!$this->config) {
             $this->config = \x\Config::get('middleware');
             foreach ($this->config as $key => $value) {
-                $key = str_replace('/*', '*', $this->lrtrim($key));
+                $key = $this->lrtrim($key);
                 $this->config[$key] = $value;
             }
         }

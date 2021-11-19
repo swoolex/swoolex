@@ -18,6 +18,13 @@ use x\controller\Http;
  * @Controller(prefix="HttpMonitor")
 */
 class HttpMonitor extends Http {
+    private function vif() {
+        if (!\x\Session::get('httpmonitor')) {
+            return $this->display('HttpMonitor/error'); 
+        }
+        return true;
+    }
+    
     /**
      * @RequestMapping(route="/login", method="get", title="HTTP监控控制台登录页")
     */
@@ -55,22 +62,29 @@ class HttpMonitor extends Http {
         if ($param['password'] != \x\Config::get('server.http_monitor_password')) return $this->returnJson('01', '账号或密码错误'); 
 
         if (is_dir(\x\Config::get('server.http_monitor_dir_root')) == false) return $this->returnJson('01', '暂未生成任何监控文件');
-
-        $url = '/HttpMonitor/index?username='.md5(\x\Config::get('server.http_monitor_username')).'&password='.md5(\x\Config::get('server.http_monitor_password')).'&ip='.\x\Request::ip();
+        
+        \x\Session::set('httpmonitor', 1);
+        
+        $url = '/HttpMonitor/index';
+        
         return $this->returnJson('00', '登录成功', $url);
     }
-
+    
+    /**
+     * @RequestMapping(route="/out", method="get", title="退出登陆")
+    */
+    public function out() {
+        \x\Session::delete('httpmonitor');
+        return $this->returnJson('00', '退出成功');
+    }
     /**
      * @RequestMapping(route="/index", method="get", title="HTTP监控台主页")
     */
     public function index() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
         $param = \x\Request::get();
-        if (empty($param['username'])) return $this->display('HttpMonitor/error');
-        if (empty($param['password'])) return $this->display('HttpMonitor/error');
-        if (empty($param['ip'])) return $this->display('HttpMonitor/error');
-        if ($param['username'] != md5(\x\Config::get('server.http_monitor_username'))) return $this->display('HttpMonitor/error');
-        if ($param['password'] != md5(\x\Config::get('server.http_monitor_password'))) return $this->display('HttpMonitor/error'); 
-        if ($param['ip'] != \x\Request::ip()) return $this->display('HttpMonitor/error'); 
         // 查询日期
         $param['date'] = $param['date'] ?? date('Y-m-d');
         // 当前分页数
@@ -109,6 +123,9 @@ class HttpMonitor extends Http {
      * @RequestMapping(route="/details", method="get", title="HTTP监控记录详情")
     */
     public function details() {
+        $vif = $this->vif();
+        if ($vif !== true) return $vif;
+        
         $param = \x\Request::get();
         $file = \x\Config::get('server.http_monitor_dir_root').$param['file'];
         $array = json_decode(\Swoole\Coroutine\System::readFile($file), true);
@@ -123,7 +140,7 @@ class HttpMonitor extends Http {
     // 生成分页HTML
     function ArrayPage($total, $limit, $url, $page){
         $total = ceil($total / $limit);//总页数
-        $html ='';
+        $html ='<ul class="pagination">';
 
         # 先来接个分页头
         if ($page > 1) {
@@ -140,7 +157,7 @@ class HttpMonitor extends Http {
             }
             for ($i=1; $i <= $num; $i++) { 
                 if ($i==$page) {
-                    $html .= "<li class='current'><a>$i</a></li>";
+                    $html .= "<li class='active'><span>$i</span></li>";
                 } else{
                     $html .= "<li><a href='".$url."&page=$i'>$i</a></li>";
                 }
@@ -149,25 +166,25 @@ class HttpMonitor extends Http {
             # 第三种场景，当前分页数大于等于5，并且就算加5页也要小于等于总页数
             if ($page >= 5 && (($page+5) <= $total) ) {
                 # 先计算出左边分页数
-                $left  = $page - 4;
+                $left  = $page - 3;
                 $key   = $page - 1;
                 for ($i=$left; $i <= $key; $i++) { 
                     $html .= "<li><a href='".$url."&page=$i'>$i</a></li>";
                 }
                 # 合并中间分页数
-                $html .= "<li class='current'><a>$i</a></li>";
+                $html .= "<li class='active'><span>$i</span></li>";
                 # 再计算出右边分页数
-                $right = $page + 4;
+                $right = $page + 3;
                 $key   = $page + 1;
                 for ($i=$key; $i <= $right; $i++) { 
                     $html .= "<li><a href='".$url."&page=$i'>$i</a></li>";
                 }
             # 第二种场景
             } else {
-                $key = $total - 7;
+                $key = $total - 5;
                 for ($i=$key; $i <= $total; $i++) { 
                     if ($i==$page) {
-                        $html .= "<li class='current'><a>$i</a></li>";
+                        $html .= "<li class='active'><span>$i</span></li>";
                     } else{
                         $html .= "<li><a href='".$url."&page=$i'>$i</a></li>";
                     }
@@ -181,12 +198,12 @@ class HttpMonitor extends Http {
             $html .= "<li class='next'><a href='".$url."&page=".$total."'>尾页</a></li>";
         }
 
-        return $html;
+        return $html.'</ul>';
     }
 
     // 生成分页URL
     private function page_rul($param) {
-        $url = '/HttpMonitor/index?username='.$param['username'].'&password='.$param['password'].'&ip='.$param['ip'];
+        $url = '/HttpMonitor/index?s=1';
         if (!empty($param['status'])) $url .= '&status='.$param['status'];
         if (!empty($param['route'])) $url .= '&route='.$param['route'];
         if (!empty($param['date'])) $url .= '&date='.$param['date'];

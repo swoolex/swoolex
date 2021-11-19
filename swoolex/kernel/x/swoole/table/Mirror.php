@@ -180,4 +180,20 @@ class Mirror {
 
         return self::$pool[$table]->count();
     }
+
+    /**
+     * 获取表的全部记录
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.4 + 2021-09-01
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $table 表名
+     * @return Swoole/Table
+    */
+    public static function all($table) {
+        if (!self::hasTable($table)) return false;
+        
+        return self::$pool[$table];
+    }
 }

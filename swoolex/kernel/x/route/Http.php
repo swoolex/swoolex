@@ -14,6 +14,7 @@
 namespace x\route;
 
 use design\AbstractRoute;
+use x\middleware\Loader;
 
 class Http extends AbstractRoute {
     
@@ -77,6 +78,12 @@ class Http extends AbstractRoute {
 
         // 达到峰值由生命周期抛出错误信息
         if (\x\Limit::routeVif($this->server, $this->fd, $request_uri, 'http') == false) return false;
+        // 中间件 - 前置过滤
+        $middleware_list = Loader::run()->hook($request_uri);
+        if ($middleware_list) {
+            $res = Loader::run()->handle($middleware_list, $this->server, $this->fd, 'http');
+            if (!$res) return false;
+        }
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamHttp($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
@@ -113,9 +120,11 @@ class Http extends AbstractRoute {
         // 后置操作
         $ret = (new \x\route\doc\lable\AopAfter($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;
-
+        // 中间件 - 后置通知
+        if ($middleware_list) {
+            $res = Loader::run()->end($middleware_list, $this->server, $this->fd, 'http');
+            if (!$res) return false;
+        }
         return false;
     }
-
-    
 }

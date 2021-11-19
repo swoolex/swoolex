@@ -15,6 +15,7 @@ namespace x\route;
 
 use design\AbstractRoute;
 use design\SystemTips as Tips;
+use x\middleware\Loader;
 
 class Rpc extends AbstractRoute {
 
@@ -85,7 +86,15 @@ class Rpc extends AbstractRoute {
         // 注册注解类
 
         // 达到峰值由生命周期抛出错误信息
-        if (\x\Limit::routeVif($this->server, $this->fd, $request_uri, 'rpc') == false) return false;
+        if (\x\Limit::routeVif($this->server, $this->fd, $request_uri, 'rpc') == false) {
+            return $this->ServerCurrency->returnJson($this->server, $this->fd, '516', Tips::RPC_SERVER_ROUTE_16, $this->data);
+        }
+        // 中间件 - 前置过滤
+        $middleware_list = Loader::run()->hook($request_uri);
+        if ($middleware_list) {
+            $res = Loader::run()->handle($middleware_list, $this->server, $this->fd, 'rpc');
+            if (!$res) return $this->ServerCurrency->returnJson($this->server, $this->fd, '517', Tips::RPC_SERVER_ROUTE_17, $this->data);
+        }
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamRpc($this->server, $this->fd))->run($route);
         if ($ret !== true) {
@@ -128,7 +137,11 @@ class Rpc extends AbstractRoute {
         if ($ret !== true) {
             return $this->ServerCurrency->returnJson($this->server, $this->fd, '514', Tips::RPC_SERVER_ROUTE_14, $this->data);
         }
-
+        // 中间件 - 后置通知
+        if ($middleware_list) {
+            $res = Loader::run()->end($middleware_list, $this->server, $this->fd, 'rpc');
+            if (!$res) return $this->ServerCurrency->returnJson($this->server, $this->fd, '518', Tips::RPC_SERVER_ROUTE_18, $this->data);
+        }
         return $this->prc_error($return);
     }
 

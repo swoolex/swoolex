@@ -297,20 +297,23 @@ class Table {
     private function add_list($list, $cutting, $route_type) {
         foreach ($list as $path) {
             $fp = fopen($path, "r");
-            $str = fread($fp, filesize($path));
+            $size = filesize($path);
+            if ($size > 0) {
+                $str = fread($fp, filesize($path));
 
-            if (preg_match('/namespace(.*);/i', $str, $comment ) === false) continue;
-            if (!isset($comment[1])) continue;
-
-            $suffix = substr(strrchr($path, '.'), 1);
-            $result = basename($path,".".$suffix);
-
-            # 获得命名空间地址
-            $namespace = trim($comment[1]).'\\'.$result;
-            
-            # 使用注解
-            $doc = \x\route\doc\Annotate::run($namespace);
-            $this->add_doc_route($doc, $namespace, $cutting, $route_type);
+                if (preg_match('/namespace(.*);/i', $str, $comment ) === false) continue;
+                if (!isset($comment[1])) continue;
+    
+                $suffix = substr(strrchr($path, '.'), 1);
+                $result = basename($path,".".$suffix);
+    
+                # 获得命名空间地址
+                $namespace = trim($comment[1]).'\\'.$result;
+                
+                # 使用注解
+                $doc = \x\route\doc\Annotate::run($namespace);
+                $this->add_doc_route($doc, $namespace, $cutting, $route_type);
+            }
         }
     }
 }

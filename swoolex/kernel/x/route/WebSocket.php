@@ -14,6 +14,7 @@
 namespace x\route;
 
 use design\AbstractRoute;
+use x\middleware\Loader;
 
 class WebSocket extends AbstractRoute {
     
@@ -63,6 +64,12 @@ class WebSocket extends AbstractRoute {
         $server = \x\context\Container::get('websocket_server');
         $frame = \x\context\Container::get('websocket_frame');
         if (\x\Limit::routeVif($server, $frame->fd, $request_uri, 'websocket') == false) return false;
+        // 中间件 - 前置过滤
+        $middleware_list = Loader::run()->hook($request_uri);
+        if ($middleware_list) {
+            $res = Loader::run()->handle($middleware_list, $server, $frame->fd, 'websocket');
+            if (!$res) return false;
+        }
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamWebSocket($server, $frame->fd))->run($route);
         if ($ret !== true) return $ret;
@@ -93,9 +100,11 @@ class WebSocket extends AbstractRoute {
         // 后置操作
         $ret = (new \x\route\doc\lable\AopAfter($server, $frame->fd))->run($route);
         if ($ret !== true) return $ret;
-
+        // 中间件 - 后置通知
+        if ($middleware_list) {
+            $res = Loader::run()->end($middleware_list, $server, $frame->fd, 'websocket');
+            if (!$res) return false;
+        }
         return false;
     }
-
-    
 }

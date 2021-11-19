@@ -149,8 +149,6 @@ class Rpc {
                             $client = new Client(SWOOLE_SOCK_TCP);
                             $starttime = explode(' ',microtime());
                             $res = $client->connect($val['ip'], $val['port'], 1);
-                            $endtime = explode(' ',microtime());
-                            $client->close();
                             // 失败
                             if (!$res) {
                                 $val['is_fault'] = 1;
@@ -161,6 +159,10 @@ class Rpc {
                             } else {
                                 $val['is_fault'] = 0;
                             }
+                            $client->send("ping\n");
+                            $endtime = explode(' ',microtime());
+                            $client->close();
+                            
                             // 成功
                             $thistime = $endtime[0]+$endtime[1]-($starttime[0]+$starttime[1]);
                             // 耗时

@@ -15,6 +15,7 @@ namespace x\route;
 
 use design\AbstractRoute;
 use design\SystemTips as Tips;
+use x\middleware\Loader;
 
 class Mqtt extends AbstractRoute {
 
@@ -83,6 +84,12 @@ class Mqtt extends AbstractRoute {
         \x\context\Container::set('controller_method', $this->function);
         // 注册注解类
 
+        // 中间件 - 前置过滤
+        $middleware_list = Loader::run()->hook($request_uri);
+        if ($middleware_list) {
+            $res = Loader::run()->handle($middleware_list, $this->server, $this->fd, 'mqtt');
+            if (!$res) return false;
+        }
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamMqtt($this->server, $this->fd))->run($route);
         if ($ret !== true) return $this->clean($ret);
@@ -110,7 +117,11 @@ class Mqtt extends AbstractRoute {
         // 后置操作
         $ret = (new \x\route\doc\lable\AopAfter($this->server, $this->fd))->run($route);
         if ($ret !== true) return $this->clean($ret);
-
+        // 中间件 - 后置通知
+        if ($middleware_list) {
+            $res = Loader::run()->end($middleware_list, $this->server, $this->fd, 'mqtt');
+            if (!$res) return false;
+        }
         return $return;
     }
 

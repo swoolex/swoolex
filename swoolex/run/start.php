@@ -32,5 +32,7 @@ require_once ROOT_PATH.'common'.DS.'common.php';
 \x\Route::run();
 // 限流器初始化
 \x\Limit::run();
+// 中间件初始化
+\x\middleware\Loader::run()->init();
 // 服务启动
 \x\App::run()->start();

@@ -119,4 +119,10 @@ class Action
 
         return Mirror::count($this->table);
     }
+    
+    public function all() {
+        if (!$this->table) return false;
+
+        return Mirror::all($this->table);
+    }
 }

@@ -42,7 +42,7 @@ class WebSocket {
      * @return string 
      */  
     private static function encrypt($data) {  
-        $config = \x\Config::get('websocket');
+        $config = \x\Config::get('server');
         return openssl_encrypt($data, $config['aes_type'], $config['aes_key'], 0, $config['aes_iv']);  
     }  
   
@@ -52,7 +52,7 @@ class WebSocket {
      * @return string 
      */  
     private static function decrypt($data) {  
-        $config = \x\Config::get('websocket');
+        $config = \x\Config::get('server');
         return openssl_decrypt($data, $config['aes_type'], $config['aes_key'], 0, $config['aes_iv']);  
     } 
 
@@ -82,7 +82,7 @@ class WebSocket {
     public final function get_data() {
         $websocket_frame = \x\context\Container::get('websocket_frame');
         $data = $websocket_frame->data;
-        $config = \x\Config::get('websocket');
+        $config = \x\Config::get('server');
         // 启用加密方式
         if ($config['aes_key']) {
             $data = self::decrypt($data);
@@ -101,7 +101,7 @@ class WebSocket {
      * @return void
     */
     public final function set_data($data) {
-        $config = \x\Config::get('websocket');
+        $config = \x\Config::get('server');
         // 启用加密方式
         if ($config['aes_key']) {
             $data = self::encrypt(json_encode($data, JSON_UNESCAPED_UNICODE));
@@ -149,7 +149,7 @@ class WebSocket {
             $websocket_frame = \x\context\Container::get('websocket_frame');
             $fd = $websocket_frame->fd;
         }
-        $config = \x\Config::get('websocket');
+        $config = \x\Config::get('server');
         $array = [
             'action' => $action,
             'msg' => $msg,

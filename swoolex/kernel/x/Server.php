@@ -111,6 +111,8 @@ class Server {
         \design\MountEvent::WorkerStart_SwooleTableStart();
         // 载入内存缓存组件
         \x\cache\parts\Memory::run();
+        // 自动热重载
+        \design\MountEvent::Reload($this->service);
     }
 
     /**

@@ -166,7 +166,7 @@ class App extends AbstractConsole {
         // 清空ENV文件
         $this->reloadEnv(false);
         // 通知Swoole平滑重启进程
-        posix_kill($idArray['manager_pid'], SIGUSR1);
+        var_dump(posix_kill($idArray['manager_pid'], SIGUSR1));
     }
     /**
      * 指令 - 查看服务状态

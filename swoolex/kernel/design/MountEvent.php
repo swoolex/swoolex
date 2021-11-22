@@ -445,4 +445,20 @@ class MountEvent {
     public static function WorkerStart_Snowflake($workerId) {
         \x\Snowflake::setWorkerId($workerId);
     }
+
+    /**
+     * 自动热重载
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.12 + 2021-11-22
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public static function Reload($server) {
+        if (\x\Config::get('reload.status')) {
+            \x\common\Reload::init();
+            \x\common\Reload::timer($server);
+        }
+    }
 }

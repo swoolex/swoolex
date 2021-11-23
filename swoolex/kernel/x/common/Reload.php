@@ -89,6 +89,11 @@ class Reload
         \Swoole\Timer::tick($times, function () use($server) {
             $status = false;
             $length = count(self::$_list);
+            foreach (self::$_list as $dir=>$time) {
+                if (!file_exists($dir)) {
+                    unset(self::$_list[$dir]);
+                }
+            }
             foreach (self::$monitor_list as $dir=>$k) {
                 $status = self::timer_directory($dir);
                 if ($status) break;
@@ -114,21 +119,21 @@ class Reload
                         if (stripos($file, $delete_dir) !== false) continue;
                     }
                     if (is_file($file)) {
-                        $suffix = pathinfo($file, PATHINFO_EXTENSION);
-                        if (in_array($suffix, self::$monitor_suffix) == false) continue;
-                        
                         $time = filemtime($file);
                         // 新文件
                         if (!isset(self::$_list[$file])) {
-                            $status = true;
-                            self::$_list[$file] = $time;
+                            $suffix = pathinfo($file, PATHINFO_EXTENSION);
+                            if (in_array($suffix, self::$monitor_suffix)) {
+                                $status = true;
+                                self::$_list[$file] = $time;
+                            }
                         // 文件日期更新了
                         } else if (self::$_list[$file] != $time){
                             $status = true;
                             self::$_list[$file] = $time;
                         }
                     }else{
-                        return self::timer_directory($file, $status);
+                        $status = self::timer_directory($file, $status);
                     }
                 }
             }
@@ -146,9 +151,9 @@ class Reload
                     if (is_file($file)) {
                         if ($type == 1) {
                             $suffix = pathinfo($file, PATHINFO_EXTENSION);
-                            if (in_array($suffix, self::$monitor_suffix) == false) continue;
-                            
-                            self::$_list[$file] = filemtime($file);
+                            if (in_array($suffix, self::$monitor_suffix)) {
+                                self::$_list[$file] = filemtime($file);
+                            }
                         } else if (isset(self::$_list[$file])) {
                             unset(self::$_list[$file]);
                         }

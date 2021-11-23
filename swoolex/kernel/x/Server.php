@@ -52,20 +52,15 @@ class Server {
         switch ($this->server_type) {
             case 'http':
                 $this->service = new \Swoole\Http\Server($config['host'], $config['port'], SWOOLE_PROCESS, $set['wss']);
-                \design\MountEvent::WorkerStart_RouteStart_Http();
             break;
             case 'websocket':
                 $this->service = new \Swoole\WebSocket\Server($config['host'], $config['port'], SWOOLE_PROCESS, $set['wss']);
-                \design\MountEvent::WorkerStart_RouteStart_Http();
-                \design\MountEvent::WorkerStart_RouteStart_WebSocket();
             break;
             case 'rpc':
                 $this->service = new \Swoole\Server($config['host'], $config['port'], SWOOLE_PROCESS, $set['wss']);
-                \design\MountEvent::WorkerStart_RouteStart_Rpc();
             break;
             case 'mqtt':
                 $this->service = new \Swoole\Server($config['host'], $config['port'], SWOOLE_PROCESS, $set['wss']);
-                \design\MountEvent::WorkerStart_RouteStart_Mqtt();
             break;
         }
         // 启动类型写入配置项

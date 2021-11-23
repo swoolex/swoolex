@@ -266,7 +266,6 @@ class SwooleIO extends AbstractIO
      */
     public function select($sec, $usec)
     {
-        var_dump($sec, $usec);
         $this->check_heartbeat();
 
         return 1;

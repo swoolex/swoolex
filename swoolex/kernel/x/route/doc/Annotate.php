@@ -29,13 +29,12 @@ class Annotate {
         if (!class_exists($class)) {
             throw new \Exception("Doc：Class No existent~");
         }
-
+        
         // 使用ReflectionClass类
         $reflection = new \ReflectionClass($class);
 
         // 解析注解 - 获得类的路由参数
         $controller = DocParser::getInstance()->parse($reflection->getDocComment());
-        
         /// 获得成员函数
         $action = [];
         $methods = $reflection->getMethods();

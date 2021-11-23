@@ -21,7 +21,6 @@ class index extends Mqtt {
         $data = $this->getData();
         // 读取某个主题下的全部设备
         $device_list = $this->select($data['topic']);
-        // var_dump($device_list);
         // 获得当前请求的连接标识
         $fd = $this->getFd();
         // 循环广播消息

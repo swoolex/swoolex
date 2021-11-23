@@ -60,7 +60,6 @@ class Mqtt extends AbstractRoute {
             }
         } catch (\Throwable $throwable) {
             $msg = $throwable->getMessage().' Line：'.$throwable->getFile().'->'.$throwable->getLine();
-            // var_dump($msg);
             return false;
         }
 

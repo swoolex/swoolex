@@ -32,7 +32,6 @@ class onWorkerStart {
     */
     public function run($server, $workerId) {
         $this->server = $server;
-
         $this->mount($workerId);
 
         // 调用二次转发，不做重载

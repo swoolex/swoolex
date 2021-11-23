@@ -34,7 +34,6 @@ class Table {
     public static function run(){
         if (empty(self::$instance)) {
             self::$instance = new Table();
-            self::$instance->table = \x\Route::readAll();
         }
         return self::$instance;
     }
@@ -52,6 +51,7 @@ class Table {
         $cutting = \x\Config::get('route.cutting');
 
         // http路由
+        $this->table = \x\Route::readAll();
         $list = $this->every_file(ROOT_PATH.'app'.DS.'http');
         $this->add_list($list, $cutting, 'http');
     }
@@ -86,6 +86,7 @@ class Table {
         $cutting = \x\Config::get('route.cutting');
         
         // rpc路由
+        $this->table = \x\Route::readAll();
         $list = $this->every_file(ROOT_PATH.'app'.DS.'rpc');
         $this->add_list($list, $cutting, 'rpc');
     }
@@ -103,6 +104,7 @@ class Table {
         $cutting = \x\Config::get('route.cutting');
         
         // mqtt路由
+        $this->table = \x\Route::readAll();
         $list = $this->every_file(ROOT_PATH.'app'.DS.'mqtt');
         $this->add_list($list, $cutting, 'mqtt');
     }
@@ -300,7 +302,6 @@ class Table {
             $size = filesize($path);
             if ($size > 0) {
                 $str = fread($fp, filesize($path));
-
                 if (preg_match('/namespace(.*);/i', $str, $comment ) === false) continue;
                 if (!isset($comment[1])) continue;
     

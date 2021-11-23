@@ -142,12 +142,20 @@ class Loader
         foreach ($arr as $v) {
             if ($top_route) {
                 $top_route .= '/'.$v;
+                $key = $top_route.'*';
+                if (!empty($this->config[$key])) {
+                    return $this->config[$key];
+                }
             } else {
                 $top_route = $v;
-            }
-            $key = $top_route.'*';
-            if (!empty($this->config[$key])) {
-                return $this->config[$key];
+                $key = $top_route.'*';
+                if (!empty($this->config[$key])) {
+                    return $this->config[$key];
+                }
+                $key = $top_route.'/*';
+                if (!empty($this->config[$key])) {
+                    return $this->config[$key];
+                }
             }
         }
         return [];

@@ -13,6 +13,7 @@
 
 namespace design;
 use design\SystemTips;
+use x\Config;
 
 class MountEvent {
     //---------------------------- onStart 阶段 ------------------------------------
@@ -27,7 +28,7 @@ class MountEvent {
      * @return void
     */
     public static function Start_PidENV($server) {
-        $config = \x\Config::get('server');
+        $config = Config::get('server');
         //如果是以Daemon形式开启的服务，记录master和manager的进程id
         if ($config['daemonize'] === true) {
             file_put_contents($config['pid_file'], json_encode([
@@ -52,7 +53,7 @@ class MountEvent {
      * @return void
     */
     public static function ManagerStart_NameReload() {
-        $config = \x\Config::get('server');
+        $config = Config::get('server');
         swoole_set_process_name($config['manager']);
     }
 
@@ -69,7 +70,7 @@ class MountEvent {
      * @return void
     */
     public static function WorkerStart_PidENV($server, $workerId) {
-        $config = \x\Config::get('server');
+        $config = Config::get('server');
         /*
         可以将公用的，不易变的php文件放置到onWorkerStart之前。
         这样虽然不能重载入代码，
@@ -107,7 +108,7 @@ class MountEvent {
         if ($workerId != 0) return false;
 
         // 读取定时任务列表
-        $crontab_list = \x\Config::get('crontab');
+        $crontab_list = Config::get('crontab');
         foreach ($crontab_list as $v) {
             if (isset($v['status']) && $v['status']==false) continue;
             if (!isset($v['use']) || !isset($v['rule'])) continue;
@@ -186,8 +187,8 @@ class MountEvent {
         // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
         if ($workerId != 0) return false;
 
-        $time = \x\Config::get('mqtt.ping_crontab_time')*1000;
-        $ping_max_time = \x\Config::get('mqtt.ping_max_time');
+        $time = Config::get('mqtt.ping_crontab_time')*1000;
+        $ping_max_time = Config::get('mqtt.ping_max_time');
 
         \Swoole\Timer::tick($time, function ($timer_id) use ($server, $ping_max_time) {
             $times = time();
@@ -279,7 +280,7 @@ class MountEvent {
         if ($workerId != 0) return false;
 
         // 初始化微服务
-        if (\x\Config::get('rpc.http_rpc_is') != true) return false;
+        if (Config::get('rpc.http_rpc_is') != true) return false;
         
         \x\Rpc::run()->start();
     }
@@ -294,7 +295,7 @@ class MountEvent {
      * @return void
     */
     public static function WorkerStart_MysqlStart() {
-        if (\x\Config::get('mysql.driver') == 'mysql') {
+        if (Config::get('mysql.driver') == 'mysql') {
             // 启动数据库连接池
             \x\db\mysql\Pool::run()->init();
             // 启动连接池检测定时器
@@ -456,9 +457,25 @@ class MountEvent {
      * @return void
     */
     public static function Reload($server) {
-        if (\x\Config::get('reload.status')) {
+        if (Config::get('reload.status')) {
             \x\common\Reload::init();
             \x\common\Reload::timer($server);
+        }
+    }
+
+    /**
+     * 初始化敏感词库
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.12 + 2021-11-22
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public static function SensitiveWords() {
+        $list = Config::get('words.sensitive_file_list');
+        foreach ($list as $v) {
+            \x\SensitiveWord::set_tree_file($v['path'], $v['char']);
         }
     }
 }

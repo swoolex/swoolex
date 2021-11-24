@@ -108,6 +108,8 @@ class Server {
         \x\cache\parts\Memory::run();
         // 自动热重载
         \design\MountEvent::Reload($this->service);
+        // 载入敏感词库
+        \design\MountEvent::SensitiveWords();
     }
 
     /**

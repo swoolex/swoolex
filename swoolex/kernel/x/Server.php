@@ -167,6 +167,7 @@ class Server {
         // 创建设备表
         $device_list = new Table(\x\Config::get('mqtt.device_max_num'));
         $device_list->column('fd', Table::TYPE_INT, 12); // FD
+        $device_list->column('level', Table::TYPE_INT, 1); // Level
         $device_list->column('client_id', Table::TYPE_STRING, 64); // 客户端
         $device_list->column('status', Table::TYPE_INT, 1); // 离线状态
         $device_list->column('ping_time', Table::TYPE_INT, 12); // 心跳更新时间

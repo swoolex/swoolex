@@ -99,7 +99,7 @@ class Mqtt {
 
         $Redis = new \x\Redis();
         $table = new \x\mqtt\Table();
-        $hget = $redis->hGetAll($table->hash_key.$client_id);
+        $hget = $Redis->hGetAll($table->hash_key.$client_id);
         $list = array();
         foreach($hget as $key=>$val) {   
             $list[] = [
@@ -123,7 +123,7 @@ class Mqtt {
      * @return array
     */
     protected final function info() {
-        $data = $this->server->device_fd->get($fd);
+        $data = $this->server->device_fd->get($this->getFd());
         if (!$data) return false;
 
         return $this->find($data['client_id']);
@@ -141,8 +141,10 @@ class Mqtt {
      * @return bool
     */
     protected final function send($fd, $data) {
-        $arr = $this->getLevel();
-        $class = $arr['class'];
+        $level = (new \x\mqtt\Table($this->server))->deviceLevel($fd);
+        if (!$level) return false;
+
+        $class = '\x\mqtt\v'.$level.'\Dc';
         return $this->server->send($fd, $class::pack($data));
     }
 }

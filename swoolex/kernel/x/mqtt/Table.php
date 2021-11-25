@@ -59,11 +59,13 @@ class Table {
      * @global 无
      * @param array $data 数据包
      * @param int $fd
+     * @param int $level 协议版本
      * @return bool
     */
-    public function deviceReload($data, $fd) {
+    public function deviceReload($data, $fd, $level) {
         $res = $this->Server->device_list->set($data['client_id'], [
             'fd' => $fd,
+            'level' => $level,
             'status' => 1, // 在线
             'client_id' => $data['client_id'],
             'ping_time' => time(),
@@ -148,6 +150,25 @@ class Table {
         $arr = $this->Server->device_list->get($client_id);
         if (!$arr) return false;
         return $arr['fd'];
+    }
+    
+    /**
+     * 获取某个设备的协议版本
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.12 + 2021.07.02
+     * @deprecated 暂不启用
+     * @global 无
+     * @param int $fd
+     * @return int
+    */
+    public function deviceLevel($fd) {
+        $info = $this->Server->device_fd->get($fd);
+        if (!$info) return false;
+        
+        $arr = $this->Server->device_list->get($info['client_id']);
+        if (!$arr) return false;
+        return $arr['level'];
     }
 
     /**
@@ -246,11 +267,13 @@ class Table {
                         if ($list) {
                             // 拿到设备ID
                             foreach ($list as $client_id) {
+                                $fd = $this->deviceFd($client_id);
+                                if (!$fd) continue;
                                 $key = $client_id.$topic2;
                                 if (!isset($log_list[$key])) {
                                     $qos = $Redis->HGET($this->hash_key.$client_id, $topic2);
                                     $return_data[] = [
-                                        'fd' => $this->deviceFd($client_id),
+                                        'fd' => $fd,
                                         'client_id' => $client_id,
                                         'topic' => $topic2,
                                         'qos' => $qos,
@@ -271,11 +294,13 @@ class Table {
                     if ($list) {
                         // 拿到设备ID
                         foreach ($list as $client_id) {
+                            $fd = $this->deviceFd($client_id);
+                            if (!$fd) continue;
                             $key = $client_id.$topic;
                             if (!isset($log_list[$key])) {
                                 $qos = $Redis->HGET($this->hash_key.$client_id, $topic);
                                 $return_data[] = [
-                                    'fd' => $this->deviceFd($client_id),
+                                    'fd' => $fd,
                                     'client_id' => $client_id,
                                     'topic' => $topic,
                                     'qos' => $qos,
@@ -293,11 +318,13 @@ class Table {
             if ($list) {
                 // 拿到设备ID
                 foreach ($list as $client_id) {
+                    $fd = $this->deviceFd($client_id);
+                    if (!$fd) continue;
                     $key = $client_id.$topic;
                     if (!isset($log_list[$key])) {
                         $qos = $Redis->HGET($this->hash_key.$client_id, $topic);
                         $return_data[] = [
-                            'fd' => $this->deviceFd($client_id),
+                            'fd' => $fd,
                             'client_id' => $client_id,
                             'topic' => $topic,
                             'qos' => $qos,
@@ -315,11 +342,13 @@ class Table {
                 if ($list) {
                     // 拿到设备ID
                     foreach ($list as $client_id) {
+                        $fd = $this->deviceFd($client_id);
+                        if (!$fd) continue;
                         $key = $client_id.$topic2;
                         if (!isset($log_list[$key])) {
                             $qos = $Redis->HGET($this->hash_key.$client_id, $topic2);
                             $return_data[] = [
-                                'fd' => $this->deviceFd($client_id),
+                                'fd' => $fd,
                                 'client_id' => $client_id,
                                 'topic' => $topic2,
                                 'qos' => $qos,
@@ -334,11 +363,13 @@ class Table {
                 if ($list) {
                     // 拿到设备ID
                     foreach ($list as $client_id) {
+                        $fd = $this->deviceFd($client_id);
+                        if (!$fd) continue;
                         $key = $client_id.$topic2;
                         if (!isset($log_list[$key])) {
                             $qos = $Redis->HGET($this->hash_key.$client_id, $topic2);
                             $return_data[] = [
-                                'fd' => $this->deviceFd($client_id),
+                                'fd' => $fd,
                                 'client_id' => $client_id,
                                 'topic' => $topic2,
                                 'qos' => $qos,

@@ -104,7 +104,7 @@ class onReceive {
                 }
             }
             
-            (new \x\mqtt\Table($server))->deviceReload($data, $fd);
+            (new \x\mqtt\Table($server))->deviceReload($data, $fd, $level);
             (new \box\event\mqtt\Connect($server, $fd, $reactorId, $data))->run();
         // 其他协议
         } else {

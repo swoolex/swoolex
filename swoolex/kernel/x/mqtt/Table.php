@@ -188,6 +188,8 @@ class Table {
         $topic = key($data);
         $qos = $data[$topic]['qos'];
 
+        if ($topic != '/') $topic = ltrim($topic, '/');
+
         $Redis = new \x\Redis();
         $res = $Redis->SISMEMBER($this->sets_key.$topic, $info['client_id']);
         if (!$res) {
@@ -217,6 +219,8 @@ class Table {
      * @return bool
     */
     public function topicDelete($topic, $fd) {
+        if ($topic != '/') $topic = ltrim($topic, '/');
+        
         $data = $this->Server->device_fd->get($fd);
         if (!$data) return false;
         $Redis = new \x\Redis();
@@ -381,7 +385,6 @@ class Table {
             }
         }
         unset($log_list);
-
         $Redis->return();
         return $return_data;
     }

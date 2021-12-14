@@ -82,7 +82,7 @@ class onReceive {
                 $level = 3;
                 $class = '\x\mqtt\v3\Dc';
             }
-            $server->fds[$fd] = ['level' => $level, 'class' => $class];
+            
             $data = $class::unpack($data);
             if ($data['protocol_name'] != 'MQTT') {
                 $server->close($fd);
@@ -108,7 +108,12 @@ class onReceive {
             (new \box\event\mqtt\Connect($server, $fd, $reactorId, $data))->run();
         // 其他协议
         } else {
-            $class = $server->fds[$fd]['class'];
+            $level = (new \x\mqtt\Table($this->server))->deviceLevel($fd);
+            if ($level === 5) {
+                $class = '\x\mqtt\v5\Dc';
+            } else {
+                $class = '\x\mqtt\v3\Dc';
+            }
             $data = $class::unpack($data);
             // 数据包解析成功
             if (is_array($data) && isset($data['type'])) {

@@ -49,8 +49,12 @@ class limit_ip_check
                     'type' => \x\mqtt\common\Types::DISCONNECT,
                     'msg' => $msg,
                 ];
-                $arr = $server->fds[$fd];
-                $class = $arr['class'];
+                $level = (new \x\mqtt\Table($server))->deviceLevel($fd);
+                if ($level === 5) {
+                    $class = '\x\mqtt\v5\Dc';
+                } else {
+                    $class = '\x\mqtt\v3\Dc';
+                }
                 $server->send($fd, $class::pack($data));
                 $server->close($fd);
             break;

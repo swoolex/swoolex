@@ -67,7 +67,14 @@ abstract class Event {
         return $this->data;
     }
     public final function getLevel() {
-        return $this->server->fds[$this->fd];
+        $level = (new \x\mqtt\Table($this->server))->deviceLevel($this->fd);
+        if ($level === 5) {
+            $class = '\x\mqtt\v5\Dc';
+        } else {
+            $level = 3;
+            $class = '\x\mqtt\v3\Dc';
+        }
+        return ['level' => $level, 'class' => $class];
     }
 
     /**

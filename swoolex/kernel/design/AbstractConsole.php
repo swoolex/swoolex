@@ -25,16 +25,13 @@ class AbstractConsole {
     */
     protected static function head_description() {
         echo PHP_EOL;
-        echo "+----------------------------------------------------------+".PHP_EOL;
-        echo "|   _____                                     __    __     |".PHP_EOL;
-        echo "|  / ____|                                    \ \  / /     |".PHP_EOL;
-        echo "| | (___     __      __                        \ \/ /      |".PHP_EOL;
-        echo "|  \___ \    \ \ /\ / /        _______          \  /       |".PHP_EOL;
-        echo "|  ____) |    \ V  V /        |_______|         /  \       |".PHP_EOL;
-        echo "| |_____/      \_/\_/                          / /\ \      |".PHP_EOL;
-        echo "|                                             /_/  \_\     |".PHP_EOL;   
-        echo "+----------------------------------------------------------+".PHP_EOL; 
-        echo PHP_EOL;
+        echo "                _____                                     __    __     ".PHP_EOL;
+        echo "               / ____|                                    \ \  / /     ".PHP_EOL;
+        echo "              | (___     __      __                        \ \/ /      ".PHP_EOL;
+        echo "               \___ \    \ \ /\ / /        _______          \  /       ".PHP_EOL;
+        echo "               ____) |    \ V  V /        |_______|         /  \       ".PHP_EOL;
+        echo "              |_____/      \_/\_/                          / /\ \      ".PHP_EOL;
+        echo "                                                          /_/  \_\     ".PHP_EOL; 
     }
 
     /**
@@ -48,22 +45,30 @@ class AbstractConsole {
     */
     protected function start_action() {
         self::head_description();
-        echo 'USAGE: php sw-x commond'.PHP_EOL;
-        echo '1. start [服务类型]，以DeBug模式开启服务，此时服务不会以Daemon形式运行'.PHP_EOL;
-        echo '2. start [服务类型] -d，以Daemon模式开启服务'.PHP_EOL;
-        echo '3. status，查看服务器的状态'.PHP_EOL;
-        echo '4. stop，停止服务器'.PHP_EOL;
-        echo '5. reload，热加载所有业务代码'.PHP_EOL;
-        echo '6. test [服务类型] [路由地址]'.PHP_EOL;
-        echo '7. controller [服务类型] [路由地址] [方法名称] [路由名称]'.PHP_EOL;
-        echo '8. monitor start，创建HTTP请求监控WEB服务组件'.PHP_EOL;
-        echo '9. rpc start，创建HTTP-RPC 控制台WEB服务组件'.PHP_EOL;
-        echo '10. queue start，创建HTTP-Queue 消息队列控制台WEB服务组件'.PHP_EOL.PHP_EOL;
-        echo 'SERVER: Types of services supported'.PHP_EOL;
-        echo '1. http，WEB服务'.PHP_EOL;
-        echo '2. websocket，WebSocket服务'.PHP_EOL;
-        echo '3. rpc，Tcp-Rpc服务'.PHP_EOL;
-        echo '4. mqtt，Tcp-MQTT服务'.PHP_EOL.PHP_EOL;
+        echo '|-----------------------------------------------------------------------------|'.PHP_EOL;
+        echo "|                              https://www.sw-x.cn                            |".PHP_EOL;
+        echo "|-----------------------------------------------------------------------------|".PHP_EOL;
+        echo '|                              USAGE: php sw-x commond                        |'.PHP_EOL;
+        echo '|-----------------------------------------------------------------------------|'.PHP_EOL;
+        echo '|    1. start [服务类型]，以DeBug模式开启服务，此时服务不会以Daemon形式运行   |'.PHP_EOL;
+        echo '|    2. start [服务类型] -d，以Daemon模式开启服务                             |'.PHP_EOL;
+        echo '|    3. status，查看服务器的状态                                              |'.PHP_EOL;
+        echo '|    4. stop，停止服务器载                                                    |'.PHP_EOL;
+        echo '|    5. reload，热加载所有业务代码                                            |'.PHP_EOL;
+        echo '|    6. test [服务类型] [路由地址]                                            |'.PHP_EOL;
+        echo '|    7. controller [服务类型] [路由地址] [方法名称] [路由名称]                |'.PHP_EOL;
+        echo '|    8. monitor start，创建HTTP请求监控WEB服务组件                            |'.PHP_EOL;
+        echo '|    9. rpc start，创建HTTP-RPC 控制台WEB服务组件                             |'.PHP_EOL;
+        echo '|    10. queue start，创建HTTP-Queue 消息队列控制台WEB服务组件                |'.PHP_EOL;
+        echo '|    5. reload，热加载所有业务代码                                            |'.PHP_EOL;
+        echo '|-----------------------------------------------------------------------------|'.PHP_EOL;
+        echo '|                         SERVER: Types of services supported                 |'.PHP_EOL;
+        echo '|-----------------------------------------------------------------------------|'.PHP_EOL;
+        echo '|    1. http，WEB服务                                                         |'.PHP_EOL;
+        echo '|    2. websocket，WebSocket服务                                              |'.PHP_EOL;
+        echo '|    3. rpc，Tcp-Rpc微服务                                                    |'.PHP_EOL;
+        echo '|    4. mqtt，Tcp-MQTT物联网服务                                              |'.PHP_EOL;
+        echo '|-----------------------------------------------------------------------------|'.PHP_EOL;
     }
 
     /**
@@ -96,37 +101,122 @@ class AbstractConsole {
     protected function start_yes() {
         $scheduler = new \Swoole\Coroutine\Scheduler;
         $scheduler->add(function () {
-            self::head_description();
-
-            echo "\033[1A\n\033[K-----------------------\033[47;30m SwooleX Server \033[0m--------------------------\n\033[0m";
-            echo "Swoole-Version：".swoole_version().PHP_EOL;
-            echo "CPU_nums：".swoole_cpu_num().PHP_EOL;
-            echo "SwooleX-Version：".VERSION." Beta".PHP_EOL;
-            echo "PHP Version：".PHP_VERSION.PHP_EOL;
-            echo "Server Type：".$this->_server_start['server'].PHP_EOL;
-            echo "Host：".$this->config['host'].PHP_EOL;
-            echo "Port：".$this->config['port'].PHP_EOL;
             if ($this->config['ssl_cert_file'] && $this->config['ssl_key_file']) {
-                echo "SSL：Yes".PHP_EOL;
+                $ssl =  "是";
             } else {
-                echo "SSL：No".PHP_EOL;
+                $ssl =  "否";
             }
             if ($this->_server_start['option']=='-d') {
-                echo "Daemonize：Yes".PHP_EOL;
+                $daemonize = '是';
             } else {
                 if ($this->config['daemonize'] == true) {
-                    echo "Daemonize：Yes".PHP_EOL;
+                    $daemonize = '是';
                 } else {
-                    echo "Daemonize：-- 未知，参考status指令 查看进程是否存活".PHP_EOL;
+                    $daemonize = '否';
                 }
             }
-            echo "Memory_get_usage：".$this->memory().PHP_EOL;
-
-            echo "Mysql_connect_count（5S）：".$this->create_mysql_pool_log().PHP_EOL;
-            echo "Redis_connect_count（5S）：".$this->create_redis_pool_log().PHP_EOL;
-            echo "MongoDb_connect_count（5S）：".$this->create_mongodb_pool_log().PHP_EOL;
-            echo "RabbitMQ_connect_count（5S）：".$this->create_rabbitmq_pool_log().PHP_EOL;
             
+            self::head_description();
+            
+            echo "|--------------------------------\033[47;30m SwooleX Server \033[0m-----------------------------------".PHP_EOL;
+            // 依赖版本
+            echo "|".str_pad('', 6, ' ', STR_PAD_BOTH).
+                    'Swoole版本：'.
+                    str_pad('', 6, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 6, ' ', STR_PAD_BOTH).
+                    SWOOLE_VERSION.
+                    str_pad('', 6, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 6, ' ', STR_PAD_BOTH).
+                    'PHP版本：'.
+                    str_pad('', 6, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 6, ' ', STR_PAD_BOTH).
+                    PHP_VERSION.PHP_EOL;
+            echo '|-----------------------------------------------------------------------------------'.PHP_EOL;
+            // 框架版本
+            echo "|".str_pad('', 6, ' ', STR_PAD_BOTH).
+                    'SW-X版本：'.
+                    str_pad('', 8, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 5, ' ', STR_PAD_BOTH).
+                    VERSION.
+                    str_pad('', 5, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 6, ' ', STR_PAD_BOTH).
+                    '服务器CPU数：'.
+                    str_pad('', 2, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 8, ' ', STR_PAD_BOTH).
+                    swoole_cpu_num().PHP_EOL;
+            echo '|-----------------------------------------------------------------------------------'.PHP_EOL;
+            // 进程数
+            echo "|".str_pad('', 6, ' ', STR_PAD_BOTH).
+                    'Worker进程数：'.
+                    str_pad('', 4, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 8, ' ', STR_PAD_BOTH).
+                    $this->config['worker_num'].
+                    str_pad('', 8, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 6, ' ', STR_PAD_BOTH).
+                    'Task进程数：'.
+                    str_pad('', 3, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 8, ' ', STR_PAD_BOTH).
+                    $this->config['task_worker_num'].PHP_EOL;
+            echo '|-----------------------------------------------------------------------------------'.PHP_EOL;
+            // 环境
+            echo "|".str_pad('', 6, ' ', STR_PAD_BOTH).
+                    '服务IP：'.
+                    str_pad('', 10, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 5, ' ', STR_PAD_BOTH).
+                    $this->config['host'].
+                    str_pad('', 5, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 6, ' ', STR_PAD_BOTH).
+                    '服务端口：'.
+                    str_pad('', 5, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 7, ' ', STR_PAD_BOTH).
+                    $this->config['port'].PHP_EOL;
+            echo '|-----------------------------------------------------------------------------------'.PHP_EOL;
+            // 环境
+            echo "|".str_pad('', 6, ' ', STR_PAD_BOTH).
+                    'SSL：'.
+                    str_pad('', 13, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 7, ' ', STR_PAD_BOTH).
+                    $ssl.
+                    str_pad('', 8, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 6, ' ', STR_PAD_BOTH).
+                    '守护运行：'.
+                    str_pad('', 5, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 8, ' ', STR_PAD_BOTH).
+                    $daemonize.PHP_EOL;
+            echo '|-----------------------------------------------------------------------------------'.PHP_EOL;
+            // 内存
+            echo "|".str_pad('', 6, ' ', STR_PAD_BOTH).
+                    '服务占用内存：'.
+                    str_pad('', 4, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 7, ' ', STR_PAD_BOTH).
+                    $this->memory().PHP_EOL;
+            echo '|-----------------------------------------------------------------------------------'.PHP_EOL;
+            // 连接池
+            echo "|".str_pad('', 3, ' ', STR_PAD_BOTH).
+                    'MYSQL剩余连接池：'.
+                    str_pad('', 4, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 7, ' ', STR_PAD_BOTH).
+                    $this->create_mysql_pool_log().
+                    str_pad('', 8, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 2, ' ', STR_PAD_BOTH).
+                    'Redis剩余连接池：'.
+                    str_pad('', 3, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 8, ' ', STR_PAD_BOTH).
+                    $this->create_redis_pool_log().PHP_EOL;
+            echo '|-----------------------------------------------------------------------------------'.PHP_EOL;
+            // 连接池
+            echo "|".str_pad('', 3, ' ', STR_PAD_BOTH).
+                    'MongoDb剩余连接池：'.
+                    str_pad('', 2, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 7, ' ', STR_PAD_BOTH).
+                    $this->create_mongodb_pool_log().
+                    str_pad('', 8, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 2, ' ', STR_PAD_BOTH).
+                    'RabbitMQ剩余连接池：'.
+                    str_pad('', 0, ' ', STR_PAD_BOTH).'|'.
+                    str_pad('', 8, ' ', STR_PAD_BOTH).
+                    $this->create_rabbitmq_pool_log().PHP_EOL;
+            echo '|-----------------------------------------------------------------------------------'.PHP_EOL;
             echo PHP_EOL;
         });
         $scheduler->start();
@@ -146,8 +236,8 @@ class AbstractConsole {
         $shell = 'ss -antulp | grep '.\x\Config::get('server.port');
         
         $arr = \Swoole\Coroutine\System::exec($shell);
-        if (empty($arr['output'])) {
-            return $shell.' Acquisition failed';
+        if (empty($arr['output'])) {  
+            return $shell.' 监听不到端口';
         }
 
         $str = $arr['output'];

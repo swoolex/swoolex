@@ -182,6 +182,8 @@ class App extends AbstractConsole {
         $this->start_yes();
 
         if (is_file($this->config['worker_pid_file'] ) && is_file($this->config['tasker_pid_file'])) {
+            
+            echo "|--------------------------------\033[47;30m Worker进程信息 \033[0m-----------------------------------".PHP_EOL;
             // 读取所有进程，并列出来
             $idsJson = file_get_contents($this->config['pid_file']);
             $idsArr = json_decode($idsJson, true);
@@ -190,33 +192,34 @@ class App extends AbstractConsole {
             $workerPidArr = explode('|', $workerPidString);
             $taskerPidArr = explode('|', $taskerPidString);
 
-            echo "Worker-Pid：".PHP_EOL;
-            echo str_pad('Master', 22, ' ', STR_PAD_BOTH ),
-                str_pad('Manager', 14, ' ', STR_PAD_BOTH ),
-                str_pad('Worker_id', 5, ' ', STR_PAD_BOTH ),
+            echo str_pad('Master', 20, ' ', STR_PAD_BOTH ),
+                str_pad('Manager', 20, ' ', STR_PAD_BOTH ),
+                str_pad('Worker_id', 20, ' ', STR_PAD_BOTH ),
                 str_pad('Pid', 12, ' ', STR_PAD_BOTH).PHP_EOL;
 
             foreach ($workerPidArr as $workerPidItem) {
                 $tempIdPid = explode(':', $workerPidItem);
-                echo str_pad($idsArr['master_pid'], 22, ' ', STR_PAD_BOTH ),
-                    str_pad($idsArr['manager_pid'], 14, ' ', STR_PAD_BOTH ),
-                    str_pad($tempIdPid[0], 5, ' ', STR_PAD_BOTH);
+                echo str_pad($idsArr['master_pid'], 20, ' ', STR_PAD_BOTH ),
+                    str_pad($idsArr['manager_pid'], 20, ' ', STR_PAD_BOTH ),
+                    str_pad($tempIdPid[0], 20, ' ', STR_PAD_BOTH);
                 if (isset($tempIdPid[1])) echo str_pad($tempIdPid[1], 12, ' ', STR_PAD_BOTH);
                 echo PHP_EOL.PHP_EOL;
             }
-            echo "Tasker-Pid：".PHP_EOL;
-            echo str_pad('Master', 22, ' ', STR_PAD_BOTH ),
-                str_pad('Manager', 14, ' ', STR_PAD_BOTH ),
-                str_pad('Tasker_id', 5, ' ', STR_PAD_BOTH ),
+            
+            echo "|--------------------------------\033[47;30m Task进程信息 \033[0m-----------------------------------".PHP_EOL;
+            echo str_pad('Master', 20, ' ', STR_PAD_BOTH ),
+                str_pad('Manager', 20, ' ', STR_PAD_BOTH ),
+                str_pad('Tasker_id', 20, ' ', STR_PAD_BOTH ),
                 str_pad('Pid', 12, ' ', STR_PAD_BOTH).PHP_EOL;
             foreach ($taskerPidArr as $taskerPidItem) {
                 $tempIdPid = explode(':', $taskerPidItem);
-                echo str_pad($idsArr['master_pid'], 22, ' ', STR_PAD_BOTH ),
-                    str_pad($idsArr['manager_pid'], 14, ' ', STR_PAD_BOTH ),
-                    str_pad($tempIdPid[0], 5, ' ', STR_PAD_BOTH);
+                echo str_pad($idsArr['master_pid'], 20, ' ', STR_PAD_BOTH ),
+                    str_pad($idsArr['manager_pid'], 20, ' ', STR_PAD_BOTH ),
+                    str_pad($tempIdPid[0], 20, ' ', STR_PAD_BOTH);
                 if (isset($tempIdPid[1])) echo str_pad($tempIdPid[1], 12, ' ', STR_PAD_BOTH);
                 echo PHP_EOL;
             }
+            echo PHP_EOL;
         }
     }
     /**

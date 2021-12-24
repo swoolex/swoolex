@@ -37,6 +37,9 @@ class DocParser {
         'Jwt', // Jwt
         'Limit', // Limit
         'Validate', // 验证器
+        'Get', // 只能是Get请求
+        'Post',// 只能是Post请求
+        'Ajax', // 只能是Ajax请求
     ];
 
     private static $instance = null;
@@ -116,10 +119,10 @@ class DocParser {
         $return = [];
         if (strpos($line, '@') === 0) {
             $string = substr($line, 1, strlen($line));
-
+            
             $array = explode('(', $string);
             $param = $array[0];
-
+            
             // 开放自定义注解
             if ($this->check($param) == false) {
                 // 查找自定义注解类地址
@@ -129,26 +132,30 @@ class DocParser {
                     return false;
                 }
             }
-
-            $string = str_replace($param.'(', '', $string);
-            $value = substr($string, 0, strlen($string)-1);
-            $value = preg_replace ( "/\s(?=\s)/","\\1", $value );
-            $value = str_replace('" ,', '",', $value);
-            
-            $value_list = explode('",', $value);
-
-            foreach ($value_list as $v) {
-                $length = strpos($v, '=');
-                $key = trim(substr($v, 0, $length));
-                $val = str_replace('"', '', trim(substr($v, $length+1, strlen($v))));
-
-                # 参数要特殊处理
-                if ($key == 'args') {
-                    $val = $this->parseArgs($val);
+            if (count($array) > 1) {
+                $string = str_replace($param.'(', '', $string);
+                $value = substr($string, 0, strlen($string)-1);
+                $value = preg_replace ( "/\s(?=\s)/","\\1", $value );
+                $value = str_replace('" ,', '",', $value);
+                
+                $value_list = explode('",', $value);
+    
+                foreach ($value_list as $v) {
+                    $length = strpos($v, '=');
+                    $key = trim(substr($v, 0, $length));
+                    $val = str_replace('"', '', trim(substr($v, $length+1, strlen($v))));
+                    
+                    # 参数要特殊处理
+                    if ($key == 'args') {
+                        $val = $this->parseArgs($val);
+                    }
+    
+                    $return[$key] = $val;
                 }
-
-                $return[$key] = $val;
+            } else {
+                $return[""] = "";
             }
+            
             # 以下内置注解不需要特殊存储
             $arr = [
                 'RequestMapping',
@@ -161,6 +168,9 @@ class DocParser {
                 'Csrf',
                 'Jwt',
                 'Limit',
+                'Get',
+                'Post',
+                'Ajax',
             ];
             if (in_array($param, $arr)) {
                 $this->params[$param] = $return;

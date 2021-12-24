@@ -84,6 +84,13 @@ class Http extends AbstractRoute {
             $res = Loader::run()->handle($middleware_list, $this->server, $this->fd, 'http');
             if (!$res) return false;
         }
+        // 请求类型过滤
+        $ret = (new \x\route\doc\lable\HttpGet($this->server, $this->fd))->run($route);
+        if ($ret !== true) return $ret;
+        $ret = (new \x\route\doc\lable\HttpPost($this->server, $this->fd))->run($route);
+        if ($ret !== true) return $ret;
+        $ret = (new \x\route\doc\lable\HttpAjax($this->server, $this->fd))->run($route);
+        if ($ret !== true) return $ret;
         // 参数过滤
         $ret = (new \x\route\doc\lable\ParamHttp($this->server, $this->fd))->run($route);
         if ($ret !== true) return $ret;

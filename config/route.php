@@ -16,6 +16,8 @@ return [
     'cutting' => '/',
     // 路由伪后缀
     'suffix' => '.html',
+    // 默认控制器【PATH_INFO】路由时，忽略该方法名
+    'default_action' => 'index',
     // 找不到路由的时候，是否启用自定义的错误处理程序
     '404' => true,
     // 自定义的错误处理程序，只需要提供一个类的命名空间位置即可，会把基类Controller的obj注入到第一个参数中，调用fetch即可抛出内容

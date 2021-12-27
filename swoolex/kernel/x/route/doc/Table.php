@@ -21,6 +21,10 @@ class Table {
      * 路由表，由内存存储
     */
     private $table = [];
+    /**
+     * 默认方法
+    */
+    private $default_action;
 
     /**
      * 实例化对象方法，供外部获得唯一的对象
@@ -34,6 +38,7 @@ class Table {
     public static function run(){
         if (empty(self::$instance)) {
             self::$instance = new Table();
+            self::$instance->default_action = \x\Config::get('route.default_action');
         }
         return self::$instance;
     }
@@ -216,7 +221,10 @@ class Table {
                 }
                 unset($val['RequestMapping']['route']);
             } else {
-                $url = str_replace(['app\\'.$route_type.'\\', '\\'], ['', $cutting], $namespace).$cutting.$name;
+                $url = str_replace(['app\\'.$route_type.'\\', '\\'], ['', $cutting], $namespace);
+                if ($name != $this->default_action) {
+                    $url .= $cutting.$name;
+                }
             }
 
             $array['father'] = $class;

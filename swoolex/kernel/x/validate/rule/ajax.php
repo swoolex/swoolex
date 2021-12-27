@@ -1,7 +1,7 @@
 <?php
 /**
  * +----------------------------------------------------------------------
- * Restful的配置
+ * 请求必须是Ajax类型
  * +----------------------------------------------------------------------
  * 官网：https://www.sw-x.cn
  * +----------------------------------------------------------------------
@@ -10,16 +10,23 @@
  * 开源协议：http://www.apache.org/licenses/LICENSE-2.0
  * +----------------------------------------------------------------------
 */
+namespace x\validate\rule;
 
-return [
-    // 返回值类型
-    'type' => 'json',
-    // 默认的返回值格式
-    'default' => [
-        'force'  => true, // 是否强制返回值int|double|null类型转换
-        'status' => 'code', // 状态码字段名
-        'tips'   => 'msg',  // 描述字段名
-        'result' => 'data', // 结果集字段名
-        'set'    => [], // 默认结果集
-    ],
-];
+class ajax
+{
+    /**
+     * 入口方法
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.6 + 2021-09-15
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array $data 完整表单
+     * @param mixed $param 参数值
+     * @param string $rule :后参数
+     * @return bool
+    */
+    public static function run($data, $param, $rule=null) {
+        return \x\Request::is_ajax();
+    }
+}

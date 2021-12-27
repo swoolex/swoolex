@@ -176,11 +176,26 @@ class Restful {
             $tips = $msg[$this->code]['default'];
         }
 
+        $ret_data = isset($this->data) ? $this->data : $config[$this->make]['set'];
+        // 类型强制转换
+        if ($config[$this->make]['force']) {
+            if (is_array($ret_data)) {
+                $ret_data = $this->loop($ret_data);
+            } else {
+                if (filter_var($ret_data, FILTER_VALIDATE_INT) || $ret_data === '0') {
+                    $ret_data = (int)$ret_data;
+                } else if (filter_var($ret_data, FILTER_VALIDATE_FLOAT) || $ret_data == '0.0' || $ret_data == '0.00') {
+                    $ret_data = (double)$ret_data;
+                } else if ($v === '') {
+                    $array[$k] = null;
+                }
+            }
+        }
         // 组装返回值
         $return = [
             $config[$this->make]['status'] => $code[$this->code],
             $config[$this->make]['tips'] => $tips,
-            $config[$this->make]['result'] => isset($this->data) ? $this->data : $config[$this->make]['set'],
+            $config[$this->make]['result'] => $ret_data,
         ];
 
         // 根据返回值判断输出类型
@@ -234,5 +249,31 @@ class Restful {
             $xml .= "</{$key}>";
         }
         return $xml;
+    }
+    /**
+     * 递归多级菜数组
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.1.1 + 2020.07.08
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array $array 数组
+     * @return 
+    */
+    private function loop($array) {
+        foreach ($array as $k=>$v) {
+            if (is_array($v)) {
+                $array[$k] = $this->loop($v);
+            } else {
+                if (filter_var($v, FILTER_VALIDATE_INT) || $v === '0') {
+                    $array[$k] = (int)$v;
+                } else if (filter_var($v, FILTER_VALIDATE_FLOAT) || $v == '0.0' || $v == '0.00') {
+                    $array[$k] = (float)$v;
+                } else if ($v === '') {
+                    $array[$k] = null;
+                }
+            }
+        }
+        return $array;
     }
 }

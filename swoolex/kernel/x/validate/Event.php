@@ -69,6 +69,12 @@ class Event
         'lt' => ['class'=>['\x\validate\rule\lt'],                    'message'=>'{:preset}必须 小于 {0}'],
         'username' => ['class'=>['\x\validate\rule\username'],        'message'=>'{:preset}必须是字母开头，允许 {0}-{1}位，支持字母数字下划线组合'],
         'password' => ['class'=>['\x\validate\rule\password'],        'message'=>'{:preset}必须是包含字母数字，允许 {0}-{1}位'],
+        'longlat' => ['class'=>['\x\validate\rule\longlat'],          'message'=>'{:preset}必须是有效的经纬度格式'],
+        'get' => ['class'=>['\x\validate\rule\get'],                  'message'=>'必须是GET请求'],
+        'post' => ['class'=>['\x\validate\rule\post'],                'message'=>'必须是POST请求'],
+        'ajax' => ['class'=>['\x\validate\rule\ajax'],                'message'=>'必须是AJAX请求'],
+        'jwt' => ['class'=>['\x\validate\rule\jwt'],                  'message'=>'Jwt校验不通过'],
+        'csrf' => ['class'=>['\x\validate\rule\csrf'],                'message'=>'Csft校验不通过'],
     ];
     
     /**

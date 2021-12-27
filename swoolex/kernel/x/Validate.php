@@ -20,6 +20,10 @@ class Validate
     */
     protected $batch = false;
     /**
+     * 请求使用规则
+    */
+    protected $header_rule = [];
+    /**
      * 字段使用规则
     */
     protected $rule = [];
@@ -225,7 +229,26 @@ class Validate
     */
     public final function fails($data=null) {
         if ($data) $this->data = $data;
-
+        // 请求解析记录
+        if ($this->header_rule) {
+            foreach ($this->header_rule as $k => $v) {
+                $rule_param = $this->analysis($k, $v);
+                // 调用事件器
+                foreach ($rule_param['rule'] as $key => $value) {
+                    $field = array_shift($rule_param['field']);
+                    array_unshift($value, []);
+                    array_unshift($value, $this->data);
+                    $res = Event::trigger($key, $value);
+                    if ($res['status'] == false) {
+                        $this->parse_error($rule_param, $field, $key, $res['message']);
+                    }
+                    if ($res['status'] == false && $this->batch == false) {
+                        return true;
+                    }
+                }
+            }
+            if (empty($this->errors)) return false;
+        }
         // 如果是单条记录
         if (is_null($this->field) == false) {
             $this->rule = [

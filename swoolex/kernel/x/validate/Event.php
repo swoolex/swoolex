@@ -74,7 +74,7 @@ class Event
         'post' => ['class'=>['\x\validate\rule\post'],                'message'=>'必须是POST请求'],
         'ajax' => ['class'=>['\x\validate\rule\ajax'],                'message'=>'必须是AJAX请求'],
         'jwt' => ['class'=>['\x\validate\rule\jwt'],                  'message'=>'Jwt校验不通过'],
-        'csrf' => ['class'=>['\x\validate\rule\csrf'],                'message'=>'Csft校验不通过'],
+        'csrf' => ['class'=>['\x\validate\rule\csrf'],                'message'=>'Csrf校验不通过'],
     ];
     
     /**

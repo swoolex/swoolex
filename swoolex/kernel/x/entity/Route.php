@@ -34,6 +34,10 @@ class Route
      * 通配符前缀表
     */
     private $wildcard_prefix = [];
+    /**
+     * 统一镜像表
+    */
+    private $usual_mirror = [];
 
     /**
      * 最终解析方法
@@ -68,6 +72,46 @@ class Route
         return true;
     }
 
+    /**
+     * 设置路由统一镜像
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.18 + 2021-12-27
+     * @deprecated 暂不启用
+     * @global 无
+     * @param array $rule 映射规则
+     * @param string $server_type 服务类型 http/websocket/rpc
+     * @return void
+    */
+    public function mirror($rule, $server_type='http') {
+        if (!is_array($rule)) return false;
+        $server_type = strtolower($server_type);
+
+        foreach ($rule as $k => $v) {
+            $original = $this->lrtrim($k);
+            $current = $this->lrtrim($v);
+            
+            $this->usual_mirror[$server_type][$original] = $current;
+        }
+        return true;
+    }
+    
+    /**
+     * 读取镜像配置
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.18 + 2021-12-27
+     * @deprecated 暂不启用
+     * @global 无
+     * @param string $server_type 服务类型 http/websocket/rpc
+     * @return array
+    */
+    public function mirrorPack($server_type='http') {
+        if (isset($this->usual_mirror[$server_type])) return $this->usual_mirror[$server_type];
+
+        return [];
+    }
+    
     /**
      * 设置路由统一前缀
      * @todo 无

@@ -22,6 +22,10 @@ class Table {
     */
     private $table = [];
     /**
+     * 镜像路由配置
+    */
+    private $mirror = [];
+    /**
      * 默认方法
     */
     private $default_action;
@@ -56,9 +60,11 @@ class Table {
         $cutting = \x\Config::get('route.cutting');
 
         // http路由
+        $type = 'http';
         $this->table = \x\Route::readAll();
-        $list = $this->every_file(ROOT_PATH.'app'.DS.'http');
-        $this->add_list($list, $cutting, 'http');
+        $this->mirror = \x\Route::mirrorPack($type);
+        $list = $this->every_file(ROOT_PATH.'app'.DS.$type);
+        $this->add_list($list, $cutting, $type);
     }
 
     /**
@@ -91,9 +97,11 @@ class Table {
         $cutting = \x\Config::get('route.cutting');
         
         // rpc路由
+        $type = 'rpc';
         $this->table = \x\Route::readAll();
-        $list = $this->every_file(ROOT_PATH.'app'.DS.'rpc');
-        $this->add_list($list, $cutting, 'rpc');
+        $this->mirror = \x\Route::mirrorPack($type);
+        $list = $this->every_file(ROOT_PATH.'app'.DS.$type);
+        $this->add_list($list, $cutting, $type);
     }
 
     /**
@@ -109,9 +117,11 @@ class Table {
         $cutting = \x\Config::get('route.cutting');
         
         // mqtt路由
+        $type = 'mqtt';
         $this->table = \x\Route::readAll();
-        $list = $this->every_file(ROOT_PATH.'app'.DS.'mqtt');
-        $this->add_list($list, $cutting, 'mqtt');
+        $this->mirror = \x\Route::mirrorPack($type);
+        $list = $this->every_file(ROOT_PATH.'app'.DS.$type);
+        $this->add_list($list, $cutting, $type);
     }
 
     /**
@@ -253,6 +263,12 @@ class Table {
                     }
                 } else if (!empty($param['own']['Param'])){
                     $array['own']['Param'] = $param['own']['Param'];
+                }
+            }
+            foreach ($this->mirror as $original => $current) {
+                if (stripos($url, $original) === 0) {
+                    $url = substr_replace($url, $current,strpos($url, $original), strlen($original));
+                    break;
                 }
             }
             $this->table[$route_type][$url] = $array;

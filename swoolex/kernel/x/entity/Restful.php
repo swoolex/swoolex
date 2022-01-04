@@ -15,6 +15,11 @@ namespace x\entity;
 
 class Restful {
     /**
+     * 自定义的Msg内容
+    */
+    private $diyMsg;
+
+    /**
      * 实例化对象方法
      * @todo 无
      * @author 小黄牛
@@ -89,6 +94,21 @@ class Restful {
     }
 
     /**
+     * 自定义Msg
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.19 + 2021.12.27
+     * @deprecated 暂不启用
+     * @global 无
+     * @param mixed $msg
+     * @return this
+    */
+    public function setMsg($msg) {
+        $this->diyMsg = $msg;
+        return $this;
+    }
+
+    /**
      * 设置data值
      * @todo 无
      * @author 小黄牛
@@ -158,22 +178,26 @@ class Restful {
         }
 
         // 查找tips
-        if (!isset($msg[$this->code])) {
-            throw new \Exception("Restful is Status msg does not exist：".$this->code);
-            return true;
-        }
-        if (!empty($this->msg)) {
-            if (!isset($msg[$this->code][$this->msg])) {
-                throw new \Exception("Restful is Status msg does not exist：".$this->code.'["'.$this->msg.'"]');
-                return true;
-            }
-            $tips = $msg[$this->code][$this->msg];
+        if ($this->diyMsg) {
+            $tips = $this->diyMsg;
         } else {
-            if (!isset($msg[$this->code]['default'])) {
-                throw new \Exception("Restful is Status msg does not exist：".$this->code.'["default"]');
+            if (!isset($msg[$this->code])) {
+                throw new \Exception("Restful is Status msg does not exist：".$this->code);
                 return true;
             }
-            $tips = $msg[$this->code]['default'];
+            if (!empty($this->msg)) {
+                if (!isset($msg[$this->code][$this->msg])) {
+                    throw new \Exception("Restful is Status msg does not exist：".$this->code.'["'.$this->msg.'"]');
+                    return true;
+                }
+                $tips = $msg[$this->code][$this->msg];
+            } else {
+                if (!isset($msg[$this->code]['default'])) {
+                    throw new \Exception("Restful is Status msg does not exist：".$this->code.'["default"]');
+                    return true;
+                }
+                $tips = $msg[$this->code]['default'];
+            }
         }
 
         $ret_data = isset($this->data) ? $this->data : $config[$this->make]['set'];

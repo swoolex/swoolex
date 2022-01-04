@@ -149,7 +149,7 @@ class MountEvent {
                         // 记录日志
                         if (isset($v['bin_log']) && $v['bin_log']==true) {
                             $log = date('Y-m-d H:i:s', time()).'，返回值：'.($res ?: '无');
-                            \Swoole\Coroutine\System::writeFile($path, $log);
+                            \Swoole\Coroutine\System::writeFile($path, $log.PHP_EOL, FILE_APPEND);
                         }
                     }
                 });
@@ -163,7 +163,7 @@ class MountEvent {
                     // 记录日志
                     if (isset($v['bin_log']) && $v['bin_log']==true) {
                         $log = date('Y-m-d H:i:s', time()).'，返回值：'.($res ?: '无');
-                        \Swoole\Coroutine\System::writeFile($path, $log);
+                        \Swoole\Coroutine\System::writeFile($path, $log.PHP_EOL, FILE_APPEND);
                     }
                 });
             }

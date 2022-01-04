@@ -27,7 +27,7 @@ class ParamHttp extends Basics {
     */
     public function run($route){
         # 检测路由类型
-        $is_get = false;
+        $is_get = true;
         $is_post = false;
         # 只有http服务才进行类型校验
         if (isset($route['method'])) {
@@ -44,6 +44,9 @@ class ParamHttp extends Basics {
             if ($status == false) {
                 return $this->route_error('Route Method');
             }
+        } else if($this->request->server['request_method'] == 'POST') {
+            $is_post = true;
+            $is_get = false;
         }
 
         # 注解参数检测
@@ -81,10 +84,19 @@ class ParamHttp extends Basics {
                     }
                     
                     // 参数预设
-                    if (isset($val['value']) && $this->isset_empty($param) == false) {
-                        $param = $val['value'];
-                        if ($is_get) $this->request->get[$name] = $val['value'];
-                        if ($is_post) $this->request->post[$name] = $val['value'];
+                    if (isset($val['value'])) {
+                        if ($is_get) {
+                            if (!isset($get_list[$name])) {
+                                $this->request->get[$name] = $val['value'];
+                                $param = $val['value'];
+                            }
+                        }
+                        if ($is_post) {
+                            if (!isset($post_list[$name])) {
+                                $this->request->post[$name] = $val['value'];
+                                $param = $val['value'];
+                            }
+                        }
                     }
                     // 验证器
                     if (!empty($val['validate'])) {

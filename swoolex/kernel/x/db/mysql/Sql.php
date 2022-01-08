@@ -1334,6 +1334,19 @@ class Sql extends AbstractMysqlSql {
     }
 
     /**
+     * 获取表名是否已填充
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.20 + 2022-01-06
+     * @deprecated 暂不启用
+     * @global 无
+     * @return null|string
+    */
+    public function getTable() {
+        return $this->table;
+    }
+
+    /**
      * 由于是单例，用完就得清除某些共用成员
      * @todo 无
      * @author 小黄牛

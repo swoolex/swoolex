@@ -384,6 +384,7 @@ class Validate
             if (($status == true && $param !== null) || $rule_param['status'] == true) {
                 // 调用事件器
                 foreach ($rule_param['rule'] as $key => $value) {
+                    if ($key == 'require') continue;
                     if (in_array(strtolower($key), $this->overall)) {
                         $param = null;
                     }

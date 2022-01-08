@@ -59,7 +59,7 @@ class onTask {
         # 开始转发路由
         $config = json_decode($task->data, true);
         $obj = new \x\rpc\ServerRoute();
-        $ret = $obj->start($server, 0, 0, $config);
+        $ret = $obj->start($server, $config['fd'], 0, $config);
 
         # 配置传输
         $array = [
@@ -71,7 +71,7 @@ class onTask {
         $task->finish(json_encode($array, JSON_UNESCAPED_UNICODE));
 
         // 销毁整个请求级容器
-        \x\context\Container::clear();
+        \x\context\Container::delete();
     }
 }
 

@@ -813,10 +813,11 @@ class HttpRpc extends Http {
     public function charts() {
         $vif = $this->vif();
         if ($vif !== true) return $vif;
-        
+        $redis_config = \x\Config::get('rpc');
         $param = \x\Request::get();
-        $redis_key = \x\Config::get('rpc.redis_key').'_sta_'.md5($param['class'].$param['function'].$param['ip'].$param['port']);
-        $redis = new \x\Redis();
+        $redis_key = $redis_config['redis_key'].'_sta_'.md5($param['class'].$param['function'].$param['ip'].$param['port']);
+        
+        $redis = new \x\Redis($redis_config['chat_redis_driver']);
         
         $type = $param['type'] ?? 1;
         if ($type == 1) {
@@ -824,7 +825,8 @@ class HttpRpc extends Http {
             $start = strtotime(date('Y-m-d', time()));
         } else {
             $time = strtotime(date('Y-m-d', time()));
-            $start = $time-86400;
+            $start = $time-(86400*($type-1));
+            $time = $start+86400;
         }
         $this->assign('type', $type);
         
@@ -838,30 +840,49 @@ class HttpRpc extends Http {
         $max = 10;
         foreach ($list as $k => $v) {
             if ($k == 0) {
-                $date[] = date('H:i', $v);
-                $data[] = 0;
                 continue;
             }
-            if ($k == $num && $type == 1) {
-                $date[] = date('H:i', time());
-                $start = $v;
-                $end = time();
-            } else {
-                $date[] = date('H:i', $v);
-                $start = $list[$k-1];
-                $end = $v;
-            }
-            $count = $redis->zCount($redis_key, $start, $end);
+            $date[] = date('H:i', $v);
+            $end = ($v-1);
+            $count = $redis->get($redis_key.'_'.date('YmdH', $end));
+            if (!$count) $count = 0;
             $data[] = $count;
             if ($max < $count) $max = $count;
+
+            if ($k == $num && $type == 1) {
+                $date[] = date('H:i', time());
+                $end = time();
+                $count = $redis->get($redis_key.'_'.date('YmdH', $v));
+                if (!$count) $count = 0;
+                $data[] = $count;
+                if ($max < $count) $max = $count;
+            }
         }
         
         $redis->return();
+
+        // 菜单
+        $weekarray = ['日','一','二','三','四','五','六'];
+        $menu = [];
+        for ($i=1; $i <= $redis_config['chat_days']; $i++) {
+            $s = time()-(86400*($i-1));
+            switch ($i) {
+                case 1:$title='今天';break;
+                case 2:$title='昨天';break;
+                case 3:$title='前天';break;
+                default:
+                    $title = date('Y-m-d', $s);
+                break;
+            }
+            $w = date('w', $s);
+            $menu[$i] = $title.' (周'.$weekarray[$w].')';
+        }
         
         $this->assign('date', $date);
         $this->assign('data', $data);
         $this->assign('param', $param);
         $this->assign('max', $max);
+        $this->assign('menu', $menu);
         return $this->display();
     }
 

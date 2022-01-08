@@ -49,18 +49,10 @@ class ParamWebSocket extends Basics {
                 $param = $websocket_list['data'][$name]??'';
                     
                 // 参数预设
-                if (isset($val['value']) && $this->isset_empty($param) == false) {
-                    $param = $val['value'];
-                    $websocket_list['data'][$name] = $val['value'];
-                }
-                // 验证器
-                if (!empty($val['validate'])) {
-                    $alias = !empty($val['alias']) ? $val['alias'] : null;
-                    $Validate = new \x\Validate();
-                    if ($Validate->field($name)->alias($alias)->rule($val['validate'])->fails([$name => $param])) {
-                        $error = $Validate->errors()[0];
-                        // 中断
-                        return $this->param_error_callback($callback, $error['message'], $name, 'VALIDATE', $error['rule']);
+                if (isset($val['value'])) {
+                    if (!isset($websocket_list['data'][$name])) {
+                        $param = $val['value'];
+                        $websocket_list['data'][$name] = $val['value'];
                     }
                 }
                 // 判断是否允许为空
@@ -80,6 +72,16 @@ class ParamWebSocket extends Basics {
                 }
                 // 只有真的不为空，才走这个规则
                 if (is_array($param) == false && $this->isset_empty($param) == true) {
+                    // 验证器
+                    if (!empty($val['validate'])) {
+                        $alias = !empty($val['alias']) ? $val['alias'] : null;
+                        $Validate = new \x\Validate();
+                        if ($Validate->field($name)->alias($alias)->rule($val['validate'])->fails([$name => $param])) {
+                            $error = $Validate->errors()[0];
+                            // 中断
+                            return $this->param_error_callback($callback, $error['message'], $name, 'VALIDATE', $error['rule']);
+                        }
+                    }
                     // 类型判断
                     if (!empty($val['type']) && !empty($param)) {
                         $param_type = explode('|', $val['type']);

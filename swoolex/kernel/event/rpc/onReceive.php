@@ -80,6 +80,7 @@ class onReceive {
             if ($data['task'] == true) {
                 // 投递异步任务
                 $data['swoolex_rpc_task'] = 1;
+                $data['fd'] = $fd;
                 $task_id = $server->task(json_encode($data, JSON_UNESCAPED_UNICODE));
                 // 直接返回结果
                 $ServerCurrency = new \x\rpc\ServerCurrency();

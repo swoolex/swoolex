@@ -30,8 +30,9 @@
 													<div class="col-md-2 col-xs-6">
 														<label>日期</label>
 														<select class="form-control" name="type">
-															<option value="1" {if ($type==1)} selected{/if}>今天</option>
-															<option value="2" {if ($type==2)} selected{/if}>昨天</option>
+															{foreach $menu as $k=>$v}
+															<option value="{$k}" {if ($type==$k)} selected{/if}>{$v}</option>
+															{/foreach}
 														</select>
 													</div>
 													<div class="col-md-2 col-xs-12">

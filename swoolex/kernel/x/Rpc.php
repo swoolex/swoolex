@@ -128,10 +128,6 @@ class Rpc {
                     $md5 = md5($val['class'].$val['function'].$val['ip'].$val['port']);
                     $score_key = '_score_'.$md5;
                     $peaks_key = '_peaks_'.$md5;
-                    $sta_key = '_sta_'.$md5;
-                    // 删除1天前的统计记录
-                    $time = (strtotime(date('Y-m-d', time()))-86400);
-                    $redis->ZREMRANGEBYSCORE($sta_key, 0, $time);
 
                     // 先Ping检测
                     $shell = 'ping  -c 1 '.$val['ip'];
@@ -280,7 +276,8 @@ class Rpc {
     */
     public static function limit($config, $fd) {
         if (!isset($config['ip']) || !isset($config['port'])) return true;
-        $redis_key = \x\Config::get('rpc.redis_key');
+        $redis_config = \x\Config::get('rpc');
+        $redis_key = $redis_config['redis_key'];
         $md5 = md5($config['class'].$config['function'].$config['ip'].$config['port']);
         $hash_key = $redis_key.'_hash_'.$md5;
         $redis = new \x\Redis();
@@ -291,11 +288,22 @@ class Rpc {
         }
 
         // 统计
-        $sta_key = $redis_key.'_sta_'.$md5;
-        $redis->zAdd($sta_key, time(), $fd);
+        if ($redis_config['chat_status'] == true) {
+            $sta_key = $redis_key.'_sta_'.$md5.'_'.date('YmdH');
+            $chat_redis = new \x\Redis($redis_config['chat_redis_driver']);
+            // 先查有没有key
+            $res = $chat_redis->get($sta_key);
+            if (!$res) {
+                $chat_redis->INCR($sta_key);
+                $chat_redis->EXPIRE($sta_key, ($redis_config['chat_days']*86400));
+            } else {
+                $chat_redis->INCR($sta_key);
+            }
+            $chat_redis->return();
+        }
         
         // 节点限流
-        if ($config['route_minute'] > 0 && $config['route_limit'] > 0) {
+        if (isset($config['route_minute']) && isset($config['route_limit']) && $config['route_minute'] > 0 && $config['route_limit'] > 0) {
             $route_key = $redis_key.'_route_'.$md5;
             $num = $redis->get($route_key);
             if ($num >= $config['route_limit']) {
@@ -309,7 +317,7 @@ class Rpc {
         }
 
         // IP限流
-        if ($config['ip_minute'] > 0 && $config['ip_limit'] > 0) {
+        if (isset($config['ip_minute']) && isset($config['ip_limit']) && $config['ip_minute'] > 0 && $config['ip_limit'] > 0) {
             $ip_key = $redis_key.'_ip_'.$md5;
             $num = $redis->get($ip_key);
             if ($num >= $config['ip_limit']) {

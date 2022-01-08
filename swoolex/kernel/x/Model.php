@@ -79,6 +79,9 @@ class Model {
         if (!$this->Db) return false;
         if (empty($name)) return false;
         
-        return $this->Db->name($this->table)->$name(...$arguments);
+        if (!$this->Db->getTable()) {
+            $this->Db = $this->Db->name($this->table);
+        }
+        return $this->Db->$name(...$arguments);
     }
 }

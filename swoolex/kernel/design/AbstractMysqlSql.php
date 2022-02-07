@@ -349,7 +349,6 @@ abstract class AbstractMysqlSql {
      * @return string
     */
     protected function int_string($string) {
-        if (is_float($string) || is_int($string)) return $string;
         if (is_null($string)) return 'null';
         
         # 判断是怕查询内容里带单双引号

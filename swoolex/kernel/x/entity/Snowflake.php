@@ -73,6 +73,8 @@ class Snowflake
      * @return string
     */
     public function create() {
+        if (!$this->lock) $this->lock = new Lock(SWOOLE_MUTEX);
+        
         $this->lock->lockwait(1);
         
         $timestamp = $this->getTime();

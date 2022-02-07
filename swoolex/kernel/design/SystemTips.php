@@ -24,6 +24,7 @@ class SystemTips {
     const CMD_SERVER_MISSING_8 = '单元测试错误：参数错误';
     const CMD_SERVER_MISSING_9 = '指令错误：暂不支持该指令';
     const CMD_SERVER_MISSING_10 = '指令错误：暂未找到Swoole.pid缓存文件，路径为：';
+    const CMD_SERVER_MISSING_11 = '服务已启动，请先执行 stop 后再重新 start 服务';
     const CRONTAB_1 = '定时器挂载错误：定时器Class命名空间地址错误：';
     const ROUTE_1 = '路由地址不存在~';
     const RPC_SERVER_1 = '指令错误：sw-x rpc 缺少更多的命令参数';

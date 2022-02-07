@@ -210,8 +210,8 @@ class Restful {
                     $ret_data = (int)$ret_data;
                 } else if (filter_var($ret_data, FILTER_VALIDATE_FLOAT) || $ret_data == '0.0' || $ret_data == '0.00') {
                     $ret_data = (double)$ret_data;
-                } else if ($v === '') {
-                    $array[$k] = null;
+                } else if ($ret_data === '') {
+                    $ret_data = null;
                 }
             }
         }

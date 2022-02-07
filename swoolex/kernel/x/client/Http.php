@@ -69,7 +69,6 @@ class Http
         $this->cookies = $this->client->getCookies();
 
         $this->client->close();
-        unset($this->client);
         return $this->body;
     }
     /**
@@ -92,7 +91,6 @@ class Http
         $this->cookies = $this->client->getCookies();
 
         $this->client->close();
-        unset($this->client);
         return $this->body;
     }
     /**
@@ -117,7 +115,6 @@ class Http
          $this->cookies = $this->client->getCookies();
  
          $this->client->close();
-         unset($this->client);
          return $this->body;
     }
     /**
@@ -221,6 +218,16 @@ class Http
      * @return void
     */
     public function cookies(){ return $this->cookies;}
+    /**
+     * 获取响应头
+     * @todo 无
+     * @author 小黄牛
+     * @version v1.2.11 + 2020.08.06
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function getHeaders(){ return $this->client->getHeaders();}
     /**
      * 反射类实现调用Client本身的其他支持方法
      * @todo 无

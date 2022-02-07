@@ -56,6 +56,7 @@ class WebSocket extends AbstractRoute {
     protected function ico_injection($route, $request_uri) {
         // 实例化控制器
         $reflection = new \ReflectionClass($route['n']);
+        \x\context\Container::set('controller_reflection', $reflection);
         \x\context\Container::set('controller_instance', $reflection->newInstance());
         \x\context\Container::set('controller_method', $reflection->getmethod($route['name']));
         // 注册注解类

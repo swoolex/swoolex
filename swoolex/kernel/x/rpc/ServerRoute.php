@@ -54,6 +54,7 @@ class ServerRoute
         $obj->headers = $data['headers'] ?? [];
         $obj->param = $data['param'] ?? [];
         
+        \x\context\Container::set('controller_reflection', $ref);
         return (new \x\route\Rpc($server, $fd, $obj, $function, $data))->start();
     }
 

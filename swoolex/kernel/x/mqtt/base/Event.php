@@ -123,6 +123,7 @@ abstract class Event {
         $obj->setReactorId($this->reactorId);
 
         // 注解挂载
+        \x\context\Container::set('controller_reflection', $ref);
         $res = (new \x\route\Mqtt($this->server, $this->fd, $obj, $function, $controller, $action))->start();
 
         // 销毁整个请求级容器

@@ -58,8 +58,13 @@ class AopThrows extends Basics
 
         
         # 载入控制器
+        $ref = \x\context\Container::get('controller_reflection');
         if ($father_AopThrows || $own_AopThrows) {
             try{
+                if ($ref->hasMethod('__initialize')) {
+                    $method = $ref->getmethod('__initialize'); 
+                    $method->invokeArgs($this->controller_instance, []);
+                }
                 $return = $this->controller_method->invokeArgs($this->controller_instance, []);
             } catch(\Exception $e) {
                 // 开始异常通知
@@ -79,6 +84,10 @@ class AopThrows extends Basics
                 }
             }
         } else {
+            if ($ref->hasMethod('__initialize')) {
+                $method = $ref->getmethod('__initialize'); 
+                $method->invokeArgs($this->controller_instance, []);
+            }
             $return = $this->controller_method->invokeArgs($this->controller_instance, []); 
         }
         

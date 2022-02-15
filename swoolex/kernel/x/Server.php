@@ -62,6 +62,9 @@ class Server {
             case 'mqtt':
                 $this->service = new \Swoole\Server($config['host'], $config['port'], SWOOLE_PROCESS, $set['wss']);
             break;
+            case 'tcp':
+                $this->service = new \Swoole\Server($config['host'], $config['port'], SWOOLE_PROCESS, $set['wss']);
+            break;
         }
         // 启动类型写入配置项
         \x\Config::set('server.sw_service_type', $this->server_type);

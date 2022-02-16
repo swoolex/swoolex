@@ -32,10 +32,16 @@ class onMessage {
     */
     public function run($server, $frame) {
         $this->server = $server;
+
+        // 上下文管理
+        \x\context\Container::set('websocket_server', $server);
+        \x\context\Container::set('websocket_frame', $frame);
         
         // 调用二次转发，不做重载
         $on = new \box\event\server\onMessage;
         $on->run();
+
+        \x\context\Container::delete();
     }
 }
 

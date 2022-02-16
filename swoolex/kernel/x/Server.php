@@ -265,7 +265,7 @@ class Server {
         if ($event == 'onMessage') {
             if (!isset($this->config['is_onMessage']) || $this->config['is_onMessage'] != true) {
                 # 关闭系统分包流程
-                $class = '\box\\event\\'.$class;
+                $class = '\box\\event\\server\\'.$event;
             }
         }
         

@@ -62,9 +62,9 @@ class Type {
     }
     // 判断是否为真空
     public static function empty($param) {
-        if ($param === 0) return true;
-        if ($param === '0') return true;
-        return !empty($param);
+        if ($param === 0) return false;
+        if ($param === '0') return false;
+        return empty($param);
     }
     // 多个类型兼容
     public static function all($param, $array) {

@@ -62,8 +62,8 @@ class Type {
     }
     // 判断是否为真空
     public static function empty($param) {
-        if ($param === 0) return false;
-        if ($param === '0') return false;
+        if (self::numeric($param) === true) return false;
+        
         return empty($param);
     }
     // 多个类型兼容

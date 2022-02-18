@@ -11,6 +11,8 @@
  * +----------------------------------------------------------------------
 */
 
+namespace x\common;
+
 class Type {
     // 字符串
     public static function string($param) {

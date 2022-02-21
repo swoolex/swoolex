@@ -135,13 +135,15 @@ class App extends AbstractConsole {
             // 读取主进程ID
             $idJson = file_get_contents($this->config['pid_file']);  
             $idArray = json_decode($idJson, true);
-            \Swoole\Coroutine\run(function() use ($idArray) {
-                $master = \x\Config::get('server.master');
-                $res = \Swoole\Coroutine\System::exec('ps -ef | grep '.$idArray['master_pid']);
-                if (stripos($res['output'], $master) !== false) {
-                    return self::exit_error(Tips::CMD_SERVER_MISSING_11);
-                }
-            });
+            if (!empty($idArray['master_pid'])) {
+                \Swoole\Coroutine\run(function() use ($idArray) {
+                    $master = \x\Config::get('server.master');
+                    $res = \Swoole\Coroutine\System::exec('ps -ef | grep '.$idArray['master_pid']);
+                    if (stripos($res['output'], $master) !== false) {
+                        return self::exit_error(Tips::CMD_SERVER_MISSING_11);
+                    }
+                });
+            }
         }
 
         // 设置默认时区

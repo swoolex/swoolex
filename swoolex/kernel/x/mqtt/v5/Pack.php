@@ -5,7 +5,7 @@
  * +----------------------------------------------------------------------
  * 官网：https://www.sw-x.cn
  * +----------------------------------------------------------------------
- * 作者：小黄牛 <1731223728@qq.com>
+ * 作者：出自 https://github.com/simps/mqtt
  * +----------------------------------------------------------------------
  * 开源协议：http://www.apache.org/licenses/LICENSE-2.0
  * +----------------------------------------------------------------------
@@ -13,7 +13,7 @@
 
 namespace x\mqtt\v5;
 
-use x\mqtt\common\HexCodes;
+use x\mqtt\common\ReasonCode;
 use x\mqtt\common\dc\DataConv;
 use x\mqtt\common\Types;
 use x\mqtt\common\tool\Pack as TypeConv;
@@ -165,7 +165,7 @@ class Pack {
     }
 
     public static function disconnect($array) {
-        $code = !empty($array['code']) ? $array['code'] : HexCodes::NORMAL_DISCONNECTION;
+        $code = !empty($array['code']) ? $array['code'] : ReasonCode::NORMAL_DISCONNECTION;
         $body = chr($code);
 
         $body .= DataConv::disConnect($array['properties'] ?? []);
@@ -177,7 +177,7 @@ class Pack {
 
     public static function genReasonPhrase($array) {
         $body = TypeConv::shortInt($array['message_id']);
-        $code = !empty($array['code']) ? $array['code'] : HexCodes::SUCCESS;
+        $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
         $body .= chr($code);
 
         $body .= DataConv::pubAndSub($array['properties'] ?? []);
@@ -192,7 +192,7 @@ class Pack {
     }
 
     public static function auth($array) {
-        $code = !empty($array['code']) ? $array['code'] : HexCodes::SUCCESS;
+        $code = !empty($array['code']) ? $array['code'] : ReasonCode::SUCCESS;
         $body = chr($code);
 
         $body .= DataConv::auth($array['properties'] ?? []);

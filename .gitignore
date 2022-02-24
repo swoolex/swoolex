@@ -1,0 +1,6 @@
+!.gitignore
+!.gitattributes
+*.DS_Store
+*.idea
+*.svn
+*.git

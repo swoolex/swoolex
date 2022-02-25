@@ -151,7 +151,7 @@ abstract class AbstractCrontab {
      * @global 无
      * @return void
     */
-    private final function get_data_list() {
+    private function get_data_list() {
         $time = time();
         # 秒
         $this->second = $this->delete_zero(date('s', $time));
@@ -176,7 +176,7 @@ abstract class AbstractCrontab {
      * @global 无
      * @return int
     */
-    private final function delete_zero($str) {
+    private function delete_zero($str) {
         return intval($str);
     }
 

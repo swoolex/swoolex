@@ -431,7 +431,7 @@ class Http {
      * @param array $data
      * @return string
     */
-    private final function get_url($url, $data) {
+    private function get_url($url, $data) {
         if (strpos($url, '//') === false) {
             $url = '/'.ltrim($url, '/');
             if ($url != '/') {

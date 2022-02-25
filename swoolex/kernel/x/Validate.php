@@ -419,7 +419,7 @@ class Validate
      * @param string $message 系统内置的提示语
      * @return void
     */
-    private final function parse_error($rule_param, $field, $rule_name, $message) {
+    private function parse_error($rule_param, $field, $rule_name, $message) {
         if (!empty($rule_param['message'][$rule_name])) $message = $rule_param['message'][$rule_name];
 
         $alias = $rule_param['alias'] ? $rule_param['alias'] : $rule_param['intact_field'];
@@ -459,7 +459,7 @@ class Validate
      * @param string $value
      * @return array
     */
-    private final function analysis($key, $value) {
+    private function analysis($key, $value) {
         $ret = [
             'alias' => $this->alias[$key] ?? null,
         ];

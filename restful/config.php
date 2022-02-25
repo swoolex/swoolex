@@ -21,5 +21,6 @@ return [
         'tips'   => 'msg',  // 描述字段名
         'result' => 'data', // 结果集字段名
         'set'    => [], // 默认结果集
+        'headers'=> [], // 响应头
     ],
 ];

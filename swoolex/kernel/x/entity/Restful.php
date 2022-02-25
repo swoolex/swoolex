@@ -79,6 +79,21 @@ class Restful {
     }
 
     /**
+     * 设置header值
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.23 + 2022.2.25
+     * @deprecated 暂不启用
+     * @global 无
+     * @param mixed $headers
+     * @return this
+    */
+    public function header($headers) {
+        $this->header = $headers;
+        return $this;
+    }
+
+    /**
      * 设置msg值
      * @todo 无
      * @author 小黄牛
@@ -224,6 +239,15 @@ class Restful {
 
         // 根据返回值判断输出类型
         $Response = \x\context\Response::get();
+        // 读取默认响应头
+        if (empty($this->header)) $this->header = $config[$this->make]['headers'];
+        // 自定义响应头
+        if (!empty($this->header) && is_array($this->header)) {
+            foreach ($this->header as $key=>$value) {
+                $Response->header($key, $value);
+            }
+        }
+
         if ($this->type == 'json') {
             $Response->header('Content-type', 'application/json;charset=utf-8');
             $return = json_encode($return, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

@@ -19,10 +19,6 @@ class RpcClient {
     */
     private $status = false;
     /**
-     * 返回状态码
-    */
-    private $code = '500';
-    /**
      * 返回说明
     */
     private $msg = 'ERROR';
@@ -265,7 +261,7 @@ class RpcClient {
     public function send() {
         if ((time()-$this->start_time) >= $this->out_time) {
             $this->msg = "rpc request timeout";
-            $this->code = '408';
+            $this->status = '408';
             return false;
         }
 
@@ -417,9 +413,6 @@ class RpcClient {
     }
 
     // 以下为获取相关状态
-    public function getCode() {
-        return $this->code;
-    }
     public function getMsg() {
         return $this->msg;
     }

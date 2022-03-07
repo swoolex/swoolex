@@ -73,7 +73,7 @@ class HttpRpc extends Http {
 
         return $this->returnJson('00', '请求完成', [
             'time' => '耗时：'.number_format(($etime-$stime), 10, '.', '').' Seconds',
-            'data' => dd($Rpc->getMsg()).dd($Rpc->getCode()).dd($res)
+            'data' => dd($Rpc->getMsg()).dd($Rpc->getStatus()).dd($res)
         ]);
     }
 

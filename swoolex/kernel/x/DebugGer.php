@@ -154,8 +154,8 @@ class DebugGer
         $upu = (memory_get_usage() - \x\context\Container::get('http_start_cpu')) / 1024;
 
         $this->html .= '<div style="width: 100%;height: 100%;overflow-y: auto;display: block;" id="swoole_div1">';
-        $this->html .= '<div class="swoole_div">开始时间：'.date('Y-m-d H:i:s', $http_start_time).'</div>';
-        $this->html .= '<div class="swoole_div">响应时间：'.date('Y-m-d H:i:s', $http_end_time).'</div>';
+        $this->html .= '<div class="swoole_div">开始时间：'.date('Y-m-d H:i:s', current(explode('.', $http_start_time))).'</div>';
+        $this->html .= '<div class="swoole_div">响应时间：'.date('Y-m-d H:i:s', current(explode('.', $http_end_time))).'</div>';
         $this->html .= '<div class="swoole_div">实际耗时：'.number_format($time, 7).'s</div>';
         $this->html .= '<div class="swoole_div">吞吐率：'.number_format(1/number_format($time, 6), 2). ' req/s</div>';
         $this->html .= '<div class="swoole_div">内存消耗：'.number_format($upu, 3).'kb</div>';

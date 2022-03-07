@@ -62,7 +62,7 @@ class Error {
      * @param int $errcontext 错误上下文
      * @return void
     */
-    public function appError($errno, $errstr, $errfile, $errline, $errcontext) {
+    public function appError($errno, $errstr, $errfile, $errline, $errcontext=null) {
         $error = [];
         switch ($errno) {
             case E_ERROR:

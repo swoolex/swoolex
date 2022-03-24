@@ -338,7 +338,7 @@ class RpcClient {
             $redis->return();
             // 这里理应关闭该连接，标记is_fault
             $config['is_fault'] = 1;
-            \x\Rpc::run()->set($config['is_fault']);
+            \x\Rpc::run()->set($config);
             \x\Rpc::run()->ping_error($config, 4);
             $this->msg = 'connect failed. Error: '.$client->errCode;
             $client->close();

@@ -43,8 +43,6 @@ abstract class Job
     private $delay_time = 0;
     // 投递数据集
     private $param;
-    // Swoole/Server
-    private $server = null;
 
     // 当前重试次数
     private $retry_num = 0;
@@ -81,7 +79,6 @@ abstract class Job
      * @version v2.5.9 + 2021-11-04
      * @deprecated 暂不启用
      * @global 无
-     * @param Swoole\Server
      * @return void
     */
     final public function run() {
@@ -322,34 +319,6 @@ abstract class Job
     final public function retry_time() {
         $key = $this->retry_num-1; 
         return $this->retry_seconds[$key] ?? false;
-    }
-    
-    
-    /**
-     * 获取Server
-     * @todo 无
-     * @author 小黄牛
-     * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
-    */
-    final public function getServer() {
-        return $this->server;
-    }
-    
-    /**
-     * 设置Server
-     * @todo 无
-     * @author 小黄牛
-     * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
-    */
-    final public function setServer($server) {
-        $this->server = $server;
-        return $this;
     }
 
     /**

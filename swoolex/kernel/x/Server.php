@@ -68,6 +68,8 @@ class Server {
         }
         // 启动类型写入配置项
         \x\Config::set('server.sw_service_type', $this->server_type);
+        // 记录server实例
+        \x\Config::set('swoolex_context.server', $this->service);
         $this->config = $config;
         // 注入配置
         $this->service->set($set['set']);

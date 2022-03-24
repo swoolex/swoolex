@@ -337,7 +337,8 @@ class RpcClient {
             $redis->DECR($num_key); 
             $redis->return();
             // 这里理应关闭该连接，标记is_fault
-            \x\Rpc::run()->set(['is_fault' => 1]);
+            $config['is_fault'] = 1;
+            \x\Rpc::run()->set($config['is_fault']);
             \x\Rpc::run()->ping_error($config, 4);
             $this->msg = 'connect failed. Error: '.$client->errCode;
             $client->close();
@@ -351,7 +352,8 @@ class RpcClient {
             $redis->DECR($num_key); 
             $redis->return();
             // 这里理应关闭该连接，标记is_fault
-            \x\Rpc::run()->set(['is_fault' => 1]);
+            $config['is_fault'] = 1;
+            \x\Rpc::run()->set($config);
             \x\Rpc::run()->ping_error($config, 5);
             $this->msg = 'connect return body Error';
             return false;

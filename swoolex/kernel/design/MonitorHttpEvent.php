@@ -37,6 +37,7 @@ class MonitorHttpEvent {
             // 记录上下文
             \x\context\Request::set($request);
             \x\context\Response::set($response);
+            \x\context\Container::set('websocket_server', $server);
 
             $ip = $server->getClientInfo($request->fd)['remote_ip'];
             // 触发限流器

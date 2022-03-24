@@ -79,7 +79,7 @@ class Mqtt {
      * @param string $topic
      * @return array
     */
-    protected final function select($topic='/') {
+    public final function select($topic='/') {
         return (new \x\mqtt\Table($this->server))->getUser($topic);
     }
 
@@ -93,7 +93,7 @@ class Mqtt {
      * @param string $client_id
      * @return array
     */
-    protected final function find($client_id) {
+    public final function find($client_id) {
         $array = $this->server->device_list->get($client_id);
         if (!$array) return [];
 
@@ -122,7 +122,7 @@ class Mqtt {
      * @global 无
      * @return array
     */
-    protected final function info() {
+    public final function info() {
         $data = $this->server->device_fd->get($this->getFd());
         if (!$data) return false;
 
@@ -140,7 +140,7 @@ class Mqtt {
      * @param array $data
      * @return bool
     */
-    protected final function send($fd, $data) {
+    public final function send($fd, $data) {
         $level = (new \x\mqtt\Table($this->server))->deviceLevel($fd);
         if (!$level) return false;
 

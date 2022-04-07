@@ -96,15 +96,13 @@ class Redis extends AbstractQueueDriver
             $maxTime = time();
             $list = $this->Redis->zCount($this->_key_delayed, 0, $maxTime);
             if ($list) {
-                $jobs = $this->Redis->zPopmin($this->_key_delayed, $list);
+                $jobs = $this->Redis->ZRANGEBYSCORE($this->_key_delayed, 0, $maxTime);
                 if (is_array($jobs)) {
-                    foreach ($jobs as $uuid => $time){
-                        if($time > $maxTime){
-                            $this->Redis->zAdd($this->_key_delayed, $time, $uuid);
-                        }else{
-                            // 插入到队列头
-                            $this->Redis->lPush($this->_key_waiting, $uuid);
-                        }
+                    // 删除
+                    $this->Redis->ZREMRANGEBYSCORE($this->_key_delayed, 0, $maxTime);
+                    foreach ($jobs as $uuid){
+                        // 插入到队列头
+                        $this->Redis->lPush($this->_key_waiting, $uuid);
                     }
                 }
             }
@@ -173,10 +171,18 @@ class Redis extends AbstractQueueDriver
      * @return void
     */
     public function JobRetry($Job) {
-        $delayTime = $Job->retry_time();
-        if (!$delayTime) return false;
-
         $uuid = $Job->uuid();
+
+        $delayTime = $Job->retry_time();
+        // 无法再重试了
+        if (!$delayTime) {
+            $res = $this->Redis->hDel($this->_key_reserved, $uuid);
+            $this->JobError($Job);
+            return false;
+        }
+
+        // 更新队列实体
+        $this->Redis->hSet($this->_key_entity, $uuid, serialize($Job));
         // 投递到延迟队列
         $res = $this->Redis->zAdd($this->_key_delayed, time()+$delayTime, $uuid);
         $this->Redis->return();

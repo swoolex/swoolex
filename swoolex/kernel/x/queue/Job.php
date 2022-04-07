@@ -320,7 +320,7 @@ abstract class Job
      * @return void
     */
     final public function retry_time() {
-        $key = $this->retry_num-1; 
+        $key = $this->retry_num; 
         return $this->retry_seconds[$key] ?? false;
     }
     

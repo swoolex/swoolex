@@ -212,5 +212,22 @@ class Money
             return (float)bcdiv(bcmul($money, $num, $bit), $num, $bit);
         }
     }
+    
+    /**
+     * 随机小数支持
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.25 + 2022-04-14
+     * @deprecated 暂不启用
+     * @global 无
+     * @param float $min 最小数
+     * @param float $max 最大数
+     * @param int $decimal 保留小数位
+     * @return void
+    */
+    public static function randomFloat($min = 0, $max = 1, $decimal=2) {
+        $num = $min + mt_rand() / mt_getrandmax() * ($max - $min);
+        return sprintf("%.".$decimal."f",$num);
+    }
 }
 

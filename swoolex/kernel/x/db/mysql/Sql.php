@@ -124,7 +124,7 @@ class Sql extends AbstractMysqlSql {
         $this->clean_up();
         # 获取数据表前缀
         $this->prefix = $this->Db->prefix;
-        $this->table = $this->prefix.$table;
+        $this->table = '`'.$this->prefix.$table.'`';
         return $this;
     }
     
@@ -142,7 +142,7 @@ class Sql extends AbstractMysqlSql {
         $this->clean_up();
         # 获取数据表前缀
         $this->prefix = $this->Db->prefix;
-        $this->table = $table;
+        $this->table = '`'.$table.'`';
         return $this;
     }
 

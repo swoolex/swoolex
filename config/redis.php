@@ -32,7 +32,7 @@ return [
             // DBindex
             'dbindex' => 0,
             // 连接池数量
-            'pool_num' => 1,
+            'pool_num' => 2,
         ],
     ],
 ];

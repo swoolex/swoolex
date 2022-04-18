@@ -123,16 +123,17 @@ class ArrayList
      * @deprecated 暂不启用
      * @global 无
      * @param array $array 递归对象
-     * @param string $field 父字段名
+     * @param string $field1 子字段名
+     * @param string $field2 父字段名
      * @param string $menu 生成递归结构的字段名
      * @param int $pid 默认的父字段值
      * @return void
     */
-    public static function recursion($array='', $field='pid', $menu = 'list', $pid = 0) {
+    public static function recursion($array='', $field1='id', $field2='pid', $menu = 'list', $pid = 0) {
         $arr = [];
         foreach ($array as $v) {
-            if ($v[$field] == $pid) {
-                $v[$menu] = self::recursion($array, $field, $menu, $v['id']);
+            if ($v[$field2] == $pid) {
+                $v[$menu] = self::recursion($array, $field1, $field2, $menu, $v[$field1]);
                 $arr[] = $v;
             }
         }

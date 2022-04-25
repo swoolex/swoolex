@@ -174,7 +174,26 @@ class Sql extends AbstractMysqlSql {
     */
     public function where($field, $operator=null, $value=false) {
         if (!$field) return $this;
-        if ($operator === null || $operator === '') return $this;
+
+        if ($operator === null || $operator === '') {
+            $is_list = [
+                ' ',
+                '=',
+                '>',
+                '<',
+                '!',
+            ];
+            $status = false;
+            foreach ($is_list as $v) {
+                if (strpos($field, $v) !== false) {
+                    $status = true;
+                    break;
+                }
+            }
+            if ($status == false) {
+                return $this;
+            }
+        }
 
         if (is_array($field)) {
             foreach ($field as $v) {

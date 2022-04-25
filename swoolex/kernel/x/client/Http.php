@@ -153,7 +153,7 @@ class Http
         if (isset($array['query'])) {
             $this->api_url .= '?'.$array['query'];
         }
-
+        
         // 创建客户端实例
         $this->client_class = new \ReflectionClass('\Swoole\Coroutine\Http\Client');
         if ($this->port == 443) {

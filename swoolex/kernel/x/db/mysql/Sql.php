@@ -174,6 +174,7 @@ class Sql extends AbstractMysqlSql {
     */
     public function where($field, $operator=null, $value=false) {
         if (!$field) return $this;
+        if ($operator === null || $operator === '') return $this;
 
         if (is_array($field)) {
             foreach ($field as $v) {
@@ -828,6 +829,9 @@ class Sql extends AbstractMysqlSql {
     public function setInc($field, $num=1) {
         $test = $this->testcase();
         if ($test != 'SwooleXTestCase') return $test;
+        
+        // 无where条件不允许执行
+        if (empty($this->where)) return false;
 
         $sql = 'UPDATE';
         $sql .= ' '.$this->table;
@@ -860,6 +864,9 @@ class Sql extends AbstractMysqlSql {
         $test = $this->testcase();
         if ($test != 'SwooleXTestCase') return $test;
 
+        // 无where条件不允许执行
+        if (empty($this->where)) return false;
+        
         $sql = 'UPDATE';
         $sql .= ' '.$this->table;
         $sql .= ' SET';

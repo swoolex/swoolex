@@ -417,6 +417,19 @@ abstract class AbstractMysqlSql {
             if (!empty($debug[1])) {
                 $file = !empty($debug[1]['file']) ? 'Class：'.$debug[1]['file'] : 'Function：'.$debug[1]['function'];
             }
+            // 不允许记录的目录，防止上下文溢出
+            $no_list = [
+                '/crontab/',
+                '/queue/',
+                '/event/',
+                '/process/',
+            ];
+            // 跳过记录
+            foreach ($no_list as $route) {
+                if (stripos($file, $route) !== false) {
+                    return false;
+                }
+            }
             // 计算调用时间
             $time = number_format(($end_time-$start_time), 7);
             // 写入记录

@@ -107,6 +107,8 @@ class Server {
         \design\MountEvent::Reload($this->service);
         // 载入敏感词库
         \design\MountEvent::SensitiveWords();
+        // ES节点嗅探
+        \design\MountEvent::ElasticsearchNodeSniff();
     }
 
     /**

@@ -399,4 +399,15 @@ class MountEvent {
             \x\SensitiveWord::set_tree_file($v['path'], $v['char']);
         }
     }
+    
+    /**
+     * Elasticsearch嗅探定时器
+     * @author 小黄牛
+     * @version v2.5.26 + 2022-05-11
+    */
+    public static function ElasticsearchNodeSniff() {
+        \x\elasticsearch\tool\Client::start();
+        \x\elasticsearch\tool\Client::normal_sniff_interval();
+        \x\elasticsearch\tool\Client::fault_sniff_interval();
+    }
 }

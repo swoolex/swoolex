@@ -203,11 +203,14 @@ class Builder extends BuilderAbstract implements BuilderInterface
             }
         } else {
             $order = trim(preg_replace("/\s(?=\s)/","\\1", $order));
-            $arr = explode(' ', $order);
-            $this->order[] = [
-                $arr[0],
-                $arr[1] ?? 'desc',
-            ];
+            $list = explode(',', $order);
+            foreach ($list as $v) {
+                $arr = explode(' ', $v);
+                $this->order[] = [
+                    $arr[0],
+                    $arr[1] ?? 'desc',
+                ];
+            }
         }
         return $this;
     }

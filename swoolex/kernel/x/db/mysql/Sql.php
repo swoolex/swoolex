@@ -650,9 +650,10 @@ class Sql extends AbstractMysqlSql {
      * 终结方法-新增
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
+     * @param int $oneMax 批量一次最大插入数据量
      * @return bool
     */
-    public function insert($data) {
+    public function insert($data, $oneMax=1000) {
         $test = $this->testcase();
         if ($test != 'SwooleXTestCase') return $test;
 
@@ -664,37 +665,73 @@ class Sql extends AbstractMysqlSql {
             $list = $data;
         }
 
+        $field_list = reset($list);
+        $all = [];
+        $i = 0;
+        $num = 0;
         $sql = 'INSERT INTO';
         $sql .= ' '.$this->table;
-
         $field = ' (';
-        $array = reset($list);
-        foreach ($array as $key=>$val) {
+        foreach ($field_list as $key=>$val) {
             $field .= '`'.$key.'`,';
         }
-        
         $sql .= rtrim($field, ',').')';
-
         $sql .= ' VALUES ';
-        foreach ($list as $val) {
-            $field = '(';
-            foreach ($val as $v) {
-                $field .= $this->int_string($v).',';
+        $all[$i] = $sql;
+        
+        foreach ($list as $k=>$v) {
+            if ($num == $oneMax) {
+                $i++;
+                $num = 0;
+                
+                $sql = 'INSERT INTO';
+                $sql .= ' '.$this->table;
+                $field = ' (';
+                foreach ($field_list as $key=>$val) {
+                    $field .= '`'.$key.'`,';
+                }
+                $sql .= rtrim($field, ',').')';
+                $sql .= ' VALUES ';
+                
+                $all[$i] = $sql;
             }
-            $sql .= rtrim($field, ',').'),';
+    
+            $field = '(';
+            foreach ($v as $val) {
+                $field .= $this->int_string($val).',';
+            }
+            $sql = rtrim($field, ',').'),';
+            $all[$i] .= $sql;
+            $num++;
         }
-
-        $sql = rtrim($sql, ',').';';
+        
         
         if ($this->debug==false) {
             $this->clean_up();
-            $start_time = microtime(true);
-            $res = $this->Db->exec($sql);
-            $end_time = microtime(true);
-            $this->record($sql, $start_time, $end_time);
-            return $res;
+            
+            $this->Db->begin(true);
+            foreach ($all as $sql) {
+                $sql = rtrim($sql, ',').';';
+                try {
+                    $start_time = microtime(true);
+                    $res = $this->Db->exec($sql);
+                    $end_time = microtime(true);
+                    $this->record($sql, $start_time, $end_time);
+                } catch (\Exception $e) {
+                    throw new \Exception($e->getMessage());
+                    $this->Db->rollback();
+                    return false;
+                }
+                
+                if (!$res) {
+                    $this->Db->rollback();
+                    return false;
+                }
+            }
+            $this->Db->commit();
+            return true;
         }
-        return $sql;
+        return $all;
     }
     /**
      * 终结方法-新增

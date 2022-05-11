@@ -16,6 +16,10 @@ namespace x\db\mysql;
 use design\AbstractDb;
 
 class Dao extends AbstractDb {
+    /**
+     * 事务启动状态 0.关闭 1.正常事务 2.insertAll事务
+    */
+    private $affair_status = 0;
     
     /**
      * 选择连接池
@@ -89,10 +93,20 @@ class Dao extends AbstractDb {
      * 开启事务
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
+     * @param bool $status 是否insertAll创建的事务
      * @return bool
     */
-    public function begin() {
-        return $this->pool->beginTransaction();
+    public function begin($status=false) {
+        // 标记是否开启事务
+        if ($this->affair_status == 0) {
+            $this->affair_status = 1;
+            return $this->pool->beginTransaction();
+        // 标记insertAll开启的事务
+        } else if ($this->affair_status == 1 && $status == true) {
+            $this->affair_status = 2;
+        }
+        
+        return true;
     }
 
     /**
@@ -102,6 +116,13 @@ class Dao extends AbstractDb {
      * @return bool
     */
     public function commit() {
+        // 如果被占用不提交，同时降低级别
+        if ($this->affair_status == 2) {
+            $this->affair_status = 1;
+            return true;
+        }
+        
+        $this->affair_status = 0;
         return $this->pool->commit();
     }
 
@@ -112,6 +133,13 @@ class Dao extends AbstractDb {
      * @return bool
     */
     public function rollback() {
+        // 如果被占用不提交，同时降低级别
+        if ($this->affair_status == 2) {
+            $this->affair_status = 1;
+            return true;
+        }
+        
+        $this->affair_status = 0;
         return $this->pool->rollback();
     }
 

@@ -17,13 +17,9 @@ class Unpacking {
 
     /**
      * 开箱入口
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 服务类型
-     * @return void
     */
     public static function run($type) {
         self::create_app();
@@ -32,13 +28,9 @@ class Unpacking {
     }
     /**
      * 判断服务分支选择开箱流程
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 服务类型
-     * @return void
     */
     private static function switch_king($type) {
         switch ($type) {
@@ -62,12 +54,9 @@ class Unpacking {
     }
     /**
      * 创建工作根目录
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public static function create_app() {
         if (!is_dir(APP_PATH)) {
@@ -81,12 +70,9 @@ class Unpacking {
     //----------------------------------- 以下为开箱动作 ---------------------------------
     /**
      * RPC服务中心所需配置文件 服务开箱
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public static function unpack_rpc_http() {
         if (\x\Config::get('rpc.http_rpc_is') == false) return true;
@@ -138,12 +124,9 @@ return array (
     }
     /**
      * HTTP 服务开箱
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public static function unpack_http() {
         $controller_path = APP_PATH.'http';
@@ -162,12 +145,9 @@ return array (
     }
     /**
      * WebSocket 服务开箱
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public static function unpack_websocket() {
         $controller_path = APP_PATH.'websocket';
@@ -183,12 +163,9 @@ return array (
     }
     /**
      * RPC 服务开箱
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     private static function unpack_rpc() {
         $controller_path = APP_PATH.'rpc';
@@ -207,12 +184,9 @@ return array (
     }
     /**
      * MQTT 服务开箱
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     private static function unpack_mqtt() {
         $controller_path = APP_PATH.'mqtt';

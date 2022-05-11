@@ -22,13 +22,10 @@ class Dc implements Protocol {
 
     /**
      * 回复客户端时数据加密
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $array
-     * @return void
+     * @return string
     */
     public static function pack($array) {
         $type = $array['type'];
@@ -79,13 +76,10 @@ class Dc implements Protocol {
 
     /**
      * 接受客户端数据时解密
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $data
-     * @return void
+     * @return string
     */
     public static function unpack($data) {
         $type = UnStream::getType($data);

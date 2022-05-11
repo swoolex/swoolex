@@ -22,13 +22,9 @@ class onManagerStop
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.26
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole\Server $server
-     * @return void
     */
     public function run($server) {
         $this->server = $server;

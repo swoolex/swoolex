@@ -24,11 +24,8 @@ class Lang {
 
     /**
      * 实例化对象方法，供外部获得唯一的对象
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $lang 可手动指定语言包文件
      * @return Lang
     */
@@ -42,13 +39,9 @@ class Lang {
 
     /**
      * 初始化配置项
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $lang 可手动指定语言包文件
-     * @return void
     */
     private static function runtime($lang) {
         if (!$lang) {
@@ -65,11 +58,8 @@ class Lang {
 
     /**
      * 获取参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 读取的项
      * @return mixed
     */

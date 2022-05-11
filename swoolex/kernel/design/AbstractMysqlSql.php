@@ -113,238 +113,160 @@ abstract class AbstractMysqlSql {
     abstract public function test($name);
     /**
      * 链表
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 链表表达式
      * @param string $on  链表条件
      * @param string $join 链表方式
      * @param bool $status 是否自动使用表前缀
-     * @return void
     */
     abstract public function join($table, $on, $join='LEFT', $status=true);
     /**
      * 缓存组件
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 缓存标识
-     * @return void
     */
     abstract public function cache($key=null);
 
     /**
      * 单独设置缓存有效期
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $expire_time 过期时间，0为永久
-     * @return void
     */
     abstract public function expire($expire_time);
 
     /**
      * 终结方法-分页查询
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $size 每页数
      * @param array $query 分页配置参数
-     * @return void
     */
     abstract public function paginate($size, $query=null);
     /**
      * 终结方法-查询
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $status 是否不执行
-     * @return void
     */
     abstract public function select($status=true);
     /**
      * 终结方法-查询-固定一条
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $status 是否不执行
-     * @return void
     */
     abstract public function find($status=true);
     /**
      * 终结方法-子查询构造器
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     abstract public function buildSql();
     /**
      * 终结方法-删除
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.2 + 2020.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $status 是否不执行
-     * @return void
     */
     abstract public function delete($status=true);
     /**
      * 终结方法-修改
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.2 + 2020.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     abstract public function update($data);
     /**
      * 终结方法-新增
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     abstract public function insert($data);
 
     /**
      * 自增
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @param int $num 值
-     * @return void
     */
     abstract public function setInc($field, $num=1);
     /**
      * 自减
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @param int $num 值
-     * @return void
     */
     abstract public function setDec($field, $num=1);
     /**
      * 聚合操作(统计数量)
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @return mixed
     */
     abstract public function count($field=false);
     /**
      * 聚合操作(获取最大值)
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @return mixed
     */
     abstract public function max($field=false);
     /**
      * 聚合操作(获取最小值)
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @return mixed
     */
     abstract public function min($field=false);
     /**
      * 聚合操作(获取平均值)
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @return mixed
     */
     abstract public function avg($field=false);
     /**
      * 聚合操作(获取总分)
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @return mixed
     */
     abstract public function sum($field=false);
     /**
      * 获取某个字段的值
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
-     * @return void
     */
     abstract public function value($field);
     /**
      * 执行原生SQL
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $sql 原生SQL
-     * @return void
     */
     abstract public function query($sql, $status=false);
     /**
      * 执行原生SQL
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $sql 原生SQL
-     * @return void
     */
     abstract public function exec($sql);
 
     /**
      * 判断是否为数字类型
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $string
      * @return string
     */
@@ -360,11 +282,8 @@ abstract class AbstractMysqlSql {
 
     /**
      * 转义函数
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $data 需要转义的内容
      * @return mixed
     */
@@ -379,12 +298,9 @@ abstract class AbstractMysqlSql {
     
     /**
      * 单元测试DB替换
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     protected function testcase() {
         if (\x\context\Container::get('testcase')) {
@@ -401,12 +317,9 @@ abstract class AbstractMysqlSql {
 
     /**
      * 记录Log
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     protected function record($sql, $start_time, $end_time) {
         // 注入调试内容
@@ -446,13 +359,10 @@ abstract class AbstractMysqlSql {
 
     /**
      * 读取缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $sql SQL语句
-     * @return void
+     * @return array
     */
     protected function select_cache($sql=null) {
         if ($this->cache_status == false) return ['status'=>false];
@@ -476,14 +386,11 @@ abstract class AbstractMysqlSql {
 
     /**
      * 更新缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $sql SQL语句
      * @param mixed $data 缓存内容
-     * @return void
+     * @return bool
     */
     protected function create_cache($sql, $data) {
         if ($this->cache_status == false) return false;

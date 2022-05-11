@@ -25,15 +25,11 @@ class Memory
 
     /**
      * 写
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-03
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param mixed $val 值
      * @param int $prefix 有效期(S)
-     * @return void
     */
     public function write($key, $val, $prefix) {
         $this->_list[$key] = $val;
@@ -47,11 +43,8 @@ class Memory
 
     /**
      * 读
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-03
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @return mixed
     */
@@ -62,11 +55,8 @@ class Memory
 
     /**
      * 缓存检测
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-03
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @return bool
     */
@@ -76,11 +66,8 @@ class Memory
 
     /**
      * 自增
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param int $num 自增值
      * @return mixed
@@ -95,11 +82,8 @@ class Memory
 
     /**
      * 自减
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param int $num 自减值
      * @return mixed
@@ -118,11 +102,8 @@ class Memory
 
     /**
      * 删除
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-03
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @return bool
     */

@@ -21,13 +21,9 @@ class SwooleX {
 
     /**
      * 初始化
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $config 视图配置
-     * @return void
     */
     public function __construct($config) {
         $this->template = new \x\Template($config);
@@ -35,11 +31,8 @@ class SwooleX {
 
     /**
      * 检测是否存在模板文件
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $template 模板文件或者模板规则
      * @return bool
     */
@@ -54,15 +47,11 @@ class SwooleX {
 
     /**
      * 渲染模板文件
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $template 模板文件
      * @param array $data 模板变量
      * @param array $config 模板参数
-     * @return void
     */
     public function fetch($template, $data = [], $config = []) {
         if ('' == pathinfo($template, PATHINFO_EXTENSION)) {
@@ -75,15 +64,11 @@ class SwooleX {
 
     /**
      * 渲染模板内容
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $template 模板内容
      * @param array $data 模板变量
      * @param array $config 模板参数
-     * @return void
     */
     public function display($template, $data = [], $config = []) {
         $this->template->display($template, $data, $config);
@@ -91,11 +76,8 @@ class SwooleX {
 
     /**
      * 自动定位模板文件
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $template 模板文件规则
      * @return string
     */
@@ -105,11 +87,8 @@ class SwooleX {
 
     /**
      * 配置或者获取模板引擎参数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $name 参数名
      * @param mixed $value 参数值
      * @return mixed
@@ -128,12 +107,9 @@ class SwooleX {
 
     /**
      * 当方法不存在时，指向模板解析类本身
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return object
     */
     public function __call($method, $params) {
         return call_user_func_array([$this->template, $method], $params);

@@ -25,12 +25,8 @@ class Pool {
 
     /**
      * 初始化参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function __construct() {
         // 读取配置类
@@ -39,12 +35,9 @@ class Pool {
 
     /**
      * 单例入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return this
     */
     public static function run() {
         # 只有第一次调用，才允许创建对象实例
@@ -56,13 +49,8 @@ class Pool {
 
     /**
      * 初始连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @param string $
-     * @param mixed $
      * @return $this|null
     */
     public function init() {
@@ -78,11 +66,8 @@ class Pool {
     
     /**
      * 获取一个连接
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
-     * @deprecated 暂不启用
-     * @global 无
      * @return obj
     */
     public function pop($key) {
@@ -105,13 +90,10 @@ class Pool {
 
     /**
      * 归还一个连接
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param obj $obj 数据库连接实例
-     * @return void
+     * @return bool
     */
     public function free($key, $obj) {
         $this->config[$key]['pool_num']++;
@@ -122,12 +104,8 @@ class Pool {
     
     /**
      * 定时回收空闲连接
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function timing_recovery() {
         // 5秒更新一次当前Redis连接数
@@ -156,12 +134,8 @@ class Pool {
     
     /**
      * 清空连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function clean() {
         foreach ($this->config as $key=>$value) {
@@ -172,10 +146,8 @@ class Pool {
 
     /**
      * 创建数据库连接实例
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
-     * @deprecated 暂不启用
      * @param array $database 连接配置
      * @param int $szie 连接池长度
      * @return swoole_redis

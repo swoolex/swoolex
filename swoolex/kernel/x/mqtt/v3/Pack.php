@@ -21,13 +21,10 @@ class Pack {
 
     /**
      * 建立连接时
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $array
-     * @return void
+     * @return string
     */
     public static function connect($array) {
         $body = TypeConv::string($array['protocol_name']) . chr($array['protocol_level']);

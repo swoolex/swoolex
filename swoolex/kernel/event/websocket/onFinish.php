@@ -21,15 +21,11 @@ class onFinish {
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $task_id 执行任务的 task 进程 id
      * @param mixed $data 任务处理的结果内容
-     * @return void
     */
     public function run($server, $task_id, $data) {
         $this->server = $server;

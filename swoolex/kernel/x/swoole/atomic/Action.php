@@ -25,11 +25,8 @@ class Action
 
     /**
      * 判断一个计数器是否存在
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键名
      * @return bool
     */
@@ -39,11 +36,8 @@ class Action
 
     /**
      * 创建一个计数器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键名
      * @param int $num 初始值
      * @return bool
@@ -57,11 +51,8 @@ class Action
     
     /**
      * 销毁一个计数器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键名
      * @return bool
     */
@@ -74,11 +65,8 @@ class Action
     
     /**
      * 计数器自增
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键名
      * @param int $num 自增整数
      * @return bool
@@ -92,11 +80,8 @@ class Action
     
     /**
      * 计数器自减
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键名
      * @param int $num 自增整数
      * @return bool
@@ -110,11 +95,8 @@ class Action
     
     /**
      * 获取计数器当前值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键名
      * @return int|false
     */
@@ -126,11 +108,8 @@ class Action
     
     /**
      * 直接重置计数器当前值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键名
      * @param int $num 自增整数
      * @return bool
@@ -144,11 +123,8 @@ class Action
     
     /**
      * 比较计数器当前值，通过则设置值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键名
      * @param int $num 自增整数
      * @return bool
@@ -161,11 +137,8 @@ class Action
 
     /**
      * 获取当前服务中的计数器个数
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @return bool
     */
     public function count() {

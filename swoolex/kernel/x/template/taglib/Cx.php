@@ -35,11 +35,8 @@ class Cx extends Taglib {
  
     /**
      * php标签解析
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $tag 标签属性
      * @param string $content 标签内容
      * @return string
@@ -51,14 +48,11 @@ class Cx extends Taglib {
 
     /**
      * foreach标签解析 循环输出数据集
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $tag 标签属性
      * @param string $content 标签内容
-     * @return string|void
+     * @return string
     */
     public function tagForeach($tag, $content) {
         // 直接使用表达式
@@ -137,11 +131,8 @@ class Cx extends Taglib {
 
     /**
      * if标签解析
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $tag 标签属性
      * @param string $content 标签内容
      * @return string
@@ -156,11 +147,8 @@ class Cx extends Taglib {
 
     /**
      * elseif标签解析
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $tag 标签属性
      * @param string $content 标签内容
      * @return string
@@ -175,11 +163,8 @@ class Cx extends Taglib {
 
     /**
      * else标签解析
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $tag 标签属性
      * @return string
     */
@@ -191,11 +176,8 @@ class Cx extends Taglib {
 
     /**
      * switch标签解析
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param  array $tag 标签属性
      * @param  string $content 标签内容
      * @return string
@@ -210,11 +192,8 @@ class Cx extends Taglib {
 
     /**
      * case标签解析 需要配合switch才有效
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $tag 标签属性
      * @param string $content 标签内容
      * @return string
@@ -248,11 +227,8 @@ class Cx extends Taglib {
 
     /**
      * default标签解析 需要配合switch才有效
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $tag 标签属性
      * @param string $content 标签内容
      * @return string
@@ -265,11 +241,8 @@ class Cx extends Taglib {
 
     /**
      * compare标签解析
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param  array $tag 标签属性
      * @param  string $content 标签内容
      * @return string
@@ -303,11 +276,8 @@ class Cx extends Taglib {
 
     /**
      * for标签解析
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $tag 标签属性
      * @param string $content 标签内容
      * @return string

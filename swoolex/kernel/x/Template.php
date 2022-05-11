@@ -63,13 +63,9 @@ class Template {
 
     /**
      * 架构函数
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param  array $config
-     * @return void
     */
     public function __construct($config) {
         $this->config['cache_path'] = WORKLOG_PATH.'view'.DS;
@@ -92,14 +88,10 @@ class Template {
 
     /**
      * 模板变量赋值
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $name
      * @param mixed $value
-     * @return void
     */
     public function assign($name, $value = '') {
         if (is_array($name)) {
@@ -111,15 +103,11 @@ class Template {
 
     /**
      * 渲染模板文件
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $template 模板文件
      * @param array $vars 模板变量
      * @param array $config 模板参数
-     * @return void
     */
     public function fetch($template, $vars = [], $config = []) {
         if ($vars) {
@@ -158,15 +146,12 @@ class Template {
     
     /**
      * 渲染模板内容
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 模板内容
      * @param array $vars 模板变量
      * @param array $config 模板参数
-     * @return void
+     * @return string
     */
     public function display($template, $vars = [], $config = []) {
         if ($vars) $this->data = $vars;
@@ -191,14 +176,10 @@ class Template {
 
     /**
      * 编译模板文件内容
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 模板内容
      * @param string $cacheFile 缓存文件名
-     * @return void
     */
     private function compiler(&$content, $cacheFile) {
         // 判断是否启用布局
@@ -246,11 +227,8 @@ class Template {
 
     /**
      * 设置布局
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $name 布局模板名称 false 则关闭布局
      * @param string $replace 布局模板内容替换标识
      * @return object
@@ -279,13 +257,9 @@ class Template {
     /**
      * 模板解析入口
      * 支持普通标签和TagLib解析 支持自定义标签库
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 要解析的模板内容
-     * @return void
     */
     public function parse(&$content) {
         // 内容为空不解析
@@ -352,13 +326,9 @@ class Template {
 
     /**
      * 检查PHP语法
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 要解析的模板内容
-     * @return void
     */
     private function parsePhp(&$content) {
         // 短标签的情况要将<?标签用echo方式输出 否则无法正常输出xml标识
@@ -372,13 +342,9 @@ class Template {
 
     /**
      * 解析模板中的布局标签
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 要解析的模板内容
-     * @return void
     */
     private function parseLayout(&$content) {
         // 读取模板中的布局标签
@@ -405,13 +371,9 @@ class Template {
 
     /**
      * 解析模板中的include标签
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 要解析的模板内容
-     * @return void
     */
     private function parseInclude(&$content) {
         $regex = $this->getRegex('include');
@@ -450,7 +412,6 @@ class Template {
      * 解析模板中的extend标签
      * @access private
      * @param string $content 要解析的模板内容
-     * @return void
      */
     private function parseExtend(&$content) {
         $regex  = $this->getRegex('extend');
@@ -535,14 +496,10 @@ class Template {
 
     /**
      * 替换页面中的literal标签
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 模板内容
      * @param boolean $restore 是否为还原
-     * @return void
     */
     private function parseLiteral(&$content, $restore = false) {
         $regex = $this->getRegex($restore ? 'restoreliteral' : 'literal');
@@ -573,14 +530,11 @@ class Template {
 
     /**
      * 获取模板中的block标签
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 模板内容
      * @param boolean $sort 是否排序
-     * @return void
+     * @return string
     */
     private function parseBlock(&$content, $sort = false) {
         $regex  = $this->getRegex('block');
@@ -628,11 +582,8 @@ class Template {
 
     /**
      * 搜索模板页面中包含的TagLib库
-     * @todo 无
      * @author 小黄牛
-     * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无     * @param  string $content 模板内容
+     * @version v2.0.10 + 2021.07.01     * @param  string $content 模板内容
      * @return array|null
     */
     private function getIncludeTagLib(&$content) {
@@ -647,15 +598,11 @@ class Template {
 
     /**
      * TagLib库解析
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $tagLib 要解析的标签库
      * @param string $content 要解析的模板内容
      * @param boolean $hide 是否隐藏标签库前缀
-     * @return void
     */
     public function parseTagLib($tagLib, &$content, $hide = false) {
         if (false !== strpos($tagLib, '\\')) {
@@ -673,11 +620,8 @@ class Template {
 
     /**
      * 分析标签属性
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str 属性字符串
      * @param string $name 不为空时返回指定的属性名
      * @return array
@@ -702,13 +646,9 @@ class Template {
 
     /**
      * 模板标签解析
-     * @todo 无
      * @author 小黄牛
-     * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无     
+     * @version v2.0.10 + 2021.07.01     
      * @param string $content 要解析的模板内容
-     * @return void
     */
     private function parseTag(&$content) {
         $regex = $this->getRegex('tag');
@@ -840,13 +780,9 @@ class Template {
 
     /**
      * 模板变量解析,支持使用函数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $varStr 变量数据
-     * @return void
     */
     public function parseVar(&$varStr) {
         $varStr = trim($varStr);
@@ -890,14 +826,10 @@ class Template {
 
     /**
      * 对模板中使用了函数的变量进行解析
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $varStr 变量字符串
      * @param bool $autoescape 自动转义
-     * @return void
     */
     public function parseVarFunction(&$varStr, $autoescape = true) {
         if (!$autoescape && false === strpos($varStr, '|')) {
@@ -986,11 +918,8 @@ class Template {
 
     /**
      * 分析加载的模板文件并读取内容 支持多个模板文件读取
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $templateName 模板文件名
      * @return string
     */
@@ -1021,11 +950,8 @@ class Template {
 
     /**
      * 解析模板文件名
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $template 文件名
      * @return string|false
     */
@@ -1052,11 +978,8 @@ class Template {
 
     /**
      * 按标签生成正则
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $tagName 标签名
      * @return string
     */
@@ -1122,14 +1045,10 @@ class Template {
     
     /**
      * 模板引擎配置项
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param  array|string $config
-     * @return void|array
-     * @return void
+     * @return array
     */
     public function config($config) {
         if (is_array($config)) {
@@ -1141,11 +1060,8 @@ class Template {
 
     /**
      * 模板引擎参数赋值
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $name
      * @param mixed $value
     */
@@ -1155,11 +1071,8 @@ class Template {
 
     /**
      * 模板变量获取
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $name 变量名
      * @return mixed
     */
@@ -1184,11 +1097,8 @@ class Template {
 
     /**
      * 检查编译缓存是否有效
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $cacheFile 缓存文件名
      * @return boolean
     */

@@ -30,13 +30,9 @@ class Cache
     
     /**
      * 选择驱动
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-03
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $DriverName 驱动标识符
-     * @return void
     */
     public function __construct($DriverName = null) {
         if ($DriverName) {
@@ -48,11 +44,8 @@ class Cache
 
     /**
      * 切换驱动
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-03
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $DriverName 驱动标识符
      * @return this
     */
@@ -66,12 +59,9 @@ class Cache
 
     /**
      * 驱动方法注入
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-03
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return object
     */
     public function __call($name, $arguments=[]) {
         return call_user_func_array([$this->CacheDriver, $name], $arguments);

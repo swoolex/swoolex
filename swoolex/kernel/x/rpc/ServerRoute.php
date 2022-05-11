@@ -18,16 +18,13 @@ class ServerRoute
 {
     /**
      * 微服务请求路由转发
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param server $server
      * @param fd $fd
      * @param reactorId $reactorId
      * @param array $data
-     * @return void
+     * @return object
     */
     public function start($server, $fd, $reactorId, $data) {
         $ServerCurrency = new ServerCurrency();

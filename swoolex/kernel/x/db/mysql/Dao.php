@@ -19,13 +19,9 @@ class Dao extends AbstractDb {
     
     /**
      * 选择连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $data 连接池标识，不传默认第一个标识
-     * @return void
     */
     public function __construct($data=null) {
         // 这里实现不使用连接池
@@ -58,12 +54,8 @@ class Dao extends AbstractDb {
 
     /**
      * 利用析构函数，防止有漏掉没归还的连接，让其自动回收，减少不规范的开发者
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __destruct() {
         if ($this->return_status === false) {
@@ -73,12 +65,9 @@ class Dao extends AbstractDb {
 
     /**
      * 归还连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function return() {
         if ($this->return_status !== false) {
@@ -98,12 +87,9 @@ class Dao extends AbstractDb {
 
     /**
      * 开启事务
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function begin() {
         return $this->pool->beginTransaction();
@@ -111,12 +97,9 @@ class Dao extends AbstractDb {
 
     /**
      * 提交事务
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function commit() {
         return $this->pool->commit();
@@ -124,12 +107,9 @@ class Dao extends AbstractDb {
 
     /**
      * 回滚事务
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function rollback() {
         return $this->pool->rollback();
@@ -137,12 +117,9 @@ class Dao extends AbstractDb {
 
     /**
      * 执行Query操作
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool|array
     */
     public function query($sql, $status=true) {
         // 开启调试模式，则记录SQL语句
@@ -160,12 +137,9 @@ class Dao extends AbstractDb {
 
     /**
      * 执行新增的SQL操作
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function exec($sql) {
         // 开启调试模式，则记录SQL语句
@@ -177,12 +151,9 @@ class Dao extends AbstractDb {
 
     /**
      * SQL构造器注入
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return object
     */
     public function __call($name, $arguments=[]) {
         return call_user_func_array([new \x\db\mysql\Sql($this), $name], $arguments);

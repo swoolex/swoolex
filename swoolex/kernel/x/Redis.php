@@ -38,13 +38,9 @@ class Redis {
     
     /**
      * 选择连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $data 连接池标识，不传默认第一个标识
-     * @return void
     */
     public function __construct($data=null) {
         $arr = \x\Config::run()->get('redis.pool_list');
@@ -61,12 +57,8 @@ class Redis {
 
     /**
      * 利用析构函数，防止有漏掉没归还的连接，让其自动回收，减少不规范的开发者
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __destruct() {
         if ($this->return_status === false) {
@@ -76,12 +68,9 @@ class Redis {
 
     /**
      * 归还连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function return() {
         $this->return_status = true;
@@ -90,13 +79,10 @@ class Redis {
     
     /**
      * 手动修改表前缀
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $prefix
-     * @return void
+     * @return this
     */
     public function prefix($prefix) {
         $this->prefix = $prefix;
@@ -105,12 +91,9 @@ class Redis {
 
     /**
      * 事件注入
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return false|\Redis
     */
     public function __call($name, $arguments=[]) {
         if (!$this->pool) return false;

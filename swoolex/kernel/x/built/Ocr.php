@@ -17,11 +17,8 @@ class Ocr
 {
     /**
      * 地址详情中识别出省市区名称
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-10-22
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $address 地址详情
      * @param bool $status 是否删除省市区后缀
      * @return array
@@ -95,11 +92,8 @@ class Ocr
 
     /**
      * 收件地址文字识别
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-10-22
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str 需要识别的文字
      * @return array
     */

@@ -23,13 +23,10 @@ class Havior {
 
     /**
      * 调用入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $argv
-     * @return void
+     * @return bool
     */
     public function run($argv) {
         $this->argv = $argv;
@@ -50,12 +47,9 @@ class Havior {
 
     /**
      * 复制控制器到指定位置
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.22 + 2021.1.7
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     private function copy_controller() {
         $controller_path = APP_PATH.'http'.DS.'SwHavior.php';

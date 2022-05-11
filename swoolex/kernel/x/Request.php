@@ -17,11 +17,8 @@ class Request
 {
     /**
      * 获取请求信息
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @return array
     */
     public static function request() {
@@ -32,11 +29,8 @@ class Request
 
     /**
      * 获取请求头
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @return array
     */
     public static function header() {
@@ -47,12 +41,9 @@ class Request
 
     /**
      * 获取raw数据流
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     public static function raw() {
         $Request = \x\context\Request::get();
@@ -62,13 +53,10 @@ class Request
 
     /**
      * 获取get参数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.3 + 2021.03.11
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $field 需要返回参数的key名，一维
-     * @return void
+     * @return array
     */
     public static function get($field=[]) {
         $Request = \x\context\Request::get();
@@ -78,13 +66,10 @@ class Request
 
     /**
      * 获取post参数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.3 + 2021.03.11
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $field 需要返回参数的key名，一维
-     * @return void
+     * @return array
     */
     public static function post($field=[]) {
         $Request = \x\context\Request::get();
@@ -94,13 +79,10 @@ class Request
 
     /**
      * 获取get|post参数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.3 + 2021.03.11
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $field 需要返回参数的key名，一维
-     * @return void
+     * @return array
     */
     public static function param($field=[]) {
         $Request = \x\context\Request::get();
@@ -112,13 +94,10 @@ class Request
 
     /**
      * 获取files参数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.3 + 2021.03.11
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $field 需要返回参数的key名，一维
-     * @return void
+     * @return array
     */
     public static function file($field=[]) {
         $Request = \x\context\Request::get();
@@ -128,12 +107,9 @@ class Request
     
     /**
      * 判断是否GET请求
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public static function is_get() {
         $Request = \x\context\Request::get();
@@ -144,12 +120,9 @@ class Request
 
     /**
      * 判断是否POST请求
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public static function is_post() {
         $Request = \x\context\Request::get();
@@ -160,12 +133,9 @@ class Request
 
     /**
      * 判断是否AJAX请求
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.19 + 2020.12.10
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public static function is_ajax() {
         $Request = \x\context\Request::get();
@@ -178,11 +148,8 @@ class Request
 
     /**
      * 是否使用SSL
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
      * @return bool
     */
     public static function is_ssl() {
@@ -192,11 +159,8 @@ class Request
 
     /**
      * 获取客户端真实IP
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
      * @return string|false
     */
     public static function ip() {
@@ -213,12 +177,9 @@ class Request
 
     /**
      * 获取当前域名
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     public static function domain() {
         $ret = 'http';
@@ -231,12 +192,9 @@ class Request
 
     /**
      * 获取当前请求路由
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     public static function route() {
         $Request = \x\context\Request::get();
@@ -251,11 +209,8 @@ class Request
 
     /**
      * 获取完整URL
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $status 是否带域名
      * @return string|false
     */
@@ -269,11 +224,8 @@ class Request
     
     /**
      * 获取完整URL，带get参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.14
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $status 是否带域名
      * @return string|false
     */
@@ -294,11 +246,8 @@ class Request
 
     /**
      * 返回值格式化
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.3 + 2021.03.11
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $param
      * @param array $field
      * @return false|array

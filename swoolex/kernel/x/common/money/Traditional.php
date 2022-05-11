@@ -54,13 +54,10 @@ class Traditional
 
     /**
      * 金额转繁体
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $money 金额
-     * @return void
+     * @return string
     */
     public function toChinese($money) {
         if (!\x\common\Money::verify($money)) return false;
@@ -89,13 +86,10 @@ class Traditional
     
     /**
      * 简体转金额
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str 中文金额
-     * @return void
+     * @return int|float
     */
     public function toNumber($str) {
         $str = str_replace($this->negative, '', $str);
@@ -146,11 +140,9 @@ class Traditional
 
     /**
      * 处理整数部分
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @return void
+     * @return int
     */
     private function parseInteger($number) {
         $length = strlen($number);
@@ -207,11 +199,9 @@ class Traditional
 
     /**
      * 处理小数部分
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @return void
+     * @return int
     */
     private function parseDecimal($number) {
         if ($number === '') return '';

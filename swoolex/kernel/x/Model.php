@@ -29,13 +29,9 @@ class Model {
 
     /**
      * 初始化连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 连接池类型select或者log，为空则为写入
-     * @return void
     */
     public function __construct($type=null) {
         // 获取子类名
@@ -55,12 +51,8 @@ class Model {
 
     /**
      * 当实例使用完成后，自动归还连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.3 + 2020.07.11
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __destruct() {
 		$this->Db->return();
@@ -68,12 +60,9 @@ class Model {
     
     /**
      * 驱动函数注入
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.4 + 2020.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return object
     */
     public function __call($name, $arguments=[]) {
         if (!$this->Db) return false;

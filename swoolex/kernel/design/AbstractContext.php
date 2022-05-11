@@ -28,11 +28,8 @@ abstract class AbstractContext {
 
     /**
      * 获取当前进程下的顶级协程ID
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $id 协程父ID
      * @return int
     */

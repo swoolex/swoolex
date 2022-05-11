@@ -24,13 +24,9 @@ class Response extends AbstractContext
 
     /**
      * 设置实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole\Http\Response $response HTTP请求对象
-     * @return void
     */
     public static function set($response, $mixed=null) {
         $id = self::getCoroutineId();
@@ -39,11 +35,8 @@ class Response extends AbstractContext
 
     /**
      * 获取实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @return Swoole\Http\Response
     */
     public static function get($name=null) {
@@ -56,11 +49,8 @@ class Response extends AbstractContext
 
     /**
      * 删除实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
     */
     public static function delete($name=null) {
         $id = self::getCoroutineId();

@@ -51,11 +51,8 @@ abstract class Job
 
     /**
      * 初始化配置
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @return void
     */
     public function __construct() {
@@ -65,24 +62,17 @@ abstract class Job
 
     /**
      * 生产者必须自定义消费逻辑
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     abstract public function handle();
 
     /**
      * 执行消费逻辑
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole\Server
-     * @return void
+     * @return bool
     */
     final public function run() {
         $config = \x\Config::get('queue.'.$this->DriverName);
@@ -127,13 +117,10 @@ abstract class Job
 
     /**
      * 指定队列
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 队列标识符
-     * @return void
+     * @return this
     */
     final public function store($type) {
         $this->DriverName = $type;
@@ -143,13 +130,10 @@ abstract class Job
     
     /**
      * 设置消费超时时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $s 秒
-     * @return void
+     * @return this
     */
     final function outTime($s) {
         $this->timeout = $s;
@@ -158,12 +142,9 @@ abstract class Job
 
     /**
      * 获取消费超时时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     final function getOutTime() {
         return $this->timeout;
@@ -171,13 +152,10 @@ abstract class Job
     
     /**
      * 设置延迟投递时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $s 秒
-     * @return void
+     * @return this
     */
     final function delayTime($s) {
         $this->delay_time = $s;
@@ -186,12 +164,9 @@ abstract class Job
 
     /**
      * 获取延迟投递时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     final function getDelayTime() {
         return $this->delay_time;
@@ -199,13 +174,10 @@ abstract class Job
 
     /**
      * 设置等待投递时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $s 秒
-     * @return void
+     * @return this
     */
     final function waitTime($s) {
         $this->wait_time = $s;
@@ -215,12 +187,9 @@ abstract class Job
 
     /**
      * 获取等待投递时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     final function getWaitTime() {
         return $this->wait_time;
@@ -228,12 +197,9 @@ abstract class Job
 
     /**
      * 获取等待超时时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     final function getWaitEndTime() {
         return $this->wait_end_time;
@@ -241,13 +207,10 @@ abstract class Job
 
     /**
      * 设置消费失败后的重试次数+间隔时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param array [$s] 秒
-     * @return void
+     * @return this
     */
     final function retrySeconds($array_time) {
         $this->retry_seconds = $array_time;
@@ -256,13 +219,10 @@ abstract class Job
 
     /**
      * 获取消费失败后的重试次数+间隔时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param array [$s] 秒
-     * @return void
+     * @return array
     */
     final function getRetrySeconds() {
         return $this->retry_seconds;
@@ -270,13 +230,10 @@ abstract class Job
 
     /**
      * 设置投递数据
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $data
-     * @return void
+     * @return this
     */
     final public function data($data) {
         $this->param = $data;
@@ -285,13 +242,10 @@ abstract class Job
 
     /**
      * 获取投递数据
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $data
-     * @return void
+     * @return array
     */
     final public function param() {
         return $this->param;
@@ -299,12 +253,9 @@ abstract class Job
 
     /**
      * 获取任务ID
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     final public function uuid() {
         return $this->uuid;
@@ -312,12 +263,9 @@ abstract class Job
 
     /**
      * 获取下一次重试的间隔时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int|false
     */
     final public function retry_time() {
         $key = $this->retry_num; 
@@ -327,12 +275,9 @@ abstract class Job
     
     /**
      * 获取Server
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return Swoole/Server
     */
     final public function getServer() {
         return $this->server;
@@ -340,12 +285,9 @@ abstract class Job
     
     /**
      * 设置Server
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return this
     */
     final public function setServer($server) {
         $this->server = $server;
@@ -354,12 +296,8 @@ abstract class Job
 
     /**
      * 更新生产者配置信息
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function saveConfig() {
         $config = \x\Config::get('queue.'.$this->DriverName);

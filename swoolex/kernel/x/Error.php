@@ -36,12 +36,8 @@ class Error {
 
     /**
      * 注册错误异常监听
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function register() {
         # 致命错误捕捉
@@ -60,7 +56,6 @@ class Error {
      * @param string $errfile 错误文件
      * @param int $errline 错误行数
      * @param int $errcontext 错误上下文
-     * @return void
     */
     public function appError($errno, $errstr, $errfile, $errline, $errcontext=null) {
         $error = [];
@@ -134,7 +129,7 @@ class Error {
     /**
      * PHP错误输出
      * @param mixed $error 错误
-     * @return void
+     * @return bool
     */
     public function halt2($error) {
         $e = [];
@@ -175,7 +170,7 @@ class Error {
     /**
      * Swoole底层错误输出
      * @param throwable $throwable 错误
-     * @return void
+     * @return bool
     */
     public function halt($throwable) {
         $trace = $throwable->getTrace();
@@ -214,12 +209,8 @@ class Error {
 
     /**
      * 销毁上下文
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function context_delete() {
         // 销毁上下文

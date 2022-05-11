@@ -17,11 +17,8 @@ class controller_error
 {
     /**
      * 接受回调处理
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $e 错误内容
      * @param string $error 系统自定义错误描述
      * @param array $source 错误上下文内容
@@ -72,12 +69,8 @@ class controller_error
 
     /**
      * HTTP服务的错误界面
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function http($e, $error, $source) {
         // 开启调试模式则记录错误日志

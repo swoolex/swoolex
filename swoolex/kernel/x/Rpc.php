@@ -31,12 +31,8 @@ class Rpc {
 
     /**
      * 初始化配置文件
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function start() {
         $file = ROOT_PATH.'rpc'.DS.'map.php';
@@ -103,12 +99,8 @@ class Rpc {
 
     /**
      * 定时轮询，检测服务的延时
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private static function ping() {
         \Swoole\Timer::tick(20000, function ($timer_id) {
@@ -196,12 +188,8 @@ class Rpc {
 
     /**
      * 当检测失败时，回调的处理函数
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function ping_error($config, $status) {
         return \design\Lifecycle::rpc_error($config, $status);
@@ -209,12 +197,9 @@ class Rpc {
 
     /**
      * 读取配置
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     public static function get($class, $function) {
         $redis_key = \x\Config::get('rpc.redis_key');
@@ -246,12 +231,9 @@ class Rpc {
 
     /**
      * 更新单条配置
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public static function set($config) {
         $redis_key = \x\Config::get('rpc.redis_key');
@@ -267,12 +249,9 @@ class Rpc {
 
     /**
      * 限流器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.10 + 2021-11-13
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public static function limit($config, $fd) {
         if (!isset($config['ip']) || !isset($config['port'])) return true;

@@ -17,11 +17,8 @@ class Cookie
 {
     /**
      * 是否存在
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @return bool
     */
@@ -35,11 +32,8 @@ class Cookie
     
     /**
      * 读取
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @return mixed
     */
@@ -52,11 +46,8 @@ class Cookie
 
     /**
      * 写入
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @param int $val
      * @param time $time
@@ -75,11 +66,8 @@ class Cookie
 
     /**
      * 删除
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @return bool
     */
@@ -96,11 +84,8 @@ class Cookie
 
     /**
      * 清空
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
      * @return bool
     */
     public static function clear() {

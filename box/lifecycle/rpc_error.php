@@ -17,11 +17,8 @@ class rpc_error
 {
     /**
      * 接受回调处理
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $class 请求地址 
      * @param string $function 请求方法
      * @param array $config 错误的微服务配置 

@@ -52,17 +52,14 @@ class Basics
 
     /**
      * 当注解Param检测失败时，回调的处理函数
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.4 + 2020.07.12
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $callback 回调事件
      * @param string $tips 自定义提示内容
      * @param string $name 参数名称
      * @param string $status 错误事件状态码
      * @param string $attach 错误检测返回附加说明
-     * @return void
+     * @return bool
     */
     protected function param_error_callback($callback, $tips, $name, $status, $attach=null) {
         // 若为单元测试调试，则直接通过
@@ -80,13 +77,10 @@ class Basics
 
     /**
      * 当其余注解检测失败时，回调的处理函数
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $status 错误事件状态码
-     * @return void
+     * @return bool
     */
     protected function route_error($status) {
         // 若为单元测试调试，则直接通过

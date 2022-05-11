@@ -34,14 +34,11 @@ class SensitiveWord
 
     /**
      * 构建敏感词树【文件模式】
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $filepath 文件地址
      * @param string $char 分隔符，false表示按行分隔
-     * @return void
+     * @return false|this
     */
     public function set_tree_file($filepath = '', $char=false) {
         $this->init();
@@ -68,14 +65,11 @@ class SensitiveWord
 
     /**
      * 构建敏感词树【数组模式】
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $sensitiveWords 一维数组
      * @param string $field 字段名[当传递该参数时，为二维数组]
-     * @return void
+     * @return false|this
     */
     public function set_tree_array($sensitiveWords = null, $field=false) {
         $this->init();
@@ -100,13 +94,10 @@ class SensitiveWord
 
     /**
      * 构建敏感词树【单条记录】
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $word 敏感词
-     * @return void
+     * @return bool
     */
     public function set_tree_string($word) {
         $this->init();
@@ -116,14 +107,11 @@ class SensitiveWord
     
     /**
      * 检测文字中的敏感词
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 待检测内容
      * @param int $wordNum 需要获取的敏感词数量 [默认获取全部]
-     * @return void
+     * @return array
     */
     public function exec($content, $wordNum = 0) {
         $this->contentLength = mb_strlen($content, 'utf-8');
@@ -173,11 +161,8 @@ class SensitiveWord
 
     /**
      * 替换敏感字字符
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 文本内容
      * @param string $replaceChar 替换字符
      * @param bool $repeat true=>重复替换为敏感词相同长度的字符
@@ -207,11 +192,8 @@ class SensitiveWord
 
     /**
      * 标记敏感词
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 文本内容
      * @param string $sTag 标签开头，如<mark>
      * @param string $eTag 标签结束，如</mark>
@@ -238,11 +220,8 @@ class SensitiveWord
 
     /**
      * 被检测内容是否合法
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 文本内容
      * @return bool
     */
@@ -283,12 +262,9 @@ class SensitiveWord
 
     /**
      * 获取当前敏感词库长度
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     public function count() {
         return $this->wordLength;
@@ -296,12 +272,8 @@ class SensitiveWord
 
     /**
      * 清空词库
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function reset() {
         $this->wordTree = new HashMap();
@@ -309,13 +281,10 @@ class SensitiveWord
 
     /**
      * 将单个敏感词构建成树结构
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $word 敏感词
-     * @return void
+     * @return bool
     */
     protected function build_tree($word = '') {
         if ('' === $word) {
@@ -350,11 +319,8 @@ class SensitiveWord
 
     /**
      * 敏感词替换为对应长度的字符
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $word 目标内容
      * @param mixed $char 替换内容
      * @return string
@@ -371,12 +337,8 @@ class SensitiveWord
 
     /**
      * 初始化词库树实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function init() {
         if (!$this->wordTree) $this->wordTree = new HashMap();

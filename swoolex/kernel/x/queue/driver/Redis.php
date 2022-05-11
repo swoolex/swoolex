@@ -26,12 +26,8 @@ class Redis extends AbstractQueueDriver
 
     /**
      * 获得Redis实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __construct($config) {
         parent::__construct($config);
@@ -40,13 +36,10 @@ class Redis extends AbstractQueueDriver
 
     /**
      * 投递任务
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param Job $Job
-     * @return void
+     * @return bool
     */
     public function push($Job) {
         // 投递时间
@@ -83,12 +76,9 @@ class Redis extends AbstractQueueDriver
 
     /**
      * 获取一个任务
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return null|object
     */
     public function pop() {
         // 先查看延时队列
@@ -129,13 +119,10 @@ class Redis extends AbstractQueueDriver
 
     /**
      * 确认一个任务
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param Job $Job
-     * @return void
+     * @return bool
     */
     public function confirm($Job) {
         $uuid = $Job->uuid();
@@ -162,13 +149,10 @@ class Redis extends AbstractQueueDriver
 
     /**
      * 把该任务投递到重试队列
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param Job $Job
-     * @return void
+     * @return bool
     */
     public function JobRetry($Job) {
         $uuid = $Job->uuid();
@@ -191,13 +175,10 @@ class Redis extends AbstractQueueDriver
 
     /**
      * 把该任务投递到失败队列
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param Job $Job
-     * @return void
+     * @return bool
     */
     public function JobError($Job) {
         $uuid = $Job->uuid();
@@ -208,13 +189,10 @@ class Redis extends AbstractQueueDriver
     
     /**
      * 把该任务投递到消费超时队列
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param Job $Job
-     * @return void
+     * @return bool
     */
     public function JobOuttime($Job) {
         $uuid = $Job->uuid();
@@ -225,13 +203,10 @@ class Redis extends AbstractQueueDriver
 
     /**
      * 消费成功后删除队列
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param Job $Job
-     * @return void
+     * @return bool
     */
     public function JobSuccess($Job) {
         $uuid = $Job->uuid();
@@ -244,11 +219,8 @@ class Redis extends AbstractQueueDriver
     //------------------------------ 透析队列支持 -------------------------------
     /**
      * 获得某个Job的详情
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $uuid 生产者ID
      * @return Job
     */
@@ -261,11 +233,8 @@ class Redis extends AbstractQueueDriver
 
     /**
      * 查看队列数量
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 队列名称
      * @return int
     */
@@ -284,11 +253,8 @@ class Redis extends AbstractQueueDriver
     }
      /**
      * 队列记录分页查询
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-09
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 队列名称
      * @param int $page 当前页数
      * @param int $limit 记录数
@@ -342,11 +308,8 @@ class Redis extends AbstractQueueDriver
     }
     /**
      * 删除某条队列
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-09
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 队列名称
      * @param string $uuid 生产者ID
      * @return bool
@@ -368,13 +331,10 @@ class Redis extends AbstractQueueDriver
     }
     /**
      * 清除整个队列
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-09
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 队列名称
-     * @return 无
+     * @return bool
     */
     public function clear($type) {
         $type = strtolower($type);
@@ -409,11 +369,8 @@ class Redis extends AbstractQueueDriver
 
     /**
      * 把某条队列加入待处理队列中
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-09
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 队列名称
      * @param string $uuid 生产者ID
      * @return bool
@@ -443,13 +400,10 @@ class Redis extends AbstractQueueDriver
     }
     /**
      * 把整个队列加入待处理队列中
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-09
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 队列名称
-     * @return 无
+     * @return bool
     */
     public function moves($type) {
         $type = strtolower($type);
@@ -483,11 +437,8 @@ class Redis extends AbstractQueueDriver
     
     /**
      * 初始化队列
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-09
-     * @deprecated 暂不启用
-     * @global 无
      * @return bool
     */
     public function initialize() {

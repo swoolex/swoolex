@@ -22,16 +22,12 @@ class onReceive {
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.3 + 2020.07.06
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $fd 连接的文件描述符
      * @param int $reactorId 连接所在的 Reactor 线程 ID
      * @param string $data 收到的数据内容，可能是文本或者二进制内容
-     * @return void
     */
     public function run($server, $fd, $reactorId, $data=null) {
         try {
@@ -56,12 +52,8 @@ class onReceive {
 
     /**
      * 微服务TCP服务
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function rpc($server, $fd, $reactorId, $data) {
         // 请求注入容器

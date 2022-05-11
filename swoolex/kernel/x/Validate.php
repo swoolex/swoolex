@@ -72,11 +72,8 @@ class Validate
 
     /**
      * 设置batch
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $bool
      * @return this
     */
@@ -86,11 +83,8 @@ class Validate
     }
     /**
      * 设置field
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $field
      * @return this
     */
@@ -100,11 +94,8 @@ class Validate
     }
     /**
      * 设置alias
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $alias
      * @return this
     */
@@ -114,11 +105,8 @@ class Validate
     }
     /**
      * 设置rule
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $rule
      * @return this
     */
@@ -128,11 +116,8 @@ class Validate
     }
     /**
      * 设置message
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $message
      * @return this
     */
@@ -142,11 +127,8 @@ class Validate
     }
     /**
      * 设置data
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $data
      * @return this
     */
@@ -156,11 +138,8 @@ class Validate
     }
     /**
      * 选择使用哪个场景
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $scene
      * @return this
     */
@@ -170,13 +149,10 @@ class Validate
     }
     /**
      * 移除字段
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str
-     * @return void
+     * @return this
     */
     public final function filter($str) {
         if (!$this->use_scene || empty($str)) return $this;
@@ -191,13 +167,10 @@ class Validate
     }
     /**
      * 添加字段
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str
-     * @return void
+     * @return this
     */
     public final function addfield($str) {
         if (!$this->use_scene || empty($str)) return $this;
@@ -207,23 +180,17 @@ class Validate
     }
     /**
      * 获得失败结果
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-14
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     public final function errors() {
         return $this->errors;
     }
     /**
      * 执行校验，并且是否不通过
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $data
      * @return bool true.失败 1.通过
     */
@@ -408,16 +375,12 @@ class Validate
 
     /**
      * 解析错误日志
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-15
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $rule_param 字段信息
      * @param string $field 字段名
      * @param string $rule_name 规则名称
      * @param string $message 系统内置的提示语
-     * @return void
     */
     private function parse_error($rule_param, $field, $rule_name, $message) {
         if (!empty($rule_param['message'][$rule_name])) $message = $rule_param['message'][$rule_name];
@@ -450,11 +413,8 @@ class Validate
 
     /**
      * 解析规则
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @param string $value
      * @return array

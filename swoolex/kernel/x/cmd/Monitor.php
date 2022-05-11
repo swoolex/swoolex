@@ -23,13 +23,10 @@ class Monitor {
 
     /**
      * 调用入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $argv
-     * @return void
+     * @return bool
     */
     public function run($argv) {
         $this->argv = $argv;
@@ -52,12 +49,9 @@ class Monitor {
 
     /**
      * 复制控制器到指定位置
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.22 + 2021.1.7
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     private function copy_controller() {
         $dir = APP_PATH.'http'.DS.'HttpMonitor.php';
@@ -68,12 +62,9 @@ class Monitor {
 
     /**
      * 复制视图到指定位置
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.22 + 2021.1.7
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     private function copy_view() {
         $dir = APP_PATH.'view'.DS.'HttpMonitor'.DS;

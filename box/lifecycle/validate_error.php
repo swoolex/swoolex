@@ -17,11 +17,8 @@ class validate_error
 {
     /**
      * 接受回调处理
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型 http/websocket/rpc/mqtt
      * @param bool $batch 是否全部过滤
      * @param array $errors 错误验证结果集

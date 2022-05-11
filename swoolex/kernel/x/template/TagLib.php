@@ -50,13 +50,9 @@ class TagLib {
 
     /**
      * 架构函数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param template $template 模板引擎对象
-     * @return void
     */
     public function __construct($template) {
         $this->tpl = $template;
@@ -64,14 +60,10 @@ class TagLib {
 
     /**
      * 按签标库替换页面中的标签
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $content 模板内容
      * @param string $lib 标签库名
-     * @return void
     */
     public function parseTag(&$content, $lib = '') {
         $tags = [];
@@ -179,11 +171,8 @@ class TagLib {
 
     /**
      * 按标签生成正则
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array|string $tags 标签名
      * @param boolean $close 是否为闭合标签
      * @return string
@@ -215,11 +204,8 @@ class TagLib {
 
     /**
      * 分析标签属性 正则方式
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str 标签属性字符串
      * @param string $name 标签名
      * @param string $alias 别名
@@ -286,11 +272,8 @@ class TagLib {
 
     /**
      * 解析条件表达式
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $condition 表达式标签内容
      * @return string
     */
@@ -307,11 +290,8 @@ class TagLib {
 
     /**
      * 自动识别构建变量
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $name 变量描述
      * @return string
     */

@@ -23,13 +23,9 @@ class Controller {
 
     /**
      * 调用入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $argv
-     * @return void
     */
     public function run($argv) {
         $this->argv = $argv;
@@ -86,14 +82,11 @@ class Controller {
 
     /**
      * 创建HTTP服务控制器
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $file 文件地址
      * @param string $route_url 命名空间地址
-     * @return void
+     * @return string
     */
     private function create_http($file, $route_url) {
         if ($route_url) {
@@ -149,11 +142,8 @@ class Index extends Http
     
     /**
      * 创建WebSocket服务控制器
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $file 文件地址
      * @param string $route_url 命名空间地址
      * @return void

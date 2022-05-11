@@ -18,11 +18,8 @@ class Ioc extends Basics
 {
     /**
      * 启动项
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.1 + 2020.07.18
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 路由参数
      * @return true
     */

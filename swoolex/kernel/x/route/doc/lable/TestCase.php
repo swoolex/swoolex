@@ -18,11 +18,8 @@ class TestCase extends Basics
 {
     /**
      * 启动项
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.17 + 2020.10.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 路由参数
      * @param string $request_uri 路由地址
      * @return true
@@ -86,15 +83,12 @@ class TestCase extends Basics
 
     /**
      * 单元测试调试-单条-HTTP
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 路由信息
      * @param array $data 请求体
      * @param array $headers 请求头
-     * @return void
+     * @return string
     */
     private function http_test_case($request_uri, $route, $data=[], $headers=[]) {
         $type = strtolower($route['method']);
@@ -134,13 +128,10 @@ class TestCase extends Basics
 
     /**
      * 回调的处理函数
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $tips 内容
-     * @return void
+     * @return bool
     */
     protected function testcase_callback($tips) {
         $obj = new \other\lifecycle\testcase_callback();

@@ -19,13 +19,9 @@ class MountEvent {
     //---------------------------- onStart 阶段 ------------------------------------
     /**
      * 更新服务PID-ENV缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
-     * @return void
     */
     public static function Start_PidENV($server) {
         $config = Config::get('server');
@@ -45,12 +41,8 @@ class MountEvent {
     //---------------------------- onManagerStart 阶段 -----------------------------
     /**
      * 更新服务进程别名
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function ManagerStart_NameReload() {
         $config = Config::get('server');
@@ -60,14 +52,10 @@ class MountEvent {
     //---------------------------- onWorkerStart 阶段 -----------------------------
     /**
      * 更新服务PID-ENV缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $workerId 进程ID
-     * @return void
     */
     public static function WorkerStart_PidENV($server, $workerId) {
         $config = Config::get('server');
@@ -94,14 +82,10 @@ class MountEvent {
     
     /**
      * 定时任务挂载
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $workerId 进程ID
-     * @return void
     */
     public static function WorkerStart_Crontab($server, $workerId) {
         // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
@@ -174,14 +158,10 @@ class MountEvent {
 
     /**
      * MQTT设备在线状态更新
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $workerId 进程ID
-     * @return void
     */
     public static function WorkerStart_MqttStatus($server, $workerId) {
         // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
@@ -207,12 +187,8 @@ class MountEvent {
 
     /**
      * HTTP-初始化路由表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function WorkerStart_RouteStart_Http() {
         \x\route\doc\Table::run()->start_http();
@@ -222,12 +198,8 @@ class MountEvent {
 
     /**
      * WebSocket-初始化路由表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function WorkerStart_RouteStart_WebSocket() {
         \x\route\doc\Table::run()->start_websocket();
@@ -237,12 +209,8 @@ class MountEvent {
 
     /**
      * Rpc-初始化路由表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.2 + 2021.08.24
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function WorkerStart_RouteStart_Rpc() {
         \x\route\doc\Table::run()->start_rpc();
@@ -252,12 +220,8 @@ class MountEvent {
 
     /**
      * Mqtt-初始化路由表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.2 + 2021.08.24
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function WorkerStart_RouteStart_Mqtt() {
         \x\route\doc\Table::run()->start_mqtt();
@@ -267,13 +231,10 @@ class MountEvent {
 
     /**
      * 初始化微服务
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $workerId 进程ID
-     * @return void
+     * @return false
     */
     public static function WorkerStart_RpcClient($workerId) {
         // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
@@ -287,12 +248,8 @@ class MountEvent {
 
     /**
      * 打开Mysql连接池
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function WorkerStart_MysqlStart() {
         if (Config::get('mysql.driver') == 'mysql') {
@@ -305,12 +262,8 @@ class MountEvent {
     
     /**
      * 打开Redis连接池
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function WorkerStart_RedisStart() {
         // 启动数据库连接池
@@ -321,12 +274,8 @@ class MountEvent {
 
     /**
      * 打开MongoDb连接池
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function WorkerStart_MongoDbStart() {
         // 启动数据库连接池
@@ -337,12 +286,8 @@ class MountEvent {
     
     /**
      * 打开RabbitMQ连接池
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
      */
     public static function WorkerStart_RabbitMqStart() {
         // 启动数据库连接池
@@ -350,14 +295,11 @@ class MountEvent {
         // 启动连接池检测定时器
         \x\rabbitmq\Pool::run()->timing_recovery();
     }
+
     /**
      * 打开Memcache连接池
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
      */
     public static function WorkerStart_MemcacheStart() {
         // 启动数据库连接池
@@ -365,15 +307,12 @@ class MountEvent {
         // 启动连接池检测定时器
         \x\memcached\Pool::run()->timing_recovery();
     }
+
     /**
      * Swoole/Table组件回调通知挂载
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $workerId 进程ID
-     * @return void
     */
     public static function WorkerStart_SwooleTableStart() {
         // 通知回调
@@ -382,15 +321,12 @@ class MountEvent {
     
     /**
      * 路由限流器重置定时任务
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $workerId 进程ID
      * @param string $service_type 服务类型
-     * @return void
+     * @return false
     */
     public static function WorkerStart_LimitRouteReset($server, $workerId, $service_type) {
         // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
@@ -409,14 +345,11 @@ class MountEvent {
 
     /**
      * IP限流器重置定时任务
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $workerId 进程ID
-     * @return void
+     * @return false
     */
     public static function WorkerStart_LimitIpReset($server, $workerId) {
         // 只有第一个worker进程才能挂载任务，否则会造成重发任务并行
@@ -435,13 +368,9 @@ class MountEvent {
 
     /**
      * 载入雪花分布式ID组件
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $workerId
-     * @return void
     */
     public static function WorkerStart_Snowflake($workerId) {
         \x\Snowflake::setWorkerId($workerId);
@@ -449,12 +378,8 @@ class MountEvent {
 
     /**
      * 自动热重载
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-22
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function Reload($server) {
         if (Config::get('reload.status')) {
@@ -465,12 +390,8 @@ class MountEvent {
 
     /**
      * 初始化敏感词库
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-22
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function SensitiveWords() {
         $list = Config::get('words.sensitive_file_list');

@@ -18,11 +18,8 @@ class ParamMqtt extends Basics {
 
     /**
      * 启动项
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.10 + 2020.07.30
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 路由参数
      * @return true
     */
@@ -140,11 +137,8 @@ class ParamMqtt extends Basics {
     /**
      * 判断参数是否真null
      * 如果是真的null会返回false
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.07.24
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $param
      * @return bool
     */

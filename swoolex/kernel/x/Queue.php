@@ -26,12 +26,8 @@ class Queue
 
     /**
      * 初始化配置
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __construct($DriverName = null) {
         if ($DriverName !== null) $this->DriverName = $DriverName;
@@ -39,13 +35,10 @@ class Queue
 
     /**
      * 指定队列
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $type 队列标识符
-     * @return void
+     * @return this
     */
     public function store($type) {
         $this->DriverName = $type;
@@ -54,12 +47,9 @@ class Queue
 
     /**
      * 驱动方法注入
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return object
     */
     public function __call($name, $arguments=[]) {
         $this->saveConfig();
@@ -68,12 +58,8 @@ class Queue
 
     /**
      * 更新驱动实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.9 + 2021-11-04
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function saveConfig() {
         $config = \x\Config::get('queue.'.$this->DriverName);

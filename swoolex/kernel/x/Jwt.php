@@ -40,12 +40,8 @@ class Jwt {
 
 	/**
 	 * 初始化参数
-	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.0.6 + 2021.4.27
-	 * @deprecated 暂不启用
-	 * @global 无
-	 * @return void
 	*/
 	public function __construct() {
 		$config = \x\Config::get('jwt');
@@ -57,11 +53,8 @@ class Jwt {
 
 	/**
 	 * 生成请求令牌
-	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.0.6 + 2021.4.27
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @return string
 	*/
     public function create_token($payload=[]) {
@@ -80,11 +73,8 @@ class Jwt {
 
 	/**
 	 * 验证token是否有效
-	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.0.6 + 2021.4.26
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $token
      * @return bool
 	*/
@@ -116,11 +106,8 @@ class Jwt {
 	
 	/**
 	 * JWT.io 中base64UrlEncode编码实现
-	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.0.6 + 2021.4.26
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $input 需要编码的字符串
 	 * @return string
 	*/
@@ -130,11 +117,8 @@ class Jwt {
 
 	/**
 	 * JWT.io 中base64UrlEncode解码实现
-	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.0.6 + 2021.4.26
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $input 需要解码的字符串
 	 * @return bool|string
 	 */
@@ -149,11 +133,8 @@ class Jwt {
 
 	/**
 	 * jwt.io 中HMACSHA256签名实现
-	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.0.6 + 2021.4.26
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $input 为base64UrlEncode(header).".".base64UrlEncode(payload)
      * @param string $key
      * @param string $alg   算法方式

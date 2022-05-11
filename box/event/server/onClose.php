@@ -22,15 +22,11 @@ class onClose
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.26
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole\Server $server
      * @param int $fd 连接的文件描述符
      * @param int $reactorId 来自那个 reactor 线程，主动 close 关闭时为负数
-     * @return void
     */
     public function run($server, $fd, $reactorId) {
         $this->server = $server;

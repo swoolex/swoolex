@@ -21,15 +21,11 @@ class onConnect {
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $fd 连接的文件描述符
      * @param int $reactorId 连接所在的 Reactor 线程 ID
-     * @return void
     */
     public function run($server, $fd, $reactorId) {
         $this->server = $server;

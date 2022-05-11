@@ -20,8 +20,6 @@ class ShortUrl
      * @todo 依赖Redis连接池
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $url 网址
      * @param int $outtime 过期时间[默认31天]
      * @param int $redis_key Redis自增器名称
@@ -53,8 +51,6 @@ class ShortUrl
      * @todo 依赖Redis连接池
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $code 短链接标识符
      * @return string|false 需要跳转的链接地址
     */

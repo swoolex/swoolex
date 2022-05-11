@@ -55,11 +55,8 @@ class DocParser {
 
     /**
      * 切割注解
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $doc 注解
      * @return array
     */
@@ -86,13 +83,9 @@ class DocParser {
 
     /**
      * 注解按行解析
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $lines 注解
-     * @return void
     */
     private function parseLines($lines) {
         foreach ($lines as $line) {
@@ -102,11 +95,8 @@ class DocParser {
 
     /**
      * 注解解析行
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.4 + 2020.07.12
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $line 每行的注解
      * @return array
     */
@@ -188,11 +178,8 @@ class DocParser {
 
     /**
      * 特殊处理传递的参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.12
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $val 参数
      * @return array
     */
@@ -220,11 +207,8 @@ class DocParser {
 
     /**
      * 验证是否允许解析的注解
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.26
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $keys
      * @return bool
     */

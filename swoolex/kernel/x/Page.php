@@ -50,17 +50,13 @@ abstract class Page {
 
     /**
      * 构造函数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $items 数据集
      * @param int $listRows 每页数
      * @param int $currentPage 当前页
      * @param int $total 数据总长度
      * @param array $options 分页配置
-     * @return void
     */
     public function __construct($items, $listRows, $currentPage = null, $total = null, $options = []) {
         $this->options = array_merge($this->options, $options);
@@ -75,13 +71,10 @@ abstract class Page {
 
     /**
      * 计算出当前页
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $currentPage 当前页
-     * @return void
+     * @return int
     */
     protected function setCurrentPage($currentPage) {
         if ($currentPage > $this->lastPage) {
@@ -93,11 +86,8 @@ abstract class Page {
 
     /**
      * 生成URL
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $page 分页数
      * @return string
     */
@@ -122,11 +112,8 @@ abstract class Page {
 
     /**
      * 构造锚点字符串
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @return string|null
     */
     protected function buildFragment() {
@@ -135,14 +122,11 @@ abstract class Page {
 
     /**
      * 创建一组分页链接
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $start 开始
      * @param int $end 结束
-     * @return void
+     * @return string
     */
     public function getUrlRange($start, $end) {
         $urls = [];
@@ -156,12 +140,9 @@ abstract class Page {
 
     /**
      * 数据是否足够分页
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function hasPages() {
         return !(1 == $this->currentPage && !$this->hasMore);
@@ -169,48 +150,36 @@ abstract class Page {
 
     /**
      * 获取总记录数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     public function total() {
         return $this->total;
     }
     /**
      * 获取每页长度
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     public function listRows() {
         return $this->listRows;
     }
     /**
      * 获取当前页数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     public function currentPage() {
         return $this->currentPage;
     }
     /**
      * 获取最后一页数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     public function lastPage() {
         return $this->lastPage;
@@ -218,12 +187,9 @@ abstract class Page {
 
     /**
      * 获取分页结果集
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     public function list() {
         return $this->items;
@@ -233,12 +199,8 @@ abstract class Page {
 
     /**
      * 渲染分页html
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     abstract public function render();
 }

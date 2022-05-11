@@ -34,8 +34,6 @@ class Click {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $name 表单name值
 	 * @param bool $status 校验失败后，是否清空session
 	 * @param string $key 存储标识
@@ -51,8 +49,6 @@ class Click {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $key 存储标识
 	 * @return bool
 	*/
@@ -73,8 +69,6 @@ class Click {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $name 表单name值
 	 * @param bool $status 校验失败后，是否清空session
 	 * @param string $key 存储标识
@@ -108,8 +102,6 @@ class Click {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param array $img_list 图库列表
 	 * @param string $key 存储标识
 	 * @return array
@@ -195,8 +187,6 @@ class Click {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
      * @param array  $list 需要排序的数组
 	 * @return array
 	*/
@@ -216,12 +206,10 @@ class Click {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $session_key 存储标识
 	 * @param bool $status 校验失败后，是否清空session
 	 * @param int $code 状态码
-	 * @return void
+	 * @return array
 	*/ 
 	private static function _return($session_key, $status, $code) {
 		Session::set($session_key, $code);

@@ -52,24 +52,16 @@ abstract class AbstractCrontab {
 
     /**
      * 必须实现的定时器入口方法
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     abstract public function run();
 
     /**
      * 设置定时器规则
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $rule
-     * @return void
     */
     public final function setRule($rule) {
         $this->rule = $rule;
@@ -77,13 +69,9 @@ abstract class AbstractCrontab {
     
     /**
      * 设置Swoole服务实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole\Server $server
-     * @return void
     */
     public final function setServer($server) {
         $this->server = $server;
@@ -91,13 +79,9 @@ abstract class AbstractCrontab {
 
     /**
      * 设置定时器任务ID
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $timer_id
-     * @return void
     */
     public final function setTimerId($timer_id) {
         $this->timer_id = $timer_id;
@@ -105,11 +89,8 @@ abstract class AbstractCrontab {
 
     /**
      * 获取定时器规则
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @return mixed
     */
     protected final function get_rule() {
@@ -118,11 +99,8 @@ abstract class AbstractCrontab {
 
     /**
      * 获取Swoole服务实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @return Swoole\Server
     */
     protected final function get_server() {
@@ -131,11 +109,8 @@ abstract class AbstractCrontab {
 
     /**
      * 获取定时器任务ID
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @return int
     */
     protected final function get_timer_id() {
@@ -144,12 +119,8 @@ abstract class AbstractCrontab {
 
     /**
      * 获取当前系统时间，分割
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function get_data_list() {
         $time = time();
@@ -169,11 +140,8 @@ abstract class AbstractCrontab {
 
     /**
      * 删除开头0
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @return int
     */
     private function delete_zero($str) {
@@ -182,11 +150,8 @@ abstract class AbstractCrontab {
 
     /**
      * 任务规则切割
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $rule 
      * @return int|array
     */
@@ -213,11 +178,8 @@ abstract class AbstractCrontab {
 
     /**
      * 验证规则是否能够执行
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $v 规则分解
      * @return bool
     */

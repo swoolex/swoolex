@@ -45,12 +45,8 @@ class Http {
 
     /**
      * 利用析构函数，自动回收归还连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __destruct() {
         $list = get_object_vars($this);
@@ -66,15 +62,12 @@ class Http {
 
     /**
      * 输出内容到页面
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $string 输出内容
      * @param int $status 响应状态码
      * @param string|array 响应头
-     * @return void
+     * @return int
     */
     public final function fetch($string, $status=200, $headers=[]) {
         // 清空模板变量，防止大意的开发者
@@ -99,11 +92,8 @@ class Http {
 
     /**
      * 模板变量赋值
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param  mixed $name  要显示的模板变量
      * @param  mixed $value 变量的值
      * @return $this
@@ -116,11 +106,8 @@ class Http {
 
     /**
      * 加载模板输出
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param  string $template 模板文件名
      * @param  array  $vars     模板输出变量
      * @param  array  $config   模板参数
@@ -138,11 +125,8 @@ class Http {
 
     /**
      * 渲染内容输出
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param  string $content 模板内容
      * @param  array  $vars    模板输出变量
      * @param  array  $config  模板参数
@@ -170,11 +154,8 @@ class Http {
 
     /**
      * 视图过滤
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param  Callable $filter 过滤方法或闭包
      * @return $this
     */
@@ -187,13 +168,10 @@ class Http {
 
     /**
      * 模板布局开关
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.6 + 2020.07.22
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $mixed
-     * @return void
+     * @return this
     */
     public final function layout($mixed) {
         $this->is_view();
@@ -203,15 +181,11 @@ class Http {
 
     /**
      * 重定向
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $url 重定向地址
      * @param int $status 响应状态码
      * @param array $data 跳转时需要带上的get参数
-     * @return void
     */
     public final function redirect($url, $status=302, $data=[]) {
         $url = $this->get_url($url, $data);
@@ -221,13 +195,10 @@ class Http {
 
     /**
      * 文件上传1-注入表单
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $name 表单名称，或者FILE
-     * @return void
+     * @return this
     */
     public final function file($name=null) {
         $this->file = $name;
@@ -236,13 +207,10 @@ class Http {
 
     /**
      * 文件上传2-注入配置
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $config
-     * @return void
+     * @return this
     */
     public final function validate($config=[]) {
         $this->file_config = $config;
@@ -251,14 +219,11 @@ class Http {
 
     /**
      * 文件上传3-保存
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $path 保存路径
      * @param string $name 自定义保存名称
-     * @return void
+     * @return this
     */
     public final function move($path=null, $name=null) {
         $config = \x\Config::get('app.file');
@@ -351,12 +316,9 @@ class Http {
 
     /**
      * 文件上传4-获取错误日志
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     public final function getError() {
         return $this->file_error;
@@ -364,12 +326,9 @@ class Http {
 
     /**
      * 文件上传4-获取上传的文件名称
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     public final function getFileName() {
         return $this->file_name;
@@ -377,12 +336,9 @@ class Http {
 
     /**
      * 文件上传4-获取上传的文件完整路径
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     public final function getSaveName() {
         return $this->file_path;
@@ -390,11 +346,8 @@ class Http {
 
     /**
      * 图形验证码
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
 	 * @param int $num 验证码使用模式 默认为英数混合 1英数混合 2数字运算
 	 * @param string $session 验证码的seesion名
 	 * @param array $type 验证码属性
@@ -407,14 +360,11 @@ class Http {
 
     /**
      * 图形验证码校验
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
 	 * @param string $code 用户验证码
 	 * @param string $session 验证码保存的seesion名
-	 * @param boool
+	 * @param bool
 	*/
 	public final function verify_check($code, $session=null) {
         return \x\verify\Figure::check($code, $session);
@@ -422,11 +372,8 @@ class Http {
 
     /**
      * 构造出跳转地址
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $url
      * @param array $data
      * @return string

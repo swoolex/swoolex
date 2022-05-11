@@ -17,11 +17,8 @@ class Str
 {
     /**
      * 字符串包含
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-07
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $cover 被检查的字符串
      * @param string $condition 包含的字符串
      * @param bool $lower 是否只小写
@@ -38,11 +35,8 @@ class Str
 
     /**
      * 检查字符串是否以某个字符串开头
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-07
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $cover 被检查的字符串
      * @param string $condition 包含的字符串
      * @param bool $lower 是否只小写
@@ -59,11 +53,8 @@ class Str
 
     /**
      * 检查字符串是否以某个字符串结尾
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-07
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $cover 被检查的字符串
      * @param string $condition 包含的字符串
      * @param bool $lower 是否只小写
@@ -81,11 +72,8 @@ class Str
 
     /**
      * 替换字符串第一次出现的位置
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-07
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str 条件字符串
      * @param string $condition 目标字符串
      * @param string $cover 替换的字符串
@@ -97,14 +85,11 @@ class Str
 
     /**
      * 获取自定长度的随机字符串
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-07
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $length 长度
      * @param int $type 模式 1.纯数字 2.数+小英 3.数+大英 4.混合
-     * @return void
+     * @return bool|string|int
     */
     public static function random($length=16, $type=4) {
         switch ($type) {
@@ -125,11 +110,8 @@ class Str
 
     /**
      * 获取好看的验证码
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-07
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $length 长度
      * @return int
     */
@@ -163,11 +145,8 @@ class Str
 
     /**
      * 字符串指定位置用*号隐藏
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $txt 需要处理的字符串
      * @param int $start 开始位置
      * @param int $end 结束位置
@@ -193,11 +172,8 @@ class Str
     
     /**
      * 随机生成中文名称
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $num 随机个数，1个则返回字符串，否则返回数组
      * @return array|string
     */
@@ -248,11 +224,8 @@ class Str
 
     /**
      * 随机生成手机号
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $num 随机个数，1个则返回字符串，否则返回数组
      * @return array|string
     */
@@ -277,11 +250,8 @@ class Str
 
     /**
      * 随机生成邮箱
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $num 随机个数，1个则返回字符串，否则返回数组
      * @param bool $qq 是否只生成qq的邮箱
      * @return array|string

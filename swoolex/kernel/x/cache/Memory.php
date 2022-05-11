@@ -23,13 +23,9 @@ class Memory extends AbstractCacheDriver
 
     /**
      * 初始化配置
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $config
-     * @return void
     */
     public function __construct($config) {
         $this->config = $config;
@@ -37,15 +33,12 @@ class Memory extends AbstractCacheDriver
 
     /**
      * 设置缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param mixed $val 值
      * @param int $prefix 有效期(S)
-     * @return void
+     * @return bool
     */
     public function set($key, $val, $prefix=null) {
         $key = $this->config['prefix'].$key;
@@ -56,11 +49,8 @@ class Memory extends AbstractCacheDriver
 
     /**
      * 缓存是否有效存在
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @return bool
     */
@@ -71,11 +61,8 @@ class Memory extends AbstractCacheDriver
 
     /**
      * 获取缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param mixed $default 不存在时默认返回值
      * @return mixed
@@ -92,11 +79,8 @@ class Memory extends AbstractCacheDriver
 
     /**
      * 数字类型自增
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param int $num 自增值
      * @return mixed
@@ -108,11 +92,8 @@ class Memory extends AbstractCacheDriver
 
     /**
      * 数字类型自减
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param int $num 自减值
      * @return mixed
@@ -124,11 +105,8 @@ class Memory extends AbstractCacheDriver
 
     /**
      * 删除缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @return bool
     */
@@ -139,11 +117,8 @@ class Memory extends AbstractCacheDriver
 
     /**
      * 删除缓存并获取
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @return mixed
     */

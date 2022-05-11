@@ -21,14 +21,11 @@ class HashMap
 
     /**
      * 添加一个键值对
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @param mixed $value
-     * @return void
+     * @return mixed
     */
     public function put($key, $value)
     {
@@ -43,13 +40,10 @@ class HashMap
 
     /**
      * 根据key获取对应的value
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
-     * @return void
+     * @return mixed
     */
     public function get($key)
     {
@@ -61,13 +55,10 @@ class HashMap
 
     /**
      * 删除指定key的键值对
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
-     * @return void
+     * @return mixed
     */
     public function remove($key)
     {
@@ -89,11 +80,8 @@ class HashMap
 
     /**
      * 获取HashMap的所有键值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @return array
     */
     public function keys()
@@ -103,11 +91,8 @@ class HashMap
 
     /**
      * 获取HashMap的所有value值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @return array
     */
     public function values()
@@ -117,13 +102,9 @@ class HashMap
 
     /**
      * 将一个HashMap的值全部put到当前HashMap中
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param HashMap $map
-     * @return void
     */
     public function putAll($map)
     {
@@ -137,11 +118,8 @@ class HashMap
 
     /**
      * 移除HashMap中所有元素
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @return true
     */
     public function removeAll()
@@ -152,11 +130,8 @@ class HashMap
 
     /**
      * 判断HashMap中是否包含指定的值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $value
      * @return bool
     */
@@ -173,13 +148,10 @@ class HashMap
 
     /**
      * 判断HashMap中是否包含指定的键key
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
-     * @return void
+     * @return bool
     */
     public function containsKey($key)
     {
@@ -191,12 +163,8 @@ class HashMap
 
    /**
     * 获取HashMap中元素个数
-    * @todo 无
     * @author 小黄牛
     * @version v2.5.12 + 2021-11-23
-    * @deprecated 暂不启用
-    * @global 无
-    * @return void
    */
     public function size()
     {
@@ -205,11 +173,8 @@ class HashMap
 
     /**
      * 判断HashMap是否为空
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-23
-     * @deprecated 暂不启用
-     * @global 无
      * @return bool
     */
     public function isEmpty()

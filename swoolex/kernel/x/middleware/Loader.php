@@ -25,11 +25,8 @@ class Loader
 
     /**
      * 初始化中间件配置
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.11 + 2021-11-18
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 路由
      * @return array
     */
@@ -44,13 +41,10 @@ class Loader
     }
     /**
      * 获取中间件
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.11 + 2021-11-18
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $route 路由
-     * @return void
+     * @return array
     */
     public function hook($route) {
         $list = [];
@@ -78,16 +72,12 @@ class Loader
     }
     /**
      * 前置中间件加载
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.11 + 2021-11-18
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $middleware_list 中间件列表
      * @param string $server 服务实例
      * @param mixed $fd 客户端标识符
      * @param string $service_type 服务类型
-     * @return void
     */
     public function handle($middleware_list, $server, $fd, $service_type) {
         foreach ($middleware_list as $class) {
@@ -103,16 +93,12 @@ class Loader
     }
     /**
      * 后置中间件加载
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.11 + 2021-11-18
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $middleware_list 中间件列表
      * @param string $server 服务实例
      * @param mixed $fd 客户端标识符
      * @param string $service_type 服务类型
-     * @return void
     */
     public function end($middleware_list, $server, $fd, $service_type) {
         foreach ($middleware_list as $class) {
@@ -128,11 +114,8 @@ class Loader
     }
     /**
      * 路由分解
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.11 + 2021-11-18
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 路由
      * @return array
     */
@@ -162,14 +145,11 @@ class Loader
     }
     /**
      * 删除头尾路由分隔符
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str 路由
      * @param string $rule 规则
-     * @return void
+     * @return string
     */
     private function lrtrim($str) {
         if ($str == '/') return $str;

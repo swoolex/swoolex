@@ -23,14 +23,10 @@ class Container extends AbstractContext {
 
     /**
      * 设置实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $name key名称
      * @param mixed $mixed 内容
-     * @return void
     */
     public static function set($name, $mixed=null) {
         $id = self::getCoroutineId();
@@ -39,11 +35,8 @@ class Container extends AbstractContext {
 
     /**
      * 获取实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $name key名称
      * @return mixed
     */
@@ -57,11 +50,8 @@ class Container extends AbstractContext {
 
     /**
      * 判断实例是否存在
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $name key名称
      * @return mixed
     */
@@ -75,12 +65,9 @@ class Container extends AbstractContext {
 
     /**
      * 删除实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
      * @param string $name key名称
-     * @global 无
     */
     public static function delete($name=null) {
         $id = self::getCoroutineId();

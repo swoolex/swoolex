@@ -31,14 +31,10 @@ class Server {
     
     /**
      * 应用启动入口
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.7 + 2020.04.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server 启动的服务类型
      * @param string $option 是否守护进程启动 -d
-     * @return void
     */
     public function start($server, $option) {
         if ($option == '-d') {
@@ -89,12 +85,8 @@ class Server {
 
     /**
      * 挂载核心业务
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-10-21
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function mount_event() {
         // 挂载DAO连接池
@@ -119,12 +111,8 @@ class Server {
 
     /**
      * 加载自定义进程
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function custom_process() {
         $list = \x\Config::get('process');
@@ -139,12 +127,8 @@ class Server {
 
     /**
      * 初始化Swoole/Table内存表
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.03
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function create_table() {
         $list = \x\Config::get('swoole_table');
@@ -161,12 +145,8 @@ class Server {
 
     /**
      * MQTT服务创建内存表
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.03
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function create_mqtt_table() {
         // 创建设备表
@@ -192,12 +172,8 @@ class Server {
 
     /**
      * 事件绑定
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     protected function event_binding() {
         # 监听进程启动事件
@@ -253,14 +229,11 @@ class Server {
 
     /**
      * 构造回调事件的new对象
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $event 事件对象名称
      * @param array $argc 其余参数
-     * @return void
+     * @return object
     */
     private function ioc($event, ...$argc) {
         $class = '\event\\'.$this->server_type.'\\'.$event;
@@ -278,11 +251,8 @@ class Server {
     // --------------------------- 工具 --------------------------
     /**
      * 初始化配置
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $config 配置项
      * @return array
     */

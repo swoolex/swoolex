@@ -82,8 +82,6 @@ class Zip
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022-02-17
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $save_path 压缩包保存到的路径
 	 * @param string $zip_pack 需要打包的目录或文件 
 	 * @return bool
@@ -150,8 +148,6 @@ class Zip
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022-02-17
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $src_file zip压缩文件的路径	
 	 * @param string $dest_dir 解压文件的目的路径	
 	 * @param bool $overwrite 是否重写已经存在的文件
@@ -209,8 +205,6 @@ class Zip
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022-02-17
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @return bool
 	*/
 	private function SetFile() {
@@ -239,10 +233,7 @@ class Zip
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022-02-17
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $path 文件路径
-	 * @return void
 	*/
 	private function create_dirs($path) {	  
 		if (!is_dir($path)) {		  
@@ -264,8 +255,6 @@ class Zip
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022-02-17
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $name 文件路径
 	 * @return bool
 	*/
@@ -349,8 +338,6 @@ class Zip
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022-02-17
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param int $unixtime 时间戳
 	 * @return int
 	*/
@@ -372,9 +359,6 @@ class Zip
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022-02-17
-	 * @deprecated 暂不启用
-	 * @global 无
-	 * @return void
 	*/
 	private function createfile() {
         # 压缩包结束信息,包括文件总数,目录信息读取指针位置等信息
@@ -388,10 +372,8 @@ class Zip
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022-02-17
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $dir_name 目录名称
-	 * @return void 无返回值，直接将字符串信息保存到$this->dir_list成员中，使用|符分割
+	 * @return 无返回值，直接将字符串信息保存到$this->dir_list成员中，使用|符分割
 	*/
 	private function ListFile($dir_name) {
 		$dir_handle = opendir($dir_name);
@@ -415,8 +397,6 @@ class Zip
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022-02-17
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @return bool
 	*/
 	private function download_send() {

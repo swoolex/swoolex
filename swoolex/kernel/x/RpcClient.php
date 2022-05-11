@@ -81,12 +81,8 @@ class RpcClient {
     
     /**
      * 标记开始时间
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __construct() {
         $this->start_time = time();
@@ -96,12 +92,8 @@ class RpcClient {
 
     /**
      * 判断单个请求延迟
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __destruct() {
         if (!empty($this->config['max_ms'])) {
@@ -129,14 +121,11 @@ class RpcClient {
 
     /**
      * 设置参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @param mixed $val
-     * @return void
+     * @return this
     */
     public function set($key, $val) {
         $this->$key = $val;
@@ -145,13 +134,10 @@ class RpcClient {
 
     /**
      * 设置路由地址
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $class 请求路由
-     * @return void
+     * @return this
     */
     public function route($class) {
         $this->class = $class;
@@ -160,13 +146,10 @@ class RpcClient {
 
     /**
      * 设置请求方法
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $function 请求方法
-     * @return void
+     * @return this
     */
     public function func($function) {
         $this->function = $function;
@@ -175,12 +158,9 @@ class RpcClient {
 
     /**
      * 设置为异步任务
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return this
     */
     public function task() {
         $this->task = true;
@@ -189,13 +169,10 @@ class RpcClient {
     
     /**
      * 设置请求头
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $header 请求头
-     * @return void
+     * @return this
     */
     public function header($header) {
         $this->headers = $header;
@@ -204,13 +181,10 @@ class RpcClient {
 
     /**
      * 设置请求参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $param 参数
-     * @return void
+     * @return this
     */
     public function param($param) {
         $this->param = $param;
@@ -219,13 +193,10 @@ class RpcClient {
 
     /**
      * 设置最大请求次数
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $num 次数
-     * @return void
+     * @return this
     */
     public function max($num) {
         $this->num = $num;
@@ -234,14 +205,11 @@ class RpcClient {
 
     /**
      * 设置异步任务的回调通知地址
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $url
      * @param string $type
-     * @return void
+     * @return this
     */
     public function callback($url, $type='post') {
         $this->callback = $url;
@@ -251,11 +219,8 @@ class RpcClient {
 
     /**
      * 请求微服务
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @return mixed
     */
     public function send() {

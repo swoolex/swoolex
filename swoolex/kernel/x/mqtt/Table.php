@@ -37,13 +37,9 @@ class Table {
 
     /**
      * 植入SW实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param Server $server
-     * @return void
     */
     public function __construct($server=null) {
         $this->Server = $server;
@@ -52,11 +48,8 @@ class Table {
     /**
      * 设备号更新
      * Connect阶段调用
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $data 数据包
      * @param int $fd
      * @param int $level 协议版本
@@ -80,11 +73,8 @@ class Table {
 
     /**
      * 设备断开连接
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $fd
      * @return bool
     */
@@ -102,11 +92,8 @@ class Table {
 
     /**
      * 设备心态更新
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $fd
      * @return bool
     */
@@ -121,11 +108,8 @@ class Table {
     
     /**
      * 获取全部设备
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @return bool
     */
     public function deviceList() {
@@ -138,11 +122,8 @@ class Table {
 
     /**
      * 获取某个设备的当前FD标识
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $client_id
      * @return int
     */
@@ -154,11 +135,8 @@ class Table {
     
     /**
      * 获取某个设备的协议版本
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $fd
      * @return int
     */
@@ -173,11 +151,8 @@ class Table {
 
     /**
      * 消息订阅时更新
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $data 主题
      * @param int $fd
      * @return bool
@@ -209,11 +184,8 @@ class Table {
 
     /**
      * 取消订阅时删除
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $topic 主题
      * @param int $fd
      * @return bool
@@ -248,13 +220,10 @@ class Table {
 
     /**
      * 获取某个主题下的订阅信息
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $topic
-     * @return void
+     * @return array
     */
     public function getUser($topic) {
         if ($topic != '/') $topic = ltrim($topic, '/');

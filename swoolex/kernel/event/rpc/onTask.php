@@ -21,15 +21,11 @@ class onTask {
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param Task $task
      * @param mixed $data 是任务的数据内容
-     * @return void
     */
     public function run($server, $task) {
         try {
@@ -48,12 +44,8 @@ class onTask {
 
     /**
      * 微服务TCP服务
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function rpc($server, $task) {
         # 开始转发路由

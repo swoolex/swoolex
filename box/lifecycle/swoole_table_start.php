@@ -17,11 +17,8 @@ class swoole_table_start
 {
     /**
      * 接受回调处理
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @param array $field 字段列表
      * @param bool $status 状态 true.创建成功 false.创建失败

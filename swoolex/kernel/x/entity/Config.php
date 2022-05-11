@@ -25,12 +25,8 @@ class Config
 
     /**
      * 初始化配置项
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function start() {
         $start_time = explode(' ',microtime());
@@ -48,14 +44,11 @@ class Config
 
     /**
      * 递归获取多级配置
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $config 配置
      * @param mixed $array 读取层级
-     * @return void
+     * @return bool
     */
     private static function loop_get($config, $array) {
         foreach ($array as $k=>$v) {
@@ -73,11 +66,8 @@ class Config
 
     /**
      * 递归设置多级配置
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $array 设置层级
      * @param mixed $val 设置内容
      * @return array|false
@@ -93,11 +83,8 @@ class Config
     }
     /**
      * 获取参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 读取配置，递归使用.区分，空的时候读取全部
      * @return mixed
     */
@@ -115,11 +102,8 @@ class Config
 
     /**
      * 设置参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 配置位置，递归使用.区分
      * @param mixed $val 配置参数
      * @return bool
@@ -134,11 +118,8 @@ class Config
 
     /**
      * 判断参数是否存在
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 读取配置，递归使用.区分，空的时候读取全部
      * @return bool
     */

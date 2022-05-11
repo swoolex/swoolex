@@ -49,11 +49,8 @@ class App extends AbstractConsole {
 
     /**
      * 实例化对象方法，供外部获得唯一的对象
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @return App
     */
     public static function run(){
@@ -65,12 +62,8 @@ class App extends AbstractConsole {
 
     /**
      * 启动服务
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function start() {
         // 初始化配置项
@@ -85,12 +78,8 @@ class App extends AbstractConsole {
     //----------------------------------- 命令转发 -----------------------------------
     /**
      * 命令转发
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function switchCommand() {
         switch ($this->_server_start['action']) {
@@ -111,12 +100,8 @@ class App extends AbstractConsole {
 
     /**
      * 指令 - 启动服务
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function cmdStart() {
         if (empty($this->_server_start['server'])) {
@@ -167,12 +152,8 @@ class App extends AbstractConsole {
     }
     /**
      * 指令 - 热重启
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function cmdReload() {
         // 读取主进程ID 
@@ -185,12 +166,8 @@ class App extends AbstractConsole {
     }
     /**
      * 指令 - 查看服务状态
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function cmdStatus() {
         // 打印服务器字幕
@@ -239,12 +216,8 @@ class App extends AbstractConsole {
     }
     /**
      * 指令 - 停止服务
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function cmdStop() {
         if (!file_exists($this->config['pid_file'])) {
@@ -258,12 +231,8 @@ class App extends AbstractConsole {
     }
     /**
      * 指令 - 单元测试服务
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function cmdTest() {
         $route_url = strtolower($this->_server_start['option']);
@@ -295,12 +264,8 @@ class App extends AbstractConsole {
     }
     /**
      * 指令 - 扩展导入
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function cmdExtend() {
         // 转发到外部扩展
@@ -320,12 +285,8 @@ class App extends AbstractConsole {
     //----------------------------------- 工具箱 -----------------------------------
     /**
      * 初始化配置项
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function setConfig() {
         $this->config = \x\Config::get('server');
@@ -338,12 +299,8 @@ class App extends AbstractConsole {
 
     /**
      * 指令切割
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function setCommand() {
         global $argc, $argv;
@@ -366,13 +323,9 @@ class App extends AbstractConsole {
 
     /**
      * 单元测试调试-单条-HTTP
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 路由信息
-     * @return void
     */
     private function http_test_case($url, $route) {
         $type = strtolower($route['method']);
@@ -405,13 +358,9 @@ class App extends AbstractConsole {
 
     /**
      * 初始化env环境文件
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $status 是否删除服务进程ID缓存
-     * @return void
     */
     private function reloadEnv($status=true) {
         // 设置master进程别名

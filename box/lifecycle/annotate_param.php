@@ -17,11 +17,8 @@ class annotate_param
 {
     /**
      * 接受回调处理
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.4 + 2020.07.12
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server 服务实例
      * @param string $fd 客户端标识
      * @param string $tips 自定义提示内容

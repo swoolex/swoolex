@@ -17,11 +17,8 @@ class Time
 {
     /**
      * 日期转换成时间戳
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $date 时间格式
      * @return int 时间戳
     */
@@ -51,11 +48,8 @@ class Time
     }
     /**
      * 时间戳转换成日期
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $time 时间戳格式
      * @param string $rule 返回的日期格式
      * @return date 日期
@@ -92,11 +86,8 @@ class Time
     
     /**
      * 获取某月有多少数
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|int $date 时间戳或者日期
      * @return int
     */
@@ -120,11 +111,8 @@ class Time
 
     /**
      * 是否闰年
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|int $date 时间戳或者日期
      * @return bool
     */
@@ -141,11 +129,8 @@ class Time
 
     /**
      * 获取某一天开始的时间戳
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|int $date 时间戳或者日期
      * @return int
     */
@@ -157,11 +142,8 @@ class Time
 
     /**
      * 返回某一天结束的时间戳
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|int $date 时间戳或者日期
      * @return int
     */
@@ -171,11 +153,8 @@ class Time
 
     /**
      * 分解时间日期
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|int $date 时间戳或者日期
      * @return array
     */
@@ -200,11 +179,8 @@ class Time
 
     /**
      * 日期格式美化
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|int $date 时间戳或者日期
      * @param string $rule 返回的日期格式
      * @return string
@@ -233,11 +209,8 @@ class Time
 
     /**
      * 获取当前格林威治时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @return string
     */
     public static function gwDate($type=2) {
@@ -256,11 +229,8 @@ class Time
 
     /**
      * 用于获得一个指定格式的日期
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $date 时间或日期
      * @param string $rule 返回的日期格式
      * @return string

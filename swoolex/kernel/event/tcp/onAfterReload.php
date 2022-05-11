@@ -21,13 +21,9 @@ class onAfterReload {
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
-     * @return void
     */
     public function run($server) {
         $this->server = $server;

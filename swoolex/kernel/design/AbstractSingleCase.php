@@ -22,11 +22,8 @@ trait AbstractSingleCase
 
     /**
      * 实例化对象方法，供外部获得唯一的对象
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021.09.06
-     * @deprecated 暂不启用
-     * @global 无
      * @return static
     */
     public static function run(...$params){

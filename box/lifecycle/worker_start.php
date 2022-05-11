@@ -17,11 +17,8 @@ class worker_start
 {
     /**
      * 接受回调处理
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.4 + 2020.07.12
-     * @deprecated 暂不启用
-     * @global 无
      * @return bool
     */
     public function run() {

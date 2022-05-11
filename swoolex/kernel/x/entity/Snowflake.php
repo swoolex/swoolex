@@ -47,13 +47,9 @@ class Snowflake
 
     /**
      * 设置工作进程ID
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $worker_id
-     * @return void
     */
     public function setWorkerId($worker_id) {
         $this->workerId = $worker_id;
@@ -65,11 +61,8 @@ class Snowflake
 
     /**
      * 生成唯一ID
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-01
-     * @deprecated 暂不启用
-     * @global 无
      * @return string
     */
     public function create() {
@@ -95,11 +88,8 @@ class Snowflake
 
     /**
      * 解析ID值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $ID
      * @return array
     */
@@ -116,11 +106,8 @@ class Snowflake
 
     /**
      * 获取当前时间戳
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-01
-     * @deprecated 暂不启用
-     * @global 无
      * @return int
     */
     private function getTime() {
@@ -129,11 +116,8 @@ class Snowflake
 
     /**
      * 阻塞等待下一个时间戳
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $lastTimestamp
      * @return int
     */

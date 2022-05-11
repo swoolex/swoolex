@@ -79,11 +79,8 @@ class Event
     
     /**
      * 绑定
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $name
      * @param mixed $function
      * @param string $message 
@@ -106,11 +103,8 @@ class Event
 
     /**
      * 触发
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $name
      * @param mixed $param
      * @return void

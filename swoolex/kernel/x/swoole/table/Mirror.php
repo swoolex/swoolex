@@ -21,11 +21,8 @@ class Mirror {
 
     /**
      * 创建一个表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @param int $size 表最大行数
      * @param array $field 初始化字段信息
@@ -46,11 +43,8 @@ class Mirror {
 
     /**
      * 表是否存在
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @return bool
     */
@@ -60,11 +54,8 @@ class Mirror {
 
     /**
      * 更新插入
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @param string $key 主键key
      * @param array $array 内容
@@ -79,11 +70,8 @@ class Mirror {
 
     /**
      * 判断某个key是否存在
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @param string $key 主键key
      * @return bool
@@ -96,11 +84,8 @@ class Mirror {
 
     /**
      * 自增
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @param string $key 主键key
      * @return bool
@@ -114,11 +99,8 @@ class Mirror {
 
     /**
      * 自减
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @param string $key 主键key
      * @return bool
@@ -132,11 +114,8 @@ class Mirror {
 
     /**
      * 读取一行数据
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @param string $key 主键key
      * @return bool|array
@@ -149,11 +128,8 @@ class Mirror {
 
     /**
      * 删除一行数据
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @param string $key 主键key
      * @return bool|array
@@ -167,11 +143,8 @@ class Mirror {
 
     /**
      * 获取表的当前数据量
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @return int
     */
@@ -183,11 +156,8 @@ class Mirror {
 
     /**
      * 获取表的全部记录
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
      * @return Swoole/Table
     */

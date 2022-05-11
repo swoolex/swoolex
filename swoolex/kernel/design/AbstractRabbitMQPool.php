@@ -54,12 +54,8 @@ abstract class AbstractRabbitMQPool {
 
     /**
      * 初始化参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function __construct() {
         // 读取配置类
@@ -68,12 +64,9 @@ abstract class AbstractRabbitMQPool {
 
     /**
      * 单例入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return this
     */
     public static function run() {
         # 只有第一次调用，才允许创建对象实例

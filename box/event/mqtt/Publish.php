@@ -28,12 +28,8 @@ class Publish extends Event {
     
     /**
      * 事件处理入口
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */ 
     public function run() {
         // 这里可以使用controller，挂载控制器

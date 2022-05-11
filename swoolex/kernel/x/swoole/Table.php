@@ -17,12 +17,9 @@ class Table
 {
     /**
      * 单例注入
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.294
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return object
     */
     public static function __callStatic($name, $arguments=[]) {
         if (empty($name)) return false;

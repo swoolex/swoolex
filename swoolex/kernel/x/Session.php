@@ -29,11 +29,8 @@ class Session {
 
     /**
      * 是否存在
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @return bool
     */
@@ -53,11 +50,8 @@ class Session {
 
     /**
      * 读取
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @return mixed
     */
@@ -78,11 +72,8 @@ class Session {
 
     /**
      * 写入
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @param int $val
      * @param time $time
@@ -109,11 +100,8 @@ class Session {
 
     /**
      * 删除
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key
      * @return bool
     */
@@ -133,12 +121,9 @@ class Session {
 
     /**
      * 清空
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public static function clear() {
         self::config();
@@ -151,13 +136,9 @@ class Session {
     }
 
     /**
-     * 读取配置
-     * @todo 无
+     * 初始化配置
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private static function config() {
         $Request = \x\context\Request::get();

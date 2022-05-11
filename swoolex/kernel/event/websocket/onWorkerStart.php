@@ -21,14 +21,10 @@ class onWorkerStart {
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.4 + 2020.07.12
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $workerId 进程ID
-     * @return void
     */
     public function run($server, $workerId) {
         $this->server = $server;
@@ -45,13 +41,9 @@ class onWorkerStart {
 
     /**
      * 任务挂载
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.4 + 2020.07.12
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $workerId 进程ID
-     * @return void
     */
     private function mount($workerId) {
         // 初始化HTTP路由

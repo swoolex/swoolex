@@ -54,13 +54,9 @@ class Sql{
 
     /**
      * 注入Db
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param Db $Db
-     * @return void
     */
     public function __construct($Db) {
         $this->Db = $Db;
@@ -68,12 +64,8 @@ class Sql{
 
     /**
      * 销毁Db
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __destruct() {
         $this->Db = null;
@@ -81,13 +73,10 @@ class Sql{
 
     /**
      * 选择库
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table
-     * @return void
+     * @return this
     */
     public function table($library) {
         $this->clean_up();
@@ -97,13 +86,10 @@ class Sql{
 
     /**
      * 选择表
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
-     * @return void
+     * @return this
     */
     public function name($table) {
         $this->table = $table;
@@ -112,15 +98,12 @@ class Sql{
 
     /**
      * 查询条件
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 可以为批量表达式，也可以是字段
      * @param string $operator 表达式
      * @param string $value 条件
-     * @return void
+     * @return this
     */
     public function where($field, $operator=null, $value=false) {
         if (!$field) return $this;
@@ -146,13 +129,10 @@ class Sql{
 
     /**
      * In查询条件
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $in
-     * @return void
+     * @return this
     */
     public function whereIn($key, $in) {
         if (!is_array($in)) {
@@ -164,13 +144,10 @@ class Sql{
     }
     /**
      * NotIn查询条件
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $in
-     * @return void
+     * @return this
     */
     public function whereNotIn($key, $in) {
         if (!is_array($in)) {
@@ -183,15 +160,12 @@ class Sql{
 
     /**
      * 时间条件
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 时间字段，必须为int类型
      * @param string $where 表达式
      * @param string $data 内容
-     * @return void
+     * @return this
     */
     public function whereTime($field, $where, $data=null) {
         $where = str_replace(' ', '', strtolower($where));
@@ -238,14 +212,11 @@ class Sql{
 
     /**
      * 限制数量
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $skip 跳过多少条
      * @param string $limit 返回多少条
-     * @return void
+     * @return this
     */
     public function limit($skip, $limit=null) {
         if (is_null($limit)) {
@@ -259,14 +230,11 @@ class Sql{
 
     /**
      * 分页
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $page 页数
      * @param string $limit 返回多少条
-     * @return void
+     * @return this
     */
     public function page($page, $limit=10) {
         $skip = 0;
@@ -280,13 +248,10 @@ class Sql{
 
     /**
      * 排序
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string 排序
-     * @return void
+     * @return this
     */
     public function order($string) {
         $string = trim(preg_replace("/\s(?=\s)/","\\1", $string));
@@ -304,13 +269,10 @@ class Sql{
     
     /**
      * 限制返回的字段
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $string
-     * @return void
+     * @return this
     */
     public function field($string) {
         $string = trim(preg_replace("/\s(?=\s)/","\\1", $string));
@@ -323,13 +285,10 @@ class Sql{
 
     /**
      * 限制不返回的字段
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $string
-     * @return void
+     * @return this
     */
     public function fieldOn($string) {
         $string = trim(preg_replace("/\s(?=\s)/","\\1", $string));
@@ -342,13 +301,10 @@ class Sql{
 
     /**
      * 分组条件
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-31
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $string
-     * @return void
+     * @return this
     */
     public function group($string) {
         $array = explode(',', $string);
@@ -360,13 +316,10 @@ class Sql{
 
     /**
      * 单条新增
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $data
-     * @return void
+     * @return bool
     */
     public function insert($data) {
         $this->WriteBulk->insert($data);
@@ -375,13 +328,10 @@ class Sql{
     
     /**
      * 批量新增
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $array
-     * @return void
+     * @return bool
     */
     public function insertAll($array) {
         foreach ($array as $data) {
@@ -392,13 +342,10 @@ class Sql{
     
     /**
      * 更新
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $data
-     * @return void
+     * @return bool
     */
     public function update($data, $config=[]) {
         if (!$this->where) return false;
@@ -411,13 +358,10 @@ class Sql{
     
     /**
      * 自增
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $fields
-     * @return void
+     * @return bool
     */
     public function setInc($fields, $num=1, $config=[]) {
         if (!$this->where) return false;
@@ -439,13 +383,10 @@ class Sql{
 
     /**
      * 自减少
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $fields
-     * @return void
+     * @return bool
     */
     public function setDec($fields, $num=1, $config=[]) {
         if (!$this->where) return false;
@@ -467,12 +408,9 @@ class Sql{
 
     /**
      * 删除
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function delete($config=[]) {
         if (!$this->where) return false;
@@ -486,12 +424,9 @@ class Sql{
 
     /**
      * 查询多条
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool|array
     */
     public function select() {
         $where = $this->select_sql();
@@ -507,13 +442,10 @@ class Sql{
 
     /**
      * 查询单条
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $_id 可以指定KEY-ID
-     * @return void
+     * @return false|array
     */
     public function find($_id=null) {
         if ($_id != null) {
@@ -533,13 +465,10 @@ class Sql{
 
     /**
      * 执行通用命令
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $commands
-     * @return void
+     * @return bool|array
     */
     public function command($commands) {
         try {
@@ -556,13 +485,10 @@ class Sql{
 
     /**
      * 执行更多聚合命令
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $commands
-     * @return void
+     * @return bool|array
     */
     public function aggregate($commands) {
         $commands = [
@@ -578,11 +504,8 @@ class Sql{
 
     /**
      * 获取集合中指定字段的不重复值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-31
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 字段
      * @return array
     */
@@ -600,12 +523,9 @@ class Sql{
 
     /**
      * 聚合查询，全部条数
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool|int
     */
     public function count() {
         if (!$this->where) return false;
@@ -622,12 +542,9 @@ class Sql{
 
     /**
      * 聚合查询，汇总
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool|int|float
     */
     public function sum($field) {
         $commands = $this->pipeline_sql($field, 'sum');
@@ -637,12 +554,9 @@ class Sql{
 
     /**
      * 聚合查询，平均
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool|int|float
     */
     public function avg($field) {
         $commands = $this->pipeline_sql($field, 'avg');
@@ -652,12 +566,9 @@ class Sql{
 
     /**
      * 聚合查询，最小
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool|int|float
     */
     public function min($field) {
         $commands = $this->pipeline_sql($field, 'min');
@@ -667,12 +578,9 @@ class Sql{
 
     /**
      * 聚合查询，最大
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool|int|float
     */
     public function max($field) {
         $commands = $this->pipeline_sql($field, 'max');
@@ -682,12 +590,9 @@ class Sql{
 
     /**
      * 删除整个库
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function dropDatabase() {
         $commands = [
@@ -701,12 +606,9 @@ class Sql{
 
     /**
      * 删除整个表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function dropTable() {
         $commands = [
@@ -720,14 +622,11 @@ class Sql{
 
     /**
      * 添加索引
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $key 字段名称
      * @param string $name 索引类型
-     * @return void
+     * @return bool
     */
     public function createIndex($key, $name = 'index') {
         $cmd = [
@@ -755,12 +654,9 @@ class Sql{
 
     /**
      * 删除全部索引
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function removeIndex() {
         $commands = [
@@ -774,13 +670,10 @@ class Sql{
 
     /**
      * 删除某个索引
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $key 字段名称
-     * @return void
+     * @return bool
     */
     public function dropIndex($key) {
         $cmd = [
@@ -806,12 +699,9 @@ class Sql{
 
     /**
      * 查看全部索引
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     public function listIndexe() {
         $commands = [
@@ -836,12 +726,9 @@ class Sql{
 
     /**
      * 获取普通查询条件集
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     private function select_sql() {
         $where = $this->where;
@@ -860,12 +747,9 @@ class Sql{
 
     /**
      * 获取聚合查询条件集
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     private function pipeline_sql($field, $type) {
         $commands = [];
@@ -894,12 +778,9 @@ class Sql{
 
     /**
      * 聚合查询结果集返回处理
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     private function pipeline_return($response, $field) {
         if (count($response) > 1) {
@@ -931,12 +812,8 @@ class Sql{
 
     /**
      * 由于是单例，用完就得清除某些共用成员
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.17 + 2020.10.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function clean_up() {
         $this->WriteBulk = new \MongoDB\Driver\BulkWrite();
@@ -952,13 +829,10 @@ class Sql{
 
     /**
      * 运算符转换
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $operator
-     * @return void
+     * @return false|string
     */
     private function logical_operator($operator) {
         if ($operator == '=') return '$eq';
@@ -974,12 +848,8 @@ class Sql{
 
     /**
      * 执行更新操作
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function write() {
         try {
@@ -1001,12 +871,8 @@ class Sql{
     
     /**
      * 执行查询操作
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function query($QueryBulk) {
         $res = $this->Db->Mongo->executeQuery($this->library.'.'.$this->table, $QueryBulk);

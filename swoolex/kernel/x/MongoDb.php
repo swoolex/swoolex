@@ -29,12 +29,8 @@ class MongoDb {
     
     /**
      * 初始化实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __construct() {
         $this->Mongo = \x\mongodb\Pool::run()->pop();
@@ -42,12 +38,8 @@ class MongoDb {
 
     /**
      * 利用析构函数，防止有漏掉没归还的连接，让其自动回收，减少不规范的开发者
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __destruct() {
         if ($this->return_status === false) {
@@ -56,12 +48,9 @@ class MongoDb {
     }
     /**
      * 归还连接池
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function return() {
         if ($this->return_status === false) {
@@ -73,12 +62,9 @@ class MongoDb {
 
     /**
      * SQL构造器注入
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-08-30
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return object
     */
     public function __call($name, $arguments=[]) {
         return call_user_func_array([new \x\mongodb\Sql($this), $name], $arguments);

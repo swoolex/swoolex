@@ -25,14 +25,11 @@ class Process
 
     /**
      * 向子进程传递数据
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $process_key 子进程队列名称
      * @param mixed $mixed 消息内容
-     * @return void
+     * @return bool
     */
     public static function write($process_key, $mixed) {
         if (isset(self::$_list[$process_key])) {
@@ -43,14 +40,10 @@ class Process
 
     /**
      * 注册子进程实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $process_key 子进程队列名称
      * @param Process $process 子进程实例
-     * @return void
     */
     public static function register($process_key, $process) {
         self::$_list[$process_key] = $process;

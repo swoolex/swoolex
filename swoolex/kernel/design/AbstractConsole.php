@@ -16,12 +16,8 @@ class AbstractConsole {
 
     /**
      * 打印出框架头部说明
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     protected static function head_description() {
         echo PHP_EOL;
@@ -36,12 +32,8 @@ class AbstractConsole {
 
     /**
      * 打印启动项的使用说明
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     protected function start_action() {
         self::head_description();
@@ -73,14 +65,10 @@ class AbstractConsole {
 
     /**
      * 启动脚本错误，输出命令行内容
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $error
      * @param string $status 是否输出头
-     * @return void
     */
     public static function exit_error($error, $status=true) {
         self::head_description();
@@ -91,12 +79,8 @@ class AbstractConsole {
 
     /**
      * 打印出服务状态详细信息
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     protected function start_yes() {
         $scheduler = new \Swoole\Coroutine\Scheduler;
@@ -224,12 +208,9 @@ class AbstractConsole {
     
     /**
      * 获取当前内存占用大小
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.1 + 2020.07.17
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return mixed
     */
     private function memory(){ 
         // 查出进程ID
@@ -275,12 +256,9 @@ class AbstractConsole {
 
     /**
      * 读取Mysql连接数日志
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.1 + 2020.07.17
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     private function create_mysql_pool_log() {
         // MYSQL连接数
@@ -299,12 +277,9 @@ class AbstractConsole {
     
     /**
      * 读取Redis连接数日志
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.1 + 2020.07.17
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     private function create_redis_pool_log() {
         //Redis连接数
@@ -323,12 +298,9 @@ class AbstractConsole {
     
     /**
      * 读取MongoDb连接数日志
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     private function create_mongodb_pool_log() {
         //Redis连接数
@@ -347,12 +319,9 @@ class AbstractConsole {
 
     /**
      * 读取RabbitMQ连接数日志
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     private function create_rabbitmq_pool_log() {
         //Redis连接数

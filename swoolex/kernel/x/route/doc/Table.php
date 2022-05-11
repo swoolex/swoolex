@@ -32,11 +32,8 @@ class Table {
 
     /**
      * 实例化对象方法，供外部获得唯一的对象
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @return Table
     */
     public static function run(){
@@ -49,12 +46,8 @@ class Table {
 
     /**
      * HTTP-初始化路由表
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.6 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function start_http() {
         $cutting = \x\Config::get('route.cutting');
@@ -69,12 +62,8 @@ class Table {
 
     /**
      * WebSocket-初始化路由表
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.6 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function start_websocket() {
         $cutting = \x\Config::get('route.cutting');
@@ -86,12 +75,8 @@ class Table {
 
     /**
      * RPC-初始化路由表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.2 + 2021-08-24
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function start_rpc() {
         $cutting = \x\Config::get('route.cutting');
@@ -106,12 +91,8 @@ class Table {
 
     /**
      * MQTT-初始化路由表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.2 + 2021-08-24
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function start_mqtt() {
         $cutting = \x\Config::get('route.cutting');
@@ -126,12 +107,8 @@ class Table {
 
     /**
      * 更新缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function start_cache() {
         // 新增生命周期回调事件
@@ -146,11 +123,8 @@ class Table {
 
     /**
      * 查询路由
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.2 + 2020.06.12
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $url
      * @param string $route_type 路由类型
      * @return array|false
@@ -167,11 +141,8 @@ class Table {
 
     /**
      * 获取整张路由表
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
      * @return array
     */
     public function route() {
@@ -180,16 +151,13 @@ class Table {
 
     /**
      * 注解的路由注入路由表
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.2 + 2020.06.12
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $doc 注解
      * @param string $namespace 命名空间
      * @param string $cutting 路由分隔符
      * @param string $route_type 路由类型
-     * @return void
+     * @return bool
     */
     private function add_doc_route($doc, $namespace, $cutting, $route_type) {
         if ($doc == false) return false;
@@ -284,13 +252,10 @@ class Table {
 
     /**
      * 遍历目录下的所有文件
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.26
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $dir 地址
-     * @return void
+     * @return array
     */
     private function every_file($dir, $list=[]) {
         $handle = opendir($dir);
@@ -310,15 +275,11 @@ class Table {
 
     /**
      * 遍历指定目录下的注解
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.2 + 2020.06.12
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $list 目录结构
      * @param array $$cutting 路由配置
      * @param string $route_type 路由类型
-     * @return void
     */
     private function add_list($list, $cutting, $route_type) {
         foreach ($list as $path) {

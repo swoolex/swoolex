@@ -18,11 +18,8 @@ class Excel
     // ---------------------- 读取 ----------------------
     /**
      * 读取Excel文件内容
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $file 文件地址
      * @return array
     */
@@ -85,17 +82,14 @@ class Excel
     // ---------------------- 导出 ----------------------
     /**
      * 二维数组导出文件内容
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $title
      * @param array $list
      * @param string $type csv|xls  二选一
      * @param string|false $save 是否保存到本地  false.不保存  字符串时为文件保存路径
      * @param bool $dow 是否抛出浏览器下载(HTTP服务时有效)
-     * @return void
+     * @return bool
     */
     public static function export($title, $list, $type='csv', $save=false, $dow=false) {
         // 标题为空时，用字段名

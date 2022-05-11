@@ -16,15 +16,11 @@ namespace x;
 class Middleware {
     /**
      * 植入参数
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.11 + 2021-11-19
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server 服务实例
      * @param mixed $fd 客户端标识符
      * @param string $service_type 服务类型
-     * @return void
     */
     public final function __construct($server, $fd, $service_type) {
         $this->server = $server;
@@ -34,13 +30,10 @@ class Middleware {
 
     /**
      * 抛出内容给请求
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.11 + 2021-11-19
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $mixed
-     * @return void
+     * @return bool
     */
     public final function error($mixed) {
         switch ($this->service_type) {

@@ -25,13 +25,9 @@ class Response
 
     /**
      * 设置实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole\Http\Response $response HTTP请求对象
-     * @return void
     */
     public function set($response) {
         $this->response = $response;
@@ -39,11 +35,8 @@ class Response
 
     /**
      * 获取实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @return Swoole\Http\Response
     */
     public function get() {

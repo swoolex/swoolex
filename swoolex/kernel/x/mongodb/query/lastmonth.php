@@ -16,15 +16,12 @@ namespace x\mongodb\query;
 class lastmonth {
     /**
      * 构造时间查询
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.12 + 2020.04.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 时间字段，必须为int类型
      * @param string $where 表达式
      * @param string $data 内容
-     * @return string
+     * @return array
     */
     public static function run($field, $where, $data) {
         $time = strtotime("-1 month");

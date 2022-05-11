@@ -22,14 +22,10 @@ class onOpen
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.26
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole\WebSocket\Server $server
      * @param Swoole\Http\Request $request HTTP请求对象
-     * @return void
     */
     public function run($server, $request) {
         $this->server = $server;

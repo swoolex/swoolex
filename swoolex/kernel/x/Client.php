@@ -17,12 +17,9 @@ class Client
 {
     /**
      * 调用HTTP请求，可用于代替CURL
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return x\client\Http
     */
     public function http() {
         return new \x\client\Http();

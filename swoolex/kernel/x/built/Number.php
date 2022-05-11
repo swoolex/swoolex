@@ -20,8 +20,6 @@ class Number
      * @todo 依赖Redis连接池
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $length 尾号长度
      * @param int $type 方式 1.按年 2.按月 3.按天 4.按小时
      * @param int $prefix Redis的前缀
@@ -81,11 +79,8 @@ class Number
 
     /**
      * 生成随机验证码[有可能重复]
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $length 长度
      * @param int $type 方式 1.按年 2.按月 3.按天 4.按小时
      * @return string 
@@ -106,11 +101,8 @@ class Number
 
     /**
      * 生成任意N位数
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-08
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $length 长度
      * @return string 
     */

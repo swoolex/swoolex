@@ -21,12 +21,8 @@ class Rpc extends AbstractRoute {
 
     /**
      * 初始化参数
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.2 + 2021-08-24
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __construct($server, $fd, $obj, $function, $data) {
         $this->server = $server;
@@ -39,11 +35,8 @@ class Rpc extends AbstractRoute {
 
     /**
      * 启动项
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.1 + 2020.07.18
-     * @deprecated 暂不启用
-     * @global 无
      * @return App
     */
     public function start(){
@@ -70,14 +63,10 @@ class Rpc extends AbstractRoute {
 
     /**
      * 容器注入
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.6 + 2021.04.26
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 被找到的路由
      * @param string $request_uri 路由地址
-     * @return void
     */
     protected function ico_injection($route, $request_uri) {
         // 实例化控制器
@@ -147,13 +136,9 @@ class Rpc extends AbstractRoute {
 
     /**
      * 记录主动错误日志
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.2 + 2021-08-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $return
-     * @return void
     */
     private function prc_error($return) {
         // 重新读取实例
@@ -174,14 +159,10 @@ class Rpc extends AbstractRoute {
 
     /**
      * 记录主动错误日志到Redis
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $data 请求节点信息
      * @param mixed $return 返回值
-     * @return void
     */
     private function create_rpc_error_log($data, $return) {
         $max = \x\Config::get('rpc.rpc_error_max');

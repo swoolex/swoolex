@@ -17,12 +17,8 @@ class WebSocket {
 
     /**
      * 利用析构函数，自动回收归还连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __destruct() {
         $list = get_object_vars($this);
@@ -58,12 +54,9 @@ class WebSocket {
 
     /**
      * 获取参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.1.13
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     public final function param() {
         $data = $this->get_data();
@@ -72,12 +65,9 @@ class WebSocket {
 
     /**
      * 获取参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.1.13
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     public final function get_data() {
         $websocket_frame = \x\context\Container::get('websocket_frame');
@@ -93,12 +83,9 @@ class WebSocket {
 
     /**
      * 更新参数
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.1.13
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public final function set_data($data) {
         $config = \x\Config::get('server');
@@ -115,11 +102,8 @@ class WebSocket {
 
     /**
      * 获取当前客户端fd标识
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @return int
     */
     public final function get_current_fd() {
@@ -129,18 +113,15 @@ class WebSocket {
 
     /**
      * 发送数据包
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.13 + 2020.05.04
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $ws 实例
      * @param string $action 回调事件
      * @param string $msg 说明
      * @param mixed $data 结果集
      * @param string $fd 推送标记
      * @param string $websocket_server websocket的连接实例，用于在定时器、sw事件中传入
-     * @return void
+     * @return bool
     */
     public final function fetch($action, $msg='success', $data=[], $fd=null, $websocket_server=null) {
         if (!$websocket_server) $websocket_server = \x\context\Container::get('websocket_server');

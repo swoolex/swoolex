@@ -71,11 +71,8 @@ class Mqtt {
 
     /**
      * 获取某个主题下的全部设备信息
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $topic
      * @return array
     */
@@ -85,11 +82,8 @@ class Mqtt {
 
     /**
      * 指定设备号，读取某个设备的当前信息
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $client_id
      * @return array
     */
@@ -115,11 +109,8 @@ class Mqtt {
 
     /**
      * 读取当前连接的详情
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @return array
     */
     public final function info() {
@@ -131,11 +122,8 @@ class Mqtt {
 
     /**
      * 给某个连接发送消息
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $fd
      * @param array $data
      * @return bool

@@ -47,12 +47,9 @@ class Http
 
     /**
      *  发送请求 - get
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     public function get() {
         // 设置请求参数
@@ -73,12 +70,9 @@ class Http
     }
     /**
      * 发送请求 - post
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     public function post() {
         // 发送请求
@@ -95,14 +89,11 @@ class Http
     }
     /**
      * 发送请求 - 下载文件
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $filename 文件保存路径
      * @param mixed $offset 文件存在是否直接覆盖
-     * @return void
+     * @return mixed
     */
     public function download($filename, $offset=0) {
          // 发送请求
@@ -119,11 +110,8 @@ class Http
     }
     /**
      * 注入请求地址
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $url API地址
      * @return this
     */
@@ -166,11 +154,8 @@ class Http
     }
     /**
      * 注入请求内容
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $data 请求内容
      * @return this
     */
@@ -180,62 +165,44 @@ class Http
     }
     /**
      * 获取errCode
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     public function errCode(){ return $this->errCode;}
     /**
      * 获取statusCode
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return int
     */
     public function statusCode(){ return $this->statusCode;}
     /**
      * 获取headers
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     public function headers(){ return $this->headers;}
     /**
      * 获取cookies
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     public function cookies(){ return $this->cookies;}
     /**
      * 获取响应头
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     public function getHeaders(){ return $this->client->getHeaders();}
     /**
      * 反射类实现调用Client本身的其他支持方法
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.11 + 2020.08.06
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return this
     */
     public function __call($name, $arguments=[]) {
         if (!$this->client) return false;

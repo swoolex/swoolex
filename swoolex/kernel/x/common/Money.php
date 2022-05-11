@@ -34,15 +34,12 @@ class Money
 
     /**
      * 随机红包金额分割
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $money 总金额
      * @param string $num 红包个数
      * @param string $minMoney 最小金额
-     * @return void
+     * @return array
     */
     public static function redPacket($money, $num = 1, $minMoney=0.01) {
         self::$RedObj = self::$RedObj ? self::$RedObj : new RedPacket();
@@ -51,11 +48,8 @@ class Money
 
     /**
      * 金额转中文[简体]
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $money 金额
      * @return string
     */
@@ -66,11 +60,8 @@ class Money
 
     /**
      * 金额转中文[繁体]
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $money 金额
      * @return string
     */
@@ -81,11 +72,8 @@ class Money
 
     /**
      * 中文转金额[兼容]
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str 中文金额
      * @return float
     */
@@ -111,11 +99,8 @@ class Money
 
     /**
      * 金额千分符格式化
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param float $money
      * @return string
     */
@@ -125,11 +110,8 @@ class Money
 
     /**
      * 验证是否正确数字
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param float $money
      * @return bool
     */
@@ -139,11 +121,8 @@ class Money
 
     /**
      * 元转分
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param float $money
      * @return float
     */
@@ -153,11 +132,8 @@ class Money
 
     /**
      * 分转元
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param float $money
      * @return float
     */
@@ -167,11 +143,8 @@ class Money
 
     /**
      * 两个金额是否一致
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param float $rightMoney
      * @param float $rightMoney
      * @return float
@@ -182,11 +155,8 @@ class Money
 
     /**
      * 保留小数
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param float $money 金额
      * @param int $bit 小数位
      * @param float $status 是否四舍五入
@@ -215,15 +185,12 @@ class Money
     
     /**
      * 随机小数支持
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param float $min 最小数
      * @param float $max 最大数
      * @param int $decimal 保留小数位
-     * @return void
+     * @return string
     */
     public static function randomFloat($min = 0, $max = 1, $decimal=2) {
         $num = $min + mt_rand() / mt_getrandmax() * ($max - $min);

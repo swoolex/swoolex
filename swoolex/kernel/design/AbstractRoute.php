@@ -32,14 +32,10 @@ abstract class AbstractRoute {
 
     /**
      * 初始化参数
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-07
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server 服务实例
      * @param string $fd 客户端标识
-     * @return void
     */
     public function __construct($server=null, $fd=null) {
         $this->server = $server;
@@ -48,35 +44,25 @@ abstract class AbstractRoute {
 
     /**
      * 启动项
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.1 + 2020.07.18
-     * @deprecated 暂不启用
-     * @global 无
      * @return App
     */
     abstract public function start();
 
     /**
      * 容器注入
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.6 + 2021.04.26
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 被找到的路由
      * @param string $request_uri 路由地址
-     * @return void
     */
     abstract protected function ico_injection($route, $request_uri);
 
     /**
      * 自定义注解载入
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server 服务实例
      * @param string $fd 客户端标识
      * @param array $route 被找到的路由
@@ -141,11 +127,8 @@ abstract class AbstractRoute {
 
     /**
      * 清除URL格式
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $request_uri
      * @return string
     */
@@ -165,12 +148,8 @@ abstract class AbstractRoute {
 
     /**
      * Session注入
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     protected final function session() {
         // 获取容器

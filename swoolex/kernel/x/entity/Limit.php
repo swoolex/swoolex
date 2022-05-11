@@ -52,12 +52,9 @@ class Limit
     
     /**
      * 单例入口
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return this
     */
     public static function run(){
         if (empty(self::$instance)) {
@@ -69,12 +66,9 @@ class Limit
 
     /**
      * 最终解析方法
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function register() {
         if ($this->cache_route) {
@@ -117,15 +111,12 @@ class Limit
     
     /**
      * 路由规则分解
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型
      * @param string|array $route 路由地址
      * @param array $config 配置
-     * @return void
+     * @return this
     */
     public function resolve($server_type, $route, $config=[]) {
         $this->cache_route = [];
@@ -153,55 +144,43 @@ class Limit
     }
     /**
      * 设置HTTP路由限流
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $route 路由地址
-     * @return void
+     * @return this
     */
     public function http($route) {
         return $this->resolve('http', $route);
     }
     /**
      * 设置WebSocket路由限流
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $route 路由地址
-     * @return void
+     * @return this
     */
     public function webscoekt($route) {
         return $this->resolve('websocket', $route);
     }
     /**
      * 设置RPC路由限流
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $route 路由地址
-     * @return void
+     * @return this
     */
     public function rpc($route) {
         return $this->resolve('rpc', $route);
     }
     /**
      * 提供给服务注册全局路由限流器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型
      * @param string|array $route 路由地址
      * @param array $config 配置
      * @param bool $doc 是否注解注册
-     * @return void
+     * @return this
     */
     public function routeSet($server_type, $route, $config=[], $doc=false) {
         if ($this->config['route']['global_switch'] == false && $doc == false) return $this;
@@ -218,14 +197,11 @@ class Limit
     }
     /**
      * 提供给服务注册全局IP限流器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $ip IP地址
      * @param array $config 配置
-     * @return void
+     * @return this
     */
     public function ipSet($ip, $config=[]) {
         if ($this->config['ip']['limit_switch'] == false) return $this;
@@ -235,14 +211,11 @@ class Limit
     }
     /**
      * 设置IP限流
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $ip IP地址
      * @param array $config 配置
-     * @return void
+     * @return this
     */
     public function ip($ip, $config=[]) {
         $this->cache_ip = [];
@@ -268,13 +241,10 @@ class Limit
     }
     /**
      * 设置限流峰值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $peak 限流峰值
-     * @return void
+     * @return this|false
     */
     public function peak($peak) {
         if ($this->cache_route) {
@@ -293,13 +263,10 @@ class Limit
     }
     /**
      * 设置限流间隔时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $time 间隔时间
-     * @return void
+     * @return this|false
     */
     public function time($time) {
         if ($this->cache_route) {
@@ -318,13 +285,10 @@ class Limit
     }
     /**
      * 设置限流开始时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $date 开始时间
-     * @return void
+     * @return this|false
     */
     public function start($date) {
         if ($this->cache_route) {
@@ -343,13 +307,10 @@ class Limit
     }
     /**
      * 设置限流结束时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $date 结束时间
-     * @return void
+     * @return this|false
     */
     public function end($date) {
         if ($this->cache_route) {
@@ -368,13 +329,10 @@ class Limit
     }
     /**
      * 设置限流峰值生命周期回调地址
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $callback 命名空间地址
-     * @return void
+     * @return this|false
     */
     public function callback($callback) {
         if ($this->cache_route) {
@@ -393,14 +351,11 @@ class Limit
     }
     /**
      * 读取路由表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型
      * @param string $route 路由地址
-     * @return void
+     * @return array
     */
     public function readRouteAll($server_type=null, $route=null) {
         if ($this->config['route']['limit_switch'] == false) return [];
@@ -410,13 +365,10 @@ class Limit
     }
     /**
      * 读取整张IP表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $ip ip地址
-     * @return void
+     * @return array
     */
     public function readIpAll($ip=null) {
         if ($this->config['ip']['limit_switch'] == false) return [];
@@ -425,14 +377,11 @@ class Limit
     }
     /**
      * 读取路由时间表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型
      * @param int $time 秒数
-     * @return void
+     * @return array
     */
     public function readRouteTimeAll($server_type=null, $time=null) {
         if ($this->config['route']['limit_switch'] == false) return [];
@@ -442,13 +391,10 @@ class Limit
     }
     /**
      * 读取整张IP时间表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $time 秒数
-     * @return void
+     * @return array
     */
     public function readIpTimeAll($time=null) {
         if ($this->config['ip']['limit_switch'] == false) return [];
@@ -457,11 +403,8 @@ class Limit
     }
     /**
      * 查看某条路由是否在限流器中
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型
      * @param string $route 路由地址
      * @return bool
@@ -471,11 +414,8 @@ class Limit
     }
     /**
      * 查看某条IP是否在限流器中
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $ip IP地址
      * @return bool
     */
@@ -484,11 +424,8 @@ class Limit
     }
     /**
      * 触发一个路由自增器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型
      * @param string $route 路由地址
      * @return bool
@@ -501,11 +438,8 @@ class Limit
     }
     /**
      * 触发一个IP自增器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $ip IP地址
      * @return bool
     */
@@ -517,11 +451,8 @@ class Limit
     }
     /**
      * 重置一个路由自增器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型
      * @param string $route 路由地址
      * @return bool
@@ -536,11 +467,8 @@ class Limit
     }
     /**
      * 重置一个IP自增器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $ip IP地址
      * @return bool
     */
@@ -554,14 +482,11 @@ class Limit
     }
     /**
      * 获取一个路由自增器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型
      * @param string $route 路由地址
-     * @return void
+     * @return int
     */
     public function routeAtomicGet($server_type, $route) {
         $key = $this->prefix . $server_type . $route;
@@ -571,13 +496,10 @@ class Limit
     }
     /**
      * 获取一个IP自增器
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $ip IP地址
-     * @return bool
+     * @return int
     */
     public function ipAtomicGet($ip) {
         $key = $this->prefix . $ip;
@@ -587,11 +509,8 @@ class Limit
     }
     /**
      * 判断一个路由限流器是否超值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server 服务实例
      * @param string $fd 客户端标识
      * @param string $route 路由地址
@@ -632,11 +551,8 @@ class Limit
     }
     /**
      * 判断一个IP限流器是否超值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server 服务实例
      * @param string $fd 客户端标识
      * @param string $ip IP地址
@@ -676,14 +592,11 @@ class Limit
     }
     /**
      * 删除头尾路由分隔符
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str 路由
      * @param string $rule 规则
-     * @return void
+     * @return string
     */
     private function lrtrim($str, $rule=null) {
         if ($str == '/') return $str;

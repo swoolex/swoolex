@@ -33,16 +33,12 @@ abstract class Event {
 
     /**
      * 构造函数
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $fd 连接的文件描述符
      * @param int $reactorId 连接所在的 Reactor 线程 ID
      * @param string $data 收到的数据内容，已解码
-     * @return void
     */
     public function __construct($server, $fd, $reactorId, $data) {
         $this->server = $server;
@@ -79,11 +75,8 @@ abstract class Event {
 
     /**
      * 挂载控制器
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $controller
      * @param string $action
      * @return Controller

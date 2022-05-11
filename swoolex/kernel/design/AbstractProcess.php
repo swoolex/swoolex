@@ -62,23 +62,16 @@ abstract class AbstractProcess
 
     /**
      * 进程业务入口方法
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     abstract public function run();
 
     /**
      * 业务入口执行前的前置方法
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return true
     */
     public function front() {
         return true;
@@ -86,12 +79,8 @@ abstract class AbstractProcess
 
     /**
      * 当进程接收到 SIGTERM 信号触发该回调
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-10-21
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function onSigTerm() {
 
@@ -99,13 +88,9 @@ abstract class AbstractProcess
 
     /**
      * 业务进程发生异常时回调
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
      * @param Throwable $throwable
-     * @return void
     */
     public function onException(\Throwable $throwable) 
     {
@@ -116,13 +101,9 @@ abstract class AbstractProcess
     
     /**
      * 接收管道数据
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-10-21
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $process
-     * @return void
     */
     public function read($process) {
         $data = $process->read();
@@ -130,12 +111,9 @@ abstract class AbstractProcess
     
     /**
      * 启动进程
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return Swoole\Process
     */
     public final function start() 
     {
@@ -149,13 +127,9 @@ abstract class AbstractProcess
 
     /**
      * 进程逻辑处理
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-10-21
-     * @deprecated 暂不启用
-     * @global 无
      * @param Process $process
-     * @return void
     */
     public final function _callback(Process $process){
         // 设置子进程实例 - id
@@ -209,12 +183,9 @@ abstract class AbstractProcess
 
     /**
      * 获取进程名称
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return Process
+     * @return string
     */
     public final function getProcessName() {
         return $this->name;
@@ -222,12 +193,9 @@ abstract class AbstractProcess
 
     /**
      * 获取进程实例
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return Process
+     * @return Swoole\Process
     */
     public final function getProcess() {
         return $this->process;
@@ -235,11 +203,8 @@ abstract class AbstractProcess
 
     /**
      * 获取当前进程Pid
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
      * @return int
     */
     public final function getPid(){
@@ -248,13 +213,10 @@ abstract class AbstractProcess
 
     /**
      * 向当前子进程传递数据
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-09-29
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $mixed 数据包
-     * @return void
+     * @return bool
     */
     public final static function write($mixed) {
         $process_key = get_called_class();

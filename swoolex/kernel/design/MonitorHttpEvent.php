@@ -17,12 +17,13 @@ class MonitorHttpEvent {
 
     /**
      * 开始
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @param Swoole\Server $server 服务实例
+     * @param array $config 请求配置
+     * @param Swoole\Request $request 请求实例
+     * @param Swoole\Response $response 响应实例
+     * @return bool
     */
     public static function start($server, $config, $request, $response) {
         try {

@@ -12,11 +12,8 @@ class Pool extends AbstractMemcachedPool
 {
     /**
      * 启动连接池
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.4 + 2020.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @return $this|null
      */
     public function init() {
@@ -39,11 +36,8 @@ class Pool extends AbstractMemcachedPool
 
     /**
      * 获取一个连接
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
      * @return obj
      */
     public function pop() {
@@ -62,13 +56,10 @@ class Pool extends AbstractMemcachedPool
 
     /**
      * 归还一个连接
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param obj $db 连接实例
-     * @return void
+     * @return bool
      */
     public function free($db) {
         if ($db) {
@@ -83,12 +74,8 @@ class Pool extends AbstractMemcachedPool
 
     /**
      * 定时统计连接
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
      */
     public function timing_recovery() {
         // 5秒更新一次当前数据库连接数
@@ -144,12 +131,9 @@ class Pool extends AbstractMemcachedPool
 
     /**
      * 创建连接实例
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return Db
+     * @return false|array
      */
     protected function create()
     {

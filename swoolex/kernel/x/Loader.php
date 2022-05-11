@@ -44,13 +44,9 @@ class Loader {
 
     /**
      * 注册自动加载机制
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $autoload 需要注册的空间地址
-     * @return void
     */
     public static function register($autoload = '') {
         // 注册系统自动加载
@@ -102,11 +98,8 @@ class Loader {
 
     /**
      * 自动加载
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $class 类名
      * @return bool
     */
@@ -129,11 +122,8 @@ class Loader {
 
     /**
      * 查找文件
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param  string $class
      * @return string|false
     */
@@ -200,14 +190,10 @@ class Loader {
 
     /**
      * 注册classmap
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $class 多个注册
      * @param string $map 单个注册
-     * @return void
     */
     public static function addClassMap($class, $map = '') {
         if (is_array($class)) {
@@ -219,14 +205,10 @@ class Loader {
 
     /**
      * 注册命名空间
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $namespace 命名空间
      * @param mixed $path 地址
-     * @return void
     */
     public static function addNamespace($namespace, $path = '')  {
         if (is_array($namespace)) {
@@ -240,15 +222,11 @@ class Loader {
 
     /**
      * 添加Ps0空间
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $prefix 前缀
      * @param string $paths 地址
      * @param bool $prepend 反转
-     * @return void
     */
     private static function addPsr0($prefix, $paths, $prepend = false) {
         if (!$prefix) {
@@ -289,15 +267,11 @@ class Loader {
 
     /**
      * 添加Psr4空间
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $prefix 前缀
      * @param string $paths 地址
      * @param bool $prepend 反转
-     * @return void
     */
     private static function addPsr4($prefix, $paths, $prepend = false) {
         if (!$prefix) {
@@ -335,13 +309,9 @@ class Loader {
 
     /**
      * 注册自动加载类库目录
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $path 地址
-     * @return void
     */
     public static function addAutoLoadDir($path) {
         self::$fallbackDirsPsr4[] = $path;
@@ -349,14 +319,10 @@ class Loader {
 
     /**
      * 注册类别名
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $alias 多个注册
      * @param string $class 单个注册
-     * @return void
     */
     public static function addClassAlias($alias, $class = null) {
         if (is_array($alias)) {
@@ -368,13 +334,9 @@ class Loader {
 
     /**
      * 注册composer自动加载
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $composerPath 地址
-     * @return void
     */
     public static function registerComposerLoader($composerPath) {
         if (is_file($composerPath . 'autoload_namespaces.php')) {
@@ -405,12 +367,8 @@ class Loader {
 
     /**
      * 加载composer autofile文件
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public static function loadComposerAutoloadFiles() {
         foreach (self::$files as $fileIdentifier => $file) {
@@ -425,11 +383,8 @@ class Loader {
     /**
      * 字符串命名风格转换
      * type 0 将Java风格转换为C的风格 1 将C风格转换为Java的风格
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $name 字符串
      * @param integer $type 转换类型
      * @param bool $ucfirst 首字母是否大写（驼峰规则）

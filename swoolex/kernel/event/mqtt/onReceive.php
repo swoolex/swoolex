@@ -23,16 +23,12 @@ class onReceive {
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.3 + 2020.07.06
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $fd 连接的文件描述符
      * @param int $reactorId 连接所在的 Reactor 线程 ID
      * @param string $data 收到的数据内容，可能是文本或者二进制内容
-     * @return void
     */
     public function run($server, $fd, $reactorId, $data=null) {
         try {
@@ -64,12 +60,8 @@ class onReceive {
 
     /**
      * 物联网MQTT服务
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.11 + 2021.07.02
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function mqtt($server, $fd, $reactorId, $data) {
         $type = \x\mqtt\common\tool\UnPack::getType($data);

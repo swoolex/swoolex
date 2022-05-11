@@ -18,11 +18,8 @@ class Bootstrap extends Page {
 
     /**
      * 上一页按钮
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $text
      * @return string
     */
@@ -61,11 +58,8 @@ class Bootstrap extends Page {
 
     /**
      * 页码按钮
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @return string
     */
     protected function getLinks() {
@@ -114,11 +108,8 @@ class Bootstrap extends Page {
 
     /**
      * 渲染分页html
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @return mixed
     */
     public function render() {
@@ -134,11 +125,8 @@ class Bootstrap extends Page {
 
     /**
      * 生成一个可点击的按钮
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $url
      * @param int $page
      * @return string
@@ -149,14 +137,10 @@ class Bootstrap extends Page {
 
     /**
      * 生成一个禁用的按钮
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $text
      * @return string
-     * @return void
     */
     protected function getDisabledTextWrapper($text) {
         return '<li class="disabled"><span>' . $text . '</span></li>';
@@ -164,11 +148,8 @@ class Bootstrap extends Page {
 
     /**
      * 生成一个激活的按钮
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $text
      * @return string
     */
@@ -178,11 +159,8 @@ class Bootstrap extends Page {
 
     /**
      * 生成省略号按钮
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @return string
     */
     protected function getDots() {
@@ -191,11 +169,8 @@ class Bootstrap extends Page {
 
     /**
      * 批量生成页码按钮
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $urls
      * @return string
     */
@@ -211,11 +186,8 @@ class Bootstrap extends Page {
 
     /**
      * 生成普通页码按钮
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $url
      * @param int $page
      * @return string

@@ -30,11 +30,8 @@ class Log
 
     /**
      * 实例化对象方法，供外部获得唯一的对象
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.26
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $txt
      * @return App
     */
@@ -51,13 +48,9 @@ class Log
 
     /**
      * 挂载日志
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $txt
-     * @return void
     */
     public function setLog($txt) {
         $path = $this->_path['log'].'/'.date('Y-n-j', time()).'.log';
@@ -69,13 +62,9 @@ class Log
 
     /**
      * 挂载MQTT请求记录
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $txt
-     * @return void
     */
     public function setMqtt($txt) {
         $path = $this->_path['mqtt'].'/'.date('Y-n-j', time()).'.log';
@@ -85,13 +74,9 @@ class Log
 
     /**
      * 挂载SQL
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $txt
-     * @return void
     */
     public function sql($txt) {
         $path = $this->_path['sql'].'/'.date('Y-n-j', time()).'.log';
@@ -103,12 +88,8 @@ class Log
 
     /**
      * 检测目录是否创建
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.26
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function start() {
         if (!file_exists(WORKLOG_PATH.'/')) {
@@ -129,13 +110,10 @@ class Log
 
     /**
      * 格式化日志内容
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $txt
-     * @return void
+     * @return string
     */
     private function format($txt) {
         return '【'.date('Y-m-d H:i:s', time()).'】 '.$txt."\r\n";

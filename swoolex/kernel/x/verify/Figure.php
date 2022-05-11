@@ -277,7 +277,7 @@ class Figure {
 	 * 核验验证码
 	 * @param string $code 用户验证码
 	 * @param string $session 验证码保存的seesion名
-	 * @param boool
+	 * @param bool
 	*/
 	public static function check($code, $session=null) {
 		self::construct();

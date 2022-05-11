@@ -18,12 +18,8 @@ class demo2 extends Crontab{
 
     /**
      * 统一入口
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function run() {
         echo date('Y-m-d H:i:s', time())."\n";

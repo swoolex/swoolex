@@ -17,11 +17,8 @@ class csrf_error
 {
     /**
      * 接受回调处理
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $tips 错误内容
      * @return bool
     */

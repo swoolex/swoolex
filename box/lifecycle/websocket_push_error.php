@@ -17,11 +17,8 @@ class websocket_push_error
 {
     /**
      * 接受回调处理
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.5 + 2020.07.21
-     * @deprecated 暂不启用
-     * @global 无
      * @param Server $server 实例
      * @param json $content push的内容
      * @param int $fd 客户端标识

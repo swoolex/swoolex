@@ -20,14 +20,12 @@ class Img {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022-02-18
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $src 原图地址
 	 * @param string $src 保存地址
 	 * @param float $percent 等比比例
 	 * @param float $save_width 手改宽度
 	 * @param float $save_height 手改高度
-	 * @return void
+	 * @return string
 	*/
 	public static function compress($src, $save_file=false, $percent=1, $save_width=false, $save_height=false) {
 		if ($save_file == false) $save_file = $src;
@@ -58,8 +56,6 @@ class Img {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022.2.18
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $file 图片绝对路径
 	 * @return string
 	*/
@@ -74,8 +70,6 @@ class Img {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.21 + 2022.2.18
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $base64 base64字符串
 	 * @param string $file 保存文件绝对路径
 	 * @return bool 

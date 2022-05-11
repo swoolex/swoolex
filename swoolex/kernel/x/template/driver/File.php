@@ -21,14 +21,10 @@ class File {
 
     /**
      * 写入编译缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $cacheFile 缓存的文件名
      * @param string $content 缓存的内容
-     * @return void|array
     */
     public function write($cacheFile, $content) {
         // 检测模板目录
@@ -46,14 +42,10 @@ class File {
 
     /**
      * 读取编译编译
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $cacheFile 缓存的文件名
      * @param array $vars 变量数组
-     * @return void
     */
     public function read($cacheFile, $vars = []) {
         $this->cacheFile = $cacheFile;
@@ -69,14 +61,11 @@ class File {
 
     /**
      * 检查编译缓存是否有效
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.10 + 2021.07.01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $cacheFile 缓存的文件名
      * @param int $cacheTime 缓存时间
-     * @return boolean
+     * @return bool
     */
     public function check($cacheFile, $cacheTime) {
         // 缓存文件不存在, 直接返回false

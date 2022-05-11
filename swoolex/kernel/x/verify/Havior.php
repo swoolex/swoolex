@@ -39,8 +39,6 @@ class Havior {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $key 存储标识
 	 * @return html
 	*/
@@ -56,8 +54,6 @@ class Havior {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $key 存储标识
 	 * @return array
 	*/
@@ -79,8 +75,6 @@ class Havior {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param array $param 行为参数
 	 * @param string $key 存储标识
 	 * @return bool
@@ -220,10 +214,8 @@ class Havior {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $key 存储标识
-	 * @return void
+	 * @return array
 	*/
 	public static function appkey($key = null) {
 		$session_key = $key ? $key : self::$session_key;
@@ -242,8 +234,6 @@ class Havior {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $session_key 存储标识
 	 * @param int $status 状态
 	 * @param int $outtime 失效时间
@@ -265,10 +255,8 @@ class Havior {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.5.6 + 2021-09-11
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $str
-	 * @return void
+	 * @return string
 	*/
 	private static function decode($str){
 		$staticchars = "PXhw7UT1B0a9kQDKZsjIASmOezxYG4CHo5Jyfg2b8FLpEvRr3WtVnlqMidu6cN";

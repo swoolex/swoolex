@@ -37,14 +37,11 @@ class RPC {
 
     /**
      * 输出返回内容给客户端
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021-08-20
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $data 返回内容
      * @param mixed $msg 处理说明
-     * @return void
+     * @return mixed
     */
     public final function fetch($data, $msg=null) {
         if ($msg !== null) $this->msg = $msg;
@@ -53,11 +50,8 @@ class RPC {
 
     /**
      * 获取请求头
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021-08-20
-     * @deprecated 暂不启用
-     * @global 无
      * @return array
     */
     public final function headers() {
@@ -66,11 +60,8 @@ class RPC {
 
     /**
      * 获取请求参数
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021-08-20
-     * @deprecated 暂不启用
-     * @global 无
      * @return array
     */
     public final function param() {
@@ -79,11 +70,8 @@ class RPC {
 
     /**
      * 设置当次请求处理说明
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021-08-20
-     * @deprecated 暂不启用
-     * @global 无
      * @return bool true
     */
     public final function msg($msg) {
@@ -93,13 +81,10 @@ class RPC {
 
     /**
      * 标记当次请求业务处理异常
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.0 + 2021-08-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $msg 说明
-     * @return void
+     * @return bool
     */
     public final function error($msg=null) {
         $this->rpc_error = true;

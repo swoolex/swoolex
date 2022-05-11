@@ -24,8 +24,6 @@ class Csrf {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.0.6 + 2021.4.26
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @return string
 	*/
     public function create_token() {
@@ -48,8 +46,6 @@ class Csrf {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.0.6 + 2021.4.26
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @param string $token
      * @return bool
 	*/
@@ -68,8 +64,6 @@ class Csrf {
 	 * @todo 无
 	 * @author 小黄牛
 	 * @version v2.0.6 + 2021.4.26
-	 * @deprecated 暂不启用
-	 * @global 无
 	 * @return bool
 	*/
     public function clean_token() {

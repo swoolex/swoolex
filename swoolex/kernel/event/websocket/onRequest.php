@@ -25,14 +25,10 @@ class onRequest {
 
     /**
      * 接收服务实例
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $config 配置项
      * @param Swoole $server
-     * @return void
     */
     public function __construct($server, $config) {
         $this->server = $server;
@@ -41,14 +37,10 @@ class onRequest {
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.5 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole\Http\Request $request HTTP请求对象
      * @param Swoole\Http\Response $response HTTP响应对象
-     * @return void
     */
     public function run($request, $response) {
         // 业务挂载

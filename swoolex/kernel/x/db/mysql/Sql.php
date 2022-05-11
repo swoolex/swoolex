@@ -71,13 +71,9 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 注入Db
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param Db $Db
-     * @return void
     */
     public function __construct($Db) {
         $this->Db = $Db;
@@ -85,12 +81,8 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 销毁Db
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     public function __destruct() {
         $this->Db = null;
@@ -98,12 +90,9 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 调试SQL语句
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return this
     */
     public function debug() {
         $this->debug = true;
@@ -112,13 +101,10 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 选择表
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
-     * @return void
+     * @return this
     */
     public function name($table) {
         $this->clean_up();
@@ -130,13 +116,10 @@ class Sql extends AbstractMysqlSql {
     
     /**
      * 选择表（不带前缀）
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名 OR 子查询语句
-     * @return void
+     * @return this
     */
     public function table($table) {
         $this->clean_up();
@@ -148,13 +131,10 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 别名
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $as 别名
-     * @return void
+     * @return this
     */
     public function alias($as) {
         $this->alias = $as;
@@ -162,20 +142,17 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 条件
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.8 + 2020.07.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 可以为批量表达式，也可以是字段
      * @param string $operator 表达式
      * @param string $value 条件
-     * @return void
+     * @return this
     */
     public function where($field, $operator=null, $value=false) {
         if (!$field) return $this;
 
-        if ($operator === null || $operator === '') {
+        if (is_array($field) == false && ($operator === null || $operator === '')) {
             $is_list = [
                 ' ',
                 '=',
@@ -230,14 +207,11 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 条件IN
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 只可以是字段
      * @param string $in 条件
-     * @return void
+     * @return this
     */
     public function whereIn($field, $in) {
         if (stripos($in, '(') === false) {
@@ -248,14 +222,11 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 条件NotIn
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 只可以是字段
      * @param string $in 条件
-     * @return void
+     * @return this
     */
     public function whereNotIn($field, $in) {
         if (stripos($in, '(') === false) {
@@ -266,15 +237,12 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 条件OR
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 只可以是字段
      * @param string $operator 表达式
      * @param string $value 条件
-     * @return void
+     * @return this
     */
     public function whereOr($field, $operator=null, $value=false) {
         if (!$field) return $this;
@@ -291,15 +259,12 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 时间条件
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 时间字段，必须为int类型
      * @param string $where 表达式
      * @param string $data 内容
-     * @return void
+     * @return this
     */
     public function whereTime($field, $where, $data=null) {
         $where = str_replace(' ', '', strtolower($where));
@@ -331,13 +296,10 @@ class Sql extends AbstractMysqlSql {
     } 
     /**
      * 打印字段
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 显示字段
-     * @return void
+     * @return this
     */
     public function field($field) {
         $this->field = $field;
@@ -345,14 +307,11 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 指定条数
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $left 左
      * @param int $right 右
-     * @return void
+     * @return this
     */
     public function limit($left, $right=null) {
         $this->limit = [
@@ -363,14 +322,11 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 分页条数
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $left 左
      * @param int $right 右
-     * @return void
+     * @return this
     */
     public function page($left, $right) {
         $this->page = [
@@ -381,13 +337,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 排序
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $order 排序表达式
-     * @return void
+     * @return this
     */
     public function order($order) {
         $this->order = $order;
@@ -395,13 +348,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 筛选
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 筛选条件
-     * @return void
+     * @return this
     */
     public function having($field) {
         $this->having = $field;
@@ -409,13 +359,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 分组
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 分组字段
-     * @return void
+     * @return this
     */
     public function group($field) {
         $this->group = $field;
@@ -423,13 +370,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 测试用例别名设置
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.17 + 2020.10.29
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $name 别名
-     * @return void
+     * @return this
     */
     public function test($name) {
         $this->test_case = $name;
@@ -437,16 +381,13 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 链表
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 链表表达式
      * @param string $on  链表条件
      * @param string $join 链表方式
      * @param bool $status 是否自动使用表前缀
-     * @return void
+     * @return this
     */
     public function join($table, $on, $join='LEFT', $status=true) {
         if ($status) $table = $this->prefix.$table;
@@ -459,13 +400,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 缓存组件
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 缓存标识
-     * @return void
+     * @return this
     */
     public function cache($key=null) {
         $this->cache_status = true;
@@ -475,13 +413,10 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 单独设置缓存有效期
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $expire_time 过期时间，0为永久
-     * @return void
+     * @return this
     */
     public function expire($expire_time) {
         $this->expire_time = $expire_time;
@@ -490,14 +425,11 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 终结方法-分页查询
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.1 + 2021.2.5
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $size 每页数
      * @param array $query 分页配置参数
-     * @return void
+     * @return bool|object
     */
     public function paginate($size, $query=null) {
         $test = $this->testcase();
@@ -561,13 +493,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 终结方法-查询
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $status 是否不执行
-     * @return void
+     * @return bool|array
     */
     public function select($status=true) {
         $test = $this->testcase();
@@ -601,13 +530,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 终结方法-查询-固定一条
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $status 是否不执行
-     * @return void
+     * @return bool|array
     */
     public function find($status=true) {
         $test = $this->testcase();
@@ -641,12 +567,9 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 终结方法-子查询构造器
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return string
     */
     public function buildSql() {
         $sql = $this->select_sql(false);
@@ -656,13 +579,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 终结方法-删除
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.2 + 2020.07.20
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $status 是否不执行
-     * @return void
+     * @return bool
     */
     public function delete($status=true) {
         $test = $this->testcase();
@@ -695,12 +615,9 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 终结方法-修改
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.2 + 2020.07.20
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function update($data) {
         $test = $this->testcase();
@@ -731,12 +648,9 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 终结方法-新增
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function insert($data) {
         $test = $this->testcase();
@@ -784,11 +698,8 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 终结方法-新增
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.10 + 2020.07.17
-     * @deprecated 暂不启用
-     * @global 无
      * @return bool|int
     */
     public function insertGetId($data) {
@@ -836,14 +747,11 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 自增
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @param int $num 值
-     * @return void
+     * @return bool
     */
     public function setInc($field, $num=1) {
         $test = $this->testcase();
@@ -870,14 +778,11 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 自减
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @param int $num 值
-     * @return void
+     * @return bool
     */
     public function setDec($field, $num=1) {
         $test = $this->testcase();
@@ -904,11 +809,8 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 聚合操作(统计数量)
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @return mixed
     */
@@ -948,11 +850,8 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 聚合操作(获取最大值)
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @return mixed
     */
@@ -992,11 +891,8 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 聚合操作(获取最小值)
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @return mixed
     */
@@ -1036,11 +932,8 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 聚合操作(获取平均值)
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @return mixed
     */
@@ -1080,11 +973,8 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 聚合操作(获取总分)
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
      * @return mixed
     */
@@ -1124,13 +1014,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 获取某个字段的值
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.7 + 2020.07.16
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $field 字段名
-     * @return void
+     * @return false|mixed
     */
     public function value($field) {
         $test = $this->testcase();
@@ -1168,13 +1055,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 执行原生SQL
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $sql 原生SQL
-     * @return void
+     * @return mixed
     */
     public function query($sql, $status=false) {
         $test = $this->testcase();
@@ -1191,13 +1075,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 执行原生SQL
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $sql 原生SQL
-     * @return void
+     * @return mixed
     */
     public function exec($sql) {
         $test = $this->testcase();
@@ -1211,13 +1092,10 @@ class Sql extends AbstractMysqlSql {
     }
     /**
      * 查询相关通用语句组装
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $SQL sql语句
-     * @return void
+     * @return string
     */
     private function where_sql($sql) {
         if ($this->where) {
@@ -1282,13 +1160,10 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 组装查询语句
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.28
-     * @deprecated 暂不启用
-     * @global 无
      * @param bool $status 是否为单条记录
-     * @return void
+     * @return string
     */
     private function select_sql($status=false) {
         $sql = 'SELECT';
@@ -1361,11 +1236,8 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 获取表名是否已填充
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.20 + 2022-01-06
-     * @deprecated 暂不启用
-     * @global 无
      * @return null|string
     */
     public function getTable() {
@@ -1374,12 +1246,8 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * 由于是单例，用完就得清除某些共用成员
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.17 + 2020.10.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function clean_up() {
         $this->table = null;
@@ -1398,12 +1266,9 @@ class Sql extends AbstractMysqlSql {
 
     /**
      * Model类反转调用
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.29
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return object
     */
     public function __call($name, $arguments=[]) {
         return $this->Db->$name(...$arguments);

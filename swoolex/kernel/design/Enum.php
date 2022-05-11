@@ -22,11 +22,8 @@ class Enum
 
     /**
      * 读取信息
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $code
      * @param array $data 更多的返回参数
      * @return mixed
@@ -47,11 +44,8 @@ class Enum
 
     /**
      * 反射读取常量注解
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $code
      * @return bool|string
     */

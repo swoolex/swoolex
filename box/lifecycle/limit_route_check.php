@@ -17,17 +17,14 @@ class limit_route_check
 {
     /**
      * 接受回调处理
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-06
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server 服务实例
      * @param string $fd 客户端标识
      * @param string $server_type 服务类型 http/websocket/rpc
      * @param string $route 触发路由
      * @param string $data 对应限流配置信息
-     * @return void
+     * @return bool
     */
     public function run($server, $fd, $server_type, $route, $data) {
         $msg = $route.' 已被限制，'.$data['time'].'s 内，只允许访问'.$data['peak'].'次！';

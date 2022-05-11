@@ -17,11 +17,8 @@ use \x\route\doc\lable\Basics;
 class Validate extends Basics {
     /**
      * 启动项
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021.09.15
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 路由参数
      * @param string $server_type 服务类型
      * @return true
@@ -73,15 +70,11 @@ class Validate extends Basics {
 
     /**
      * 注解检测失败时，回调的处理函数
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.6 + 2021-09-15
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type
      * @param bool $batch
      * @param array $errors
-     * @return void
     */
     protected function validate_error($server_type, $batch, $errors, $callback) {
         return \design\Lifecycle::validate_error($server_type, $batch, $errors, $callback);

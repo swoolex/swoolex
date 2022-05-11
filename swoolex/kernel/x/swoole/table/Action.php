@@ -30,13 +30,10 @@ class Action
 
     /**
      * 设置表名
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $table 表名
-     * @return void
+     * @return this
     */
     public function table($table) {
         $this->table = $table;
@@ -45,13 +42,10 @@ class Action
 
     /**
      * 设置key名
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键名
-     * @return void
+     * @return this
     */
     public function name($key) {
         $this->key = $key;

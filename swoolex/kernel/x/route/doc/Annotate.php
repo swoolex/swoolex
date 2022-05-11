@@ -17,11 +17,8 @@ class Annotate {
     
     /**
      * 启动注解解析
-     * @todo 无
      * @author 小黄牛
      * @version v1.0.1 + 2020.05.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $class 对应类的命名空间
      * @return array
     */

@@ -41,12 +41,9 @@ class Route
 
     /**
      * 最终解析方法
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return bool
     */
     public function register() {
         if (!$this->cache) return false;
@@ -74,14 +71,11 @@ class Route
 
     /**
      * 设置路由统一镜像
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.18 + 2021-12-27
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $rule 映射规则
      * @param string $server_type 服务类型 http/websocket/rpc
-     * @return void
+     * @return bool
     */
     public function mirror($rule, $server_type='http') {
         if (!is_array($rule)) return false;
@@ -98,11 +92,8 @@ class Route
     
     /**
      * 读取镜像配置
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.18 + 2021-12-27
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型 http/websocket/rpc
      * @return array
     */
@@ -114,14 +105,11 @@ class Route
     
     /**
      * 设置路由统一前缀
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $rule 映射规则
      * @param string $server_type 服务类型 http/websocket/rpc
-     * @return void
+     * @return bool
     */
     public function prefix($rule, $server_type='http') {
         if (!is_array($rule)) return false;
@@ -169,16 +157,13 @@ class Route
     }
     /**
      * 路由规则分解
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $server_type 服务类型
      * @param string|array $route 路由地址
      * @param string $class 路由对应的命名空间地址
      * @param string $method 路由允许的请求类型
-     * @return void
+     * @return this
     */
     public function resolve($server_type, $route, $class, $method=null) {
         $this->cache = [];
@@ -222,84 +207,66 @@ class Route
     }
     /**
      * 设置HTTP路由
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $route 路由地址
      * @param string $class 路由对应的命名空间地址
      * @param string $method 路由允许的请求类型
-     * @return void
+     * @return this
     */
     public function http($route, $class=null, $method='GET|POST') {
         return $this->resolve('http', $route, $class, $method);
     }
     /**
      * 设置HTTP路由-GET
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $route 路由地址
      * @param string $class 路由对应的命名空间地址
-     * @return void
+     * @return this
     */
     public function get($route, $class=null) {
         return $this->http($route, $class, 'GET');
     }
     /**
      * 设置HTTP路由-POST
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $route 路由地址
      * @param string $class 路由对应的命名空间地址
-     * @return void
+     * @return this
     */
     public function post($route, $class=null) {
         return $this->http($route, $class, 'POST');
     }
     /**
      * 设置WebSocket路由
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $route 路由地址
      * @param string $class 路由对应的命名空间地址
-     * @return void
+     * @return this
     */
     public function websocket($route, $class=null) {
         return $this->resolve('websocket', $route, $class);
     }
     /**
      * 设置Rpc路由
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string|array $route 路由地址
      * @param string $class 路由对应的命名空间地址
-     * @return void
+     * @return this
     */
     public function rpc($route, $class=null) {
         return $this->resolve('rpc', $route, $class);
     }
     /**
      * 设置@Param注解支持
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $data
-     * @return void
+     * @return this
     */
     public function param($data) {
         if (!$this->cache) return $this;
@@ -311,13 +278,10 @@ class Route
     }
     /**
      * 设置@Limit注解支持 - 峰值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $peak 限流峰值
-     * @return void
+     * @return this
     */
     public function limitPeak($peak) {
         if (!$this->cache) return $this;
@@ -327,13 +291,10 @@ class Route
     }
     /**
      * 设置@Limit注解支持 - 间隔时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param int $time 间隔时间
-     * @return void
+     * @return this
     */
     public function limitTime($time) {
         if (!$this->cache) return $this;
@@ -343,13 +304,10 @@ class Route
     }
     /**
      * 设置@Limit注解支持 - 开始时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $date 开始时间
-     * @return void
+     * @return this
     */
     public function limitStart($time) {
         if (!$this->cache) return $this;
@@ -359,13 +317,10 @@ class Route
     }
     /**
      * 设置@Limit注解支持 - 结束时间
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $date 结束时间
-     * @return void
+     * @return this
     */
     public function limitEnd($time) {
         if (!$this->cache) return $this;
@@ -375,13 +330,10 @@ class Route
     }
     /**
      * 设置@Limit注解支持 - 回调生命周期
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $callback 命名空间地址
-     * @return void
+     * @return this
     */
     public function limitCallback($callback) {
         if (!$this->cache) return $this;
@@ -391,23 +343,17 @@ class Route
     }
     /**
      * 读取整张路由表
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return array
     */
     public function readAll() {
         return $this->list;
     }
     /**
      * 根据前缀规则，读取出某条路由，拼接后的完整路由
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $route
      * @param string $server_type 服务类型 http/websocket/rpc
      * @return string
@@ -435,14 +381,11 @@ class Route
 
     /**
      * 删除头尾路由分隔符
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.5 + 2021-09-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str 路由
      * @param string $rule 规则
-     * @return void
+     * @return string
     */
     private function lrtrim($str, $rule=null) {
         if ($str == '/') return $str;

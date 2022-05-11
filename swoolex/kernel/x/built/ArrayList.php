@@ -16,11 +16,8 @@ class ArrayList
 {
     /**
      * 二维数组 指定某列转为字符串
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $array 数组
      * @param string $field 字段名
      * @param string $spacer 分隔符
@@ -38,11 +35,8 @@ class ArrayList
     }
     /**
      * 二维数组 指定某列转为一维数组
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $array 数组
      * @param string $field 字段名
      * @return array|string
@@ -59,11 +53,8 @@ class ArrayList
     
     /**
      * 多维数组合并
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param $array1 数组一
      * @param $array2 数组二
      * @return array
@@ -88,11 +79,8 @@ class ArrayList
 
     /**
      * 二维数组排序
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $arr 排序对象
      * @param string $keys 排序字段
      * @param bool $desc 是否降序
@@ -117,17 +105,14 @@ class ArrayList
 
     /**
      * 二维数组生成递归结构
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $array 递归对象
      * @param string $field1 子字段名
      * @param string $field2 父字段名
      * @param string $menu 生成递归结构的字段名
      * @param int $pid 默认的父字段值
-     * @return void
+     * @return array
     */
     public static function recursion($array='', $field1='id', $field2='pid', $menu = 'list', $pid = 0) {
         $arr = [];
@@ -142,11 +127,8 @@ class ArrayList
 
     /**
      * 比较数组是否相等
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $arr1 数组一
      * @param array $arr2 数组二
      * @param bool $nocase 是否不区分大小写
@@ -170,11 +152,8 @@ class ArrayList
 
     /**
      * 获取数组结构深度
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.25 + 2022-04-14
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $array 数组对象
      * @return int
     */

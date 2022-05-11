@@ -21,15 +21,11 @@ class onPipeMessage {
 
     /**
      * 统一回调入口
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server
      * @param int $src_worker_id 消息来自哪个 Worker 进程
      * @param mixed $message 消息内容，可以是任意 PHP 类型
-     * @return void
     */
     public function run($server, $src_worker_id, $message) {
         $this->server = $server;

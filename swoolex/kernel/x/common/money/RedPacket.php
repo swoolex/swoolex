@@ -22,15 +22,12 @@ class RedPacket
 
     /**
      * 随机红包金额分割
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.12 + 2021-11-24
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $money 总金额
      * @param string $num 红包个数
      * @param string $minMoney 最小金额
-     * @return void
+     * @return array
     */
     public function handle($money, $num, $minMoney) {
         if ($minMoney !== null && ($money < $validAmount = $minMoney * $num)) {

@@ -17,11 +17,8 @@ use \x\route\doc\lable\Basics;
 class Test extends Basics {
     /**
      * 启动项
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.10 + 2020.07.30
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 路由参数
      * @param type int 路由类型 1.控制器注解 2.操作方法注解
      * @return bool 返回true表示继续向下执行

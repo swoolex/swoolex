@@ -21,11 +21,8 @@ class Restful {
 
     /**
      * 实例化对象方法
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.8 + 2021.06.08
-     * @deprecated 暂不启用
-     * @global 无
      * @return Restful
     */
     public static function run(){
@@ -35,11 +32,8 @@ class Restful {
 
     /**
      * 设置返回值类型
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.8 + 2021.6.8
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $type
      * @return this
     */
@@ -50,11 +44,8 @@ class Restful {
     
     /**
      * 设置格式
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.8 + 2021.6.8
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $make
      * @return this
     */
@@ -65,11 +56,8 @@ class Restful {
     
     /**
      * 设置code值
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.8 + 2021.6.8
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $code
      * @return this
     */
@@ -80,11 +68,8 @@ class Restful {
 
     /**
      * 设置header值
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.23 + 2022.2.25
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $headers
      * @return this
     */
@@ -95,11 +80,8 @@ class Restful {
 
     /**
      * 设置msg值
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.8 + 2021.6.8
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $msg
      * @return this
     */
@@ -110,11 +92,8 @@ class Restful {
 
     /**
      * 自定义Msg
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.19 + 2021.12.27
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $msg
      * @return this
     */
@@ -125,11 +104,8 @@ class Restful {
 
     /**
      * 设置data值
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.8 + 2021.6.8
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $data
      * @return this
     */
@@ -140,15 +116,12 @@ class Restful {
 
     /**
      * 输出返回值
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.8 + 2021.6.8
-     * @deprecated 暂不启用
-     * @global 无
      * @param mixed $code 对应code()
      * @param mixed $msg 对应msg()
      * @param mixed $data 对应data()
-     * @return void
+     * @return bool
     */
     public function callback($code='swoolex_no', $msg='swoolex_no', $data='swoolex_no') {
         // 修改默认值
@@ -265,11 +238,8 @@ class Restful {
 
     /**
      * 魔术方法
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.8 + 2021.6.8
-     * @deprecated 暂不启用
-     * @global 无
     */
     public function __call($funName, $arguments) {
 		return $funName;
@@ -277,11 +247,8 @@ class Restful {
     
     /**
      * 数组转XML
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.8 + 2021.6.8
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $data
      * @return xml
     */
@@ -300,13 +267,10 @@ class Restful {
     }
     /**
      * 递归多级菜数组
-     * @todo 无
      * @author 小黄牛
      * @version v1.1.1 + 2020.07.08
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $array 数组
-     * @return 
+     * @return array
     */
     private function loop($array) {
         foreach ($array as $k=>$v) {

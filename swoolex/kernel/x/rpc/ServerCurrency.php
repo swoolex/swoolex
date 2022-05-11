@@ -17,17 +17,14 @@ class ServerCurrency
 {
     /**
      * 数据返回
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.24 + 2021.1.9
-     * @deprecated 暂不启用
-     * @global 无
      * @param server $server
      * @param fd $fd
      * @param string $status
      * @param mixed $msg
      * @param array $data
-     * @return void
+     * @return bool|array
     */
     public function returnJson($server, $fd, $status, $msg="SUCCESS", $data=[], $request=null) {
         $json = json_encode([

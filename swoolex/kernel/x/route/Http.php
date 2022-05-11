@@ -20,11 +20,8 @@ class Http extends AbstractRoute {
     
     /**
      * 启动项
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.1 + 2020.07.18
-     * @deprecated 暂不启用
-     * @global 无
      * @param Swoole $server 服务实例
      * @param string $fd 客户端标识
      * @return App
@@ -60,14 +57,10 @@ class Http extends AbstractRoute {
 
     /**
      * 容器注入
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.6 + 2021.04.26
-     * @deprecated 暂不启用
-     * @global 无
      * @param array $route 被找到的路由
      * @param string $request_uri 路由地址
-     * @return void
     */
     protected function ico_injection($route, $request_uri) {
         // 实例化控制器

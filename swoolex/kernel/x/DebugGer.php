@@ -101,12 +101,8 @@ class DebugGer
 
     /**
      * 设置头部html
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function set_header() {
         $this->html .= '<meta charset="utf-8"><style>.swoole_div{width: 100%;height: 35px;line-height: 35px;padding: 0 10px;border-bottom: 1px solid #eaeaea;font-size: 14px;color: #333;text-align: left;}</style>
@@ -127,12 +123,8 @@ class DebugGer
     }
     /**
      * 设置尾部html
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function set_footer() {
         $this->html .= '</div>';
@@ -140,12 +132,8 @@ class DebugGer
     }
     /**
      * 基本信息
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function set_tab1() {
         $http_start_time = \x\context\Container::get('http_start_time');
@@ -169,12 +157,8 @@ class DebugGer
     }
     /**
      * 框架-调用栈
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function set_tab2() {
         $this->html .= '<div style="width: 100%;height: 100%;overflow-y: auto;display: none;" id="swoole_div2">';
@@ -186,12 +170,8 @@ class DebugGer
     }
     /**
      * 请求-调用栈
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function set_tab3() {
         $this->html .= '<div style="width: 100%;height: 100%;overflow-y: auto;display: none;" id="swoole_div3">';
@@ -206,12 +186,8 @@ class DebugGer
     }
     /**
      * SQL
-     * @todo 无
      * @author 小黄牛
      * @version v1.2.16 + 2020.10.27
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
     */
     private function set_tab4() {
         $this->html .= '<div style="width: 100%;height: 100%;overflow-y: auto;display: none;" id="swoole_div4">';
@@ -229,12 +205,9 @@ class DebugGer
     }
     /**
      * 调用
-     * @todo 无
      * @author 小黄牛
      * @version v2.0.3 + 2021.03.11
-     * @deprecated 暂不启用
-     * @global 无
-     * @return void
+     * @return null|string
     */
     public function run() {
         if (!\x\Config::get('app.de_bug')) {

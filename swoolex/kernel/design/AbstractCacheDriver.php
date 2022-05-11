@@ -20,25 +20,18 @@ abstract class AbstractCacheDriver {
     
     /**
      * 设置缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param mixed $val 值
      * @param int $prefix 有效期(S)
-     * @return void
     */
     abstract public function set($key, $val, $prefix=null);
 
     /**
      * 缓存是否有效存在
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @return bool
     */
@@ -46,11 +39,8 @@ abstract class AbstractCacheDriver {
 
     /**
      * 获取缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param mixed $default 不存在时默认返回值
      * @return mixed
@@ -59,11 +49,8 @@ abstract class AbstractCacheDriver {
 
     /**
      * 数字类型自增
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param int $num 自增值
      * @return mixed
@@ -72,11 +59,8 @@ abstract class AbstractCacheDriver {
 
     /**
      * 数字类型自减
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @param int $num 自减值
      * @return mixed
@@ -85,11 +69,8 @@ abstract class AbstractCacheDriver {
 
     /**
      * 删除缓存
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @return bool
     */
@@ -97,11 +78,8 @@ abstract class AbstractCacheDriver {
 
     /**
      * 删除缓存并获取
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $key 键
      * @return mixed
     */
@@ -109,11 +87,8 @@ abstract class AbstractCacheDriver {
 
     /**
      * 序列化
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.8 + 2021-11-02
-     * @deprecated 暂不启用
-     * @global 无
      * @param string $str
      * @return mixed
     */
@@ -123,11 +98,8 @@ abstract class AbstractCacheDriver {
  
      /**
       * 反序列化
-      * @todo 无
       * @author 小黄牛
       * @version v2.5.8 + 2021-11-02
-      * @deprecated 暂不启用
-      * @global 无
       * @param string $cache
       * @return void
      */

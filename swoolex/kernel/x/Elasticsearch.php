@@ -57,7 +57,7 @@ class Elasticsearch
      * @param int $num
      * @return this
     */
-    public function max($num) {
+    public function retry($num) {
         $this->retry_max_num = $num;
         return $this;
     }

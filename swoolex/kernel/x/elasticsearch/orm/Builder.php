@@ -32,10 +32,6 @@ class Builder extends BuilderAbstract implements BuilderInterface
     */
     private $database;
     /**
-     * 当前操作的数据表名
-    */
-    private $table;
-    /**
      * 调试模式
     */
     private $debug = false;
@@ -85,18 +81,6 @@ class Builder extends BuilderAbstract implements BuilderInterface
     */
     public function table($database) {
         $this->database = $database;
-        return $this;
-    }
-
-    /**
-     * 选择数据表
-     * @author 小黄牛
-     * @version v2.5.26 + 2022-05-07
-     * @param string $table
-     * @return this
-    */
-    public function name($table) {
-        $this->table = $table;
         return $this;
     }
 

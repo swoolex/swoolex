@@ -594,9 +594,12 @@ class Builder extends BuilderAbstract implements BuilderInterface
             $json['size'] = $this->page['right'];
         } else {
             if ($this->limit) {
-                $json['from'] = $this->limit['left'];
                 if ($this->limit['right']) {
-                    $json['size'] = $this->limit['right'];
+                    $json['from'] = $this->limit['left'];
+                    $json['size'] = ($this->limit['right']-$this->limit['left']);
+                } else {
+                    $json['from'] = 0;
+                    $json['size'] = $this->limit['left'];
                 }
             }
         }

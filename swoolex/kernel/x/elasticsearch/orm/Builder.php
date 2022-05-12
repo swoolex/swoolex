@@ -137,6 +137,10 @@ class Builder extends BuilderAbstract implements BuilderInterface
      * @return this
     */
     public function limit($left, $right=null) {
+        if (!$right) {
+            $right = $left;
+            $left = 0;
+        }
         $this->limit = [
             'left' => $left, 
             'right' => $right
@@ -585,11 +589,8 @@ class Builder extends BuilderAbstract implements BuilderInterface
 
     /**
      * 生成通用的查询结构
-     * @todo 无
      * @author 小黄牛
      * @version v2.5.26 + 2022-05-09
-     * @deprecated 暂不启用
-     * @global 无
      * @return array
     */
     private function make_where() {

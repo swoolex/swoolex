@@ -101,12 +101,16 @@ class Client extends AbstractClient
      * @return array|false
     */
     public static function get_node($exclude=[]) {
+        $list = [];
         foreach (self::$normal_node as $k => $v) {
             if (in_array($v->getHost(), $exclude) == false) {
-                return $v;
+                $list[] = $v;
             }
         }
-
-        return false;
+        if (empty($list)) return false;
+        $max = count($list)-1;
+        if ($max == 0) return $list[0];
+        $key = random_int(0, $max);
+        return $list[$key];
     }
 }

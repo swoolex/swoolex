@@ -489,14 +489,13 @@ class Orm
                 $rule = strtolower($v['rule']);
                 switch ($rule) {
                     // 范围查找
-                    case 'rand':
+                    case 'range':
                     case '><':
                         $query_data = [];
                         $value = $v['value'];
                         $arr = $this->Redis->ZRANGEBYSCORE($this->rand_key.$field, $value[0], $value[1]);
                         if (!empty($arr)) {
                             foreach ($arr as $id) {
-                                $where[$field]['rand'] = $id;
                                 //  AND判断
                                 if (!empty($this->geo)) {
                                     if (isset($list[$id]) == false) {

@@ -528,12 +528,12 @@ class Sql{
      * @return bool|int
     */
     public function count() {
-        if (!$this->where) return false;
-        
         $commands = [
             "count" => $this->table,
-            "query" => $this->where
         ];
+        if ($this->where) {
+            $commands['query'] = $this->where;
+        }
         $cursor = $this->command($commands);
         if (!$cursor) return false;
         $response = current($cursor->toArray());

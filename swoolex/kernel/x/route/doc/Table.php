@@ -58,6 +58,8 @@ class Table {
         $this->mirror = \x\Route::mirrorPack($type);
         $list = $this->every_file(ROOT_PATH.'app'.DS.$type);
         $this->add_list($list, $cutting, $type);
+        
+        $this->register_limit($type);
     }
 
     /**
@@ -69,8 +71,11 @@ class Table {
         $cutting = \x\Config::get('route.cutting');
 
         // websocket路由
-        $list = $this->every_file(ROOT_PATH.'app'.DS.'websocket');
-        $this->add_list($list, $cutting, 'websocket');
+        $type = 'websocket';
+        $list = $this->every_file(ROOT_PATH.'app'.DS.$type);
+        $this->add_list($list, $cutting, $type);
+        
+        $this->register_limit($type);
     }
 
     /**
@@ -87,6 +92,8 @@ class Table {
         $this->mirror = \x\Route::mirrorPack($type);
         $list = $this->every_file(ROOT_PATH.'app'.DS.$type);
         $this->add_list($list, $cutting, $type);
+        
+        $this->register_limit($type);
     }
 
     /**
@@ -103,6 +110,21 @@ class Table {
         $this->mirror = \x\Route::mirrorPack($type);
         $list = $this->every_file(ROOT_PATH.'app'.DS.$type);
         $this->add_list($list, $cutting, $type);
+        
+        $this->register_limit($type);
+    }
+    
+    /**
+     * 初始化注册限流器
+     * @author 小黄牛
+     * @version v2.5.27 + 2022-06-17
+    */
+    public function register_limit($route_type) {
+        foreach ($this->table[$route_type] as $url=>$array) {
+            if (!empty($array['own']['Limit'])) {
+                \x\Limit::routeSet($route_type, $url, $array['own']['Limit'], true)->register();
+            }
+        }
     }
 
     /**
@@ -240,7 +262,7 @@ class Table {
                 }
             }
             $this->table[$route_type][$url] = $array;
-
+            
             // 限流器注册
             if (!empty($array['own']['Limit'])) {
                 \x\Limit::routeSet($route_type, $url, $array['own']['Limit'], true)->register();

@@ -165,7 +165,7 @@ class Pool extends AbstractMongoDbPool {
         $dns .= 'socketTimeoutMS='.$config['socketTimeoutMS'];
         
         try {
-            $manager = new \MongoDB\Driver\Manager($dns);
+            $manager = new \MongoDB\Driver\Manager($dns.'&client_id='.$this->count);
         } catch(\Exception $e){
             throw new \Exception("new MongoDb Error ".$e->getMessage());
             return false;

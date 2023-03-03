@@ -132,6 +132,19 @@ class StartRecord {
         self::insert_log('MongoDb连接数统计监控器启动成功');
     }
     /**
+     * RBMQ连接池
+    */
+    public static function rabbitmq_reload($time) {
+        self::$start_time = $time;
+        self::insert_log('rbmq连接池解析完成');
+    }
+    /**
+     * RBMQ连接池-监控
+    */
+    public static function rabbitmq_monitor() {
+        self::insert_log('rbmq连接数统计监控器启动成功');
+    }
+    /**
      * memcache连接池
      */
     public static function memcached_reload($time) {

@@ -589,6 +589,36 @@ class Sql{
     }
 
     /**
+     * 聚合查询，geo
+     * @todo 无
+     * @author 小黄牛
+     * @version v2.5.4 + 2021-08-30
+     * @deprecated 暂不启用
+     * @global 无
+     * @return void
+    */
+    public function geo($lat, $lng, $maxDistance=5000) {
+        $commands = [];
+
+        $commands[] = [
+            '$geoNear'=> [
+                'near' => ['type' => 'Point', 'coordinates' => [(double)$lng, (double)$lat]],
+                'spherical' => true,
+                'maxDistance' => $maxDistance,
+                'distanceField' => 'distance'
+            ]
+        ];
+        if ($this->where) $commands[]['$match'] = $this->where;
+        if ($this->skip) $commands[]['$skip'] = $this->skip;
+        if ($this->field) $commands[]['$project'] = $this->field;
+        if ($this->limit) $commands[]['$limit'] = $this->limit;
+        if ($this->order) $commands[]['$sort'] = $this->order;
+
+        $response = $this->aggregate($commands);
+        return $response;
+    }
+
+    /**
      * 删除整个库
      * @author 小黄牛
      * @version v2.5.4 + 2021-09-01
@@ -842,7 +872,8 @@ class Sql{
         if ($operator == '<=') return '$lte';
         if ($operator == '!=') return '$ne';
         if ($operator == 'like') return '$regex';
-        
+        if ($operator == 'near') return '$near';
+         
         return false;
     }
 

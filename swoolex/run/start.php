@@ -10,6 +10,10 @@
  * 开源协议：http://www.apache.org/licenses/LICENSE-2.0
  * +----------------------------------------------------------------------
 */
+// 一键协程化
+use Swoole\Runtime;
+Runtime::enableCoroutine();
+
 // 载入常量配置文件
 require_once __DIR__.'/constant.php';
 // 载入Loader类
